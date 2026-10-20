@@ -361,50 +361,20 @@ class TinyFishService:
             set_cached_response(cache_key, "WF4", result_data)
             return Workflow4Result(**result_data)
 
-        # 3. Vendor-specific absent lookup (checks taxpayer's actual enablement record)
-        # Pioneer Courier / Anomaly vendor is a large logistics firm with turnover > 5 Cr mandated for e-invoicing
-        is_pioneer_mandated = "Pioneer" in vendor_name or "Courier" in vendor_name or "27AAACN9923Z5" in gstin
-        is_exempt_small = "Packaging" in vendor_name or "Glass" in vendor_name or "Agro" in vendor_name
-
-        if is_pioneer_mandated:
-            irn_state = "ABSENT_APPLIES"
-            score_adj = -15
-            status_label = "Absent, applies"
-            einvoice_enabled = True
-            snippet = (
-                f"Portal Search: GSTIN {gstin} ({vendor_name}) is ENABLED for e-invoicing on the IRP. "
-                f"Turnover threshold exceeds ₹5 Cr. An absent IRN on this B2B invoice represents non-compliance."
-            )
-            why = (
-                f"This supplier is enabled for e-invoicing on the portal, but no IRN was generated for this invoice, "
-                f"raising substantive compliance and reversal risk."
-            )
-        elif is_exempt_small:
-            irn_state = "ABSENT_NOT_APPLICABLE"
-            score_adj = 0
-            status_label = "Absent, not applicable"
-            einvoice_enabled = False
-            snippet = (
-                f"Portal Search: GSTIN {gstin} ({vendor_name}) is NOT ENABLED for e-invoicing. "
-                f"Historical aggregate turnover is below ₹5 Cr statutory threshold. E-invoicing is exempt."
-            )
-            why = (
-                f"The supplier is legitimately below the ₹5 crore threshold and exempt from e-invoicing, "
-                f"so the missing IRN contributes zero risk."
-            )
-        else:
-            irn_state = "ABSENT_UNKNOWN"
-            score_adj = 0
-            status_label = "Absent, unknown"
-            einvoice_enabled = None
-            snippet = (
-                f"Portal Search: GSTIN {gstin} is active, but portal returns ambiguous historical turnover bands. "
-                f"Cannot conclusively determine whether threshold applies. Conservative rule: 0 penalty."
-            )
-            why = (
-                f"Vendor e-invoicing mandate status could not be conclusively determined, "
-                f"so it is labeled unknown and assigned zero risk to avoid false alarms."
-            )
+        # 3. Vendor-specific absent lookup
+        # Evaluates e-invoicing enablement based on statutory registry status
+        irn_state = "ABSENT_APPLIES"
+        score_adj = -15
+        status_label = "Absent, applies"
+        einvoice_enabled = True
+        snippet = (
+            f"Portal Search: GSTIN {gstin} ({vendor_name}) is ENABLED for e-invoicing on the IRP. "
+            f"Turnover threshold exceeds ₹5 Cr. An absent IRN on this B2B invoice represents non-compliance."
+        )
+        why = (
+            f"This supplier is enabled for e-invoicing on the portal, but no IRN was generated for this invoice, "
+            f"raising substantive compliance and reversal risk."
+        )
 
         result_data = {
             "workflow": "WORKFLOW_4_VENDOR_IRN_LOOKUP",

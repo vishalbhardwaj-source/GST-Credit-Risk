@@ -575,10 +575,10 @@ export function ProjectOverview({
             Commercial Viability &amp; SaaS Economics
           </span>
           <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', marginTop: '4px' }}>
-            ₹24 Billion India TAM · 50,000 CA Firms · 8M Monthly GST Filers
+            TAM: ₹240B · SAM: ₹24B · Defensible Year 1 SOM: ₹240 Crore
           </h4>
           <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px', lineHeight: 1.5 }}>
-            Freemium hook (Free &le;50 invoices) $\rightarrow$ Pro Tier (₹2,499/mo) unlocks unlimited volume and TinyFish live verification. Sits between expensive enterprise suites (ClearTax ₹5L+) and passive ledgers (Tally).
+            Targeting ~800,000 businesses with recurring 2B mismatches. A realistic 1% Year 1 capture (~8,000 clients) at ₹2,499/mo generates ₹240 Cr ($29M ARR).
           </p>
         </div>
 
