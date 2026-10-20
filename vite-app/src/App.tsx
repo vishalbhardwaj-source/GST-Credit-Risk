@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Bucket, ReconciledInvoice } from './types';
 import { computeKpis, exportInvoicesToCsv } from './utils';
 import { calculateRoutingScore } from './scoring';
+import { getApiBaseUrl } from './config';
 import { useTinyFish } from './hooks/useTinyFish';
 import { DashboardHeader } from './components/DashboardHeader';
 import { FilterBar } from './components/FilterBar';
@@ -46,7 +47,7 @@ export function App() {
   const fetchServerReconciled = async () => {
     setServerLoading(true);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/reconciled-invoices');
+      const res = await fetch(`${getApiBaseUrl()}/api/reconciled-invoices`);
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
       const data = await res.json();
       setInitialReconciled(data);
@@ -168,7 +169,7 @@ export function App() {
   const handleRunRouting = async () => {
     setIsRouting(true);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/pipeline/run', {
+      const res = await fetch(`${getApiBaseUrl()}/api/pipeline/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invoices: initialReconciled }),

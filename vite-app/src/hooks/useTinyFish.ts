@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { IrnApplicabilityResult, IrnState, ReconciledInvoice, VendorIrnLookupResult } from '../types';
+import { getApiBaseUrl } from '../config';
 
 export function useTinyFish() {
   const [apiConnected, setApiConnected] = useState<boolean | null>(null);
@@ -19,7 +20,7 @@ export function useTinyFish() {
   const [simFailureMode, setSimFailureMode] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/tinyfish/workflow-1/deadline-extension')
+    fetch(`${getApiBaseUrl()}/api/tinyfish/workflow-1/deadline-extension`)
       .then((res) => {
         if (!res.ok) throw new Error('API offline');
         return res.json();
@@ -37,7 +38,7 @@ export function useTinyFish() {
   const handleVerifyVendor = async (inv: ReconciledInvoice) => {
     setTinyFishLoading(true);
     try {
-      const url = `http://127.0.0.1:8000/api/tinyfish/workflow-2/vendor-status?gstin=${inv.gstin}&vendor_name=${encodeURIComponent(inv.vendorName)}&has_irn=${inv.irnRecord.irnPresent}`;
+      const url = `${getApiBaseUrl()}/api/tinyfish/workflow-2/vendor-status?gstin=${inv.gstin}&vendor_name=${encodeURIComponent(inv.vendorName)}&has_irn=${inv.irnRecord.irnPresent}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -68,7 +69,7 @@ export function useTinyFish() {
   const handleCheckIrnApplicability = async (inv: ReconciledInvoice) => {
     setIrnCheckingId(inv.id);
     try {
-      const url = `http://127.0.0.1:8000/api/tinyfish/workflow-3/irn-applicability?gstin=${inv.gstin}&supplier_name=${encodeURIComponent(inv.vendorName)}&invoice_date=${inv.invoiceDate}&transaction_type=${userTxnType}&turnover_band=${userTurnoverBand}`;
+      const url = `${getApiBaseUrl()}/api/tinyfish/workflow-3/irn-applicability?gstin=${inv.gstin}&supplier_name=${encodeURIComponent(inv.vendorName)}&invoice_date=${inv.invoiceDate}&transaction_type=${userTxnType}&turnover_band=${userTurnoverBand}`;
       const res = await fetch(url);
       if (res.ok) {
         const data: IrnApplicabilityResult = await res.json();
@@ -126,7 +127,7 @@ export function useTinyFish() {
   const handleLookupVendorIrn = async (inv: ReconciledInvoice, simulateFailure: boolean = false) => {
     setVendorLookupCheckingId(inv.id);
     try {
-      const url = `http://127.0.0.1:8000/api/tinyfish/workflow-4/vendor-lookup?gstin=${inv.gstin}&vendor_name=${encodeURIComponent(inv.vendorName)}&irn_present=${inv.irnRecord.irnPresent}&simulated_failure=${simulateFailure}`;
+      const url = `${getApiBaseUrl()}/api/tinyfish/workflow-4/vendor-lookup?gstin=${inv.gstin}&vendor_name=${encodeURIComponent(inv.vendorName)}&irn_present=${inv.irnRecord.irnPresent}&simulated_failure=${simulateFailure}`;
       const res = await fetch(url);
       if (res.ok) {
         const data: VendorIrnLookupResult = await res.json();
