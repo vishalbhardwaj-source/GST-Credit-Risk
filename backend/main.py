@@ -140,6 +140,7 @@ def get_backtest_diagnostics():
 # Server-side Reconciled Invoices & Pipeline Engine
 SERVER_RECONCILED_CACHE = None
 
+@app.get("/reconciled-invoices")
 @app.get("/api/reconciled-invoices")
 def get_reconciled_invoices():
     global SERVER_RECONCILED_CACHE
@@ -147,6 +148,7 @@ def get_reconciled_invoices():
         SERVER_RECONCILED_CACHE = generate_server_dataset()
     return SERVER_RECONCILED_CACHE
 
+@app.post("/pipeline/run")
 @app.post("/api/pipeline/run")
 def run_pipeline(payload: Optional[Dict[str, Any]] = None):
     global SERVER_RECONCILED_CACHE
@@ -257,6 +259,7 @@ def evaluate_routing(req: RoutingEvalRequest):
     }
 
 # Module E: TinyFish Web Agent Endpoints
+@app.get("/tinyfish/workflow-1/deadline-extension", response_model=Workflow1Result)
 @app.get("/api/tinyfish/workflow-1/deadline-extension", response_model=Workflow1Result)
 async def tinyfish_wf1_deadline_extension(financial_year: str = "2024-25"):
     """
@@ -265,6 +268,7 @@ async def tinyfish_wf1_deadline_extension(financial_year: str = "2024-25"):
     """
     return await tinyfish_service.workflow_1_check_due_date_extension(financial_year)
 
+@app.get("/tinyfish/workflow-2/vendor-status", response_model=Workflow2Result)
 @app.get("/api/tinyfish/workflow-2/vendor-status", response_model=Workflow2Result)
 async def tinyfish_wf2_vendor_status(gstin: str, vendor_name: str, has_irn: bool = True):
     """
@@ -273,6 +277,7 @@ async def tinyfish_wf2_vendor_status(gstin: str, vendor_name: str, has_irn: bool
     """
     return await tinyfish_service.workflow_2_check_vendor_status(gstin, vendor_name, has_irn)
 
+@app.get("/tinyfish/workflow-3/irn-applicability", response_model=Workflow3Result)
 @app.get("/api/tinyfish/workflow-3/irn-applicability", response_model=Workflow3Result)
 async def tinyfish_wf3_irn_applicability(
     gstin: str,
@@ -295,6 +300,7 @@ async def tinyfish_wf3_irn_applicability(
         turnover_band=turnover_band
     )
 
+@app.get("/tinyfish/workflow-4/vendor-lookup", response_model=Workflow4Result)
 @app.get("/api/tinyfish/workflow-4/vendor-lookup", response_model=Workflow4Result)
 async def tinyfish_wf4_vendor_lookup(
     gstin: str,

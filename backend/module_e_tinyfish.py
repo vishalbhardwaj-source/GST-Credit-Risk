@@ -8,29 +8,39 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field
 
-# SQLite Cache DB Path
-DB_PATH = os.path.join(os.path.dirname(__file__), "data", "tinyfish_cache.db")
+# SQLite Cache DB Path - Safe for Vercel Serverless (read-only filesystem)
+if os.getenv("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    DB_PATH = "/tmp/tinyfish_cache.db"
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "data", "tinyfish_cache.db")
+
 ENABLE_CACHE = os.getenv("ENABLE_TINYFISH_CACHE", "true").lower() in ("true", "1")
 
 def init_cache_db():
     if not ENABLE_CACHE:
         return
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tinyfish_cache (
-            cache_key TEXT PRIMARY KEY,
-            workflow_type TEXT,
-            response_json TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            expires_at TIMESTAMP
-        )
-    """)
-    conn.commit()
-    conn.close()
+    try:
+        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tinyfish_cache (
+                cache_key TEXT PRIMARY KEY,
+                workflow_type TEXT,
+                response_json TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                expires_at TIMESTAMP
+            )
+        """)
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Notice: Cache init skipped ({e})")
 
-init_cache_db()
+try:
+    init_cache_db()
+except Exception:
+    pass
 
 def get_cache_key(workflow: str, query: str) -> str:
     today_str = datetime.now().strftime("%Y-%m-%d")
@@ -40,29 +50,35 @@ def get_cache_key(workflow: str, query: str) -> str:
 def get_cached_response(cache_key: str) -> Optional[Dict[str, Any]]:
     if not ENABLE_CACHE:
         return None
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT response_json, expires_at FROM tinyfish_cache WHERE cache_key = ?", (cache_key,))
-    row = cursor.fetchone()
-    conn.close()
-    if row:
-        resp_json, expires_at = row
-        if datetime.fromisoformat(expires_at) > datetime.now():
-            return json.loads(resp_json)
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT response_json, expires_at FROM tinyfish_cache WHERE cache_key = ?", (cache_key,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            resp_json, expires_at = row
+            if datetime.fromisoformat(expires_at) > datetime.now():
+                return json.loads(resp_json)
+    except Exception:
+        pass
     return None
 
 def set_cached_response(cache_key: str, workflow: str, data: Dict[str, Any], ttl_hours: int = 24):
     if not ENABLE_CACHE:
         return
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    expires_at = (datetime.now() + timedelta(hours=ttl_hours)).isoformat()
-    cursor.execute("""
-        INSERT OR REPLACE INTO tinyfish_cache (cache_key, workflow_type, response_json, expires_at)
-        VALUES (?, ?, ?, ?)
-    """, (cache_key, workflow, json.dumps(data), expires_at))
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        expires_at = (datetime.now() + timedelta(hours=ttl_hours)).isoformat()
+        cursor.execute("""
+            INSERT OR REPLACE INTO tinyfish_cache (cache_key, workflow_type, response_json, expires_at)
+            VALUES (?, ?, ?, ?)
+        """, (cache_key, workflow, json.dumps(data), expires_at))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
 
 # Untrusted Content Defense: Regex & Pydantic Sanitizer
 def sanitize_untrusted_text(text: str) -> str:
