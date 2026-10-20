@@ -21,6 +21,7 @@ export interface DashboardHeaderProps {
   wf1Status: any;
   apiConnected: boolean | null;
   isRouted: boolean;
+  isRouting: boolean;
   onReset: () => void;
   onOpenBacktestModal: () => void;
   onExportCsv: () => void;
@@ -49,6 +50,7 @@ export function DashboardHeader({
   wf1Status,
   apiConnected,
   isRouted,
+  isRouting,
   onReset,
   onOpenBacktestModal,
   onExportCsv,
@@ -594,17 +596,26 @@ export function DashboardHeader({
             <PauseCircle size={15} color="var(--safe-color)" />
           </div>
           <div style={{ marginTop: '8px', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
-              {isRouted ? kpis.safeCount : '—'}
-            </span>
-            {isRouted && (
-              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
-                {formatINR(kpis.safeTax)}
-              </span>
+            {isRouting ? (
+              <div style={{ width: '100%' }}>
+                <div className="skeleton-shimmer" style={{ height: '28px', width: '56px', borderRadius: '6px' }} />
+                <div className="skeleton-shimmer" style={{ height: '11px', width: '90px', borderRadius: '6px', marginTop: '6px' }} />
+              </div>
+            ) : (
+              <>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                  {isRouted ? kpis.safeCount : '—'}
+                </span>
+                {isRouted && (
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                    {formatINR(kpis.safeTax)}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            {isRouted ? 'Likely timing difference' : 'Awaiting routing'}
+            {isRouting ? '' : isRouted ? 'Likely timing difference' : 'Awaiting routing'}
           </div>
         </div>
 
@@ -628,17 +639,26 @@ export function DashboardHeader({
             <Eye size={15} color="var(--watch-color)" />
           </div>
           <div style={{ marginTop: '8px', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
-              {isRouted ? kpis.watchCount : '—'}
-            </span>
-            {isRouted && (
-              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
-                {formatINR(kpis.watchTax)}
-              </span>
+            {isRouting ? (
+              <div style={{ width: '100%' }}>
+                <div className="skeleton-shimmer" style={{ height: '28px', width: '56px', borderRadius: '6px' }} />
+                <div className="skeleton-shimmer" style={{ height: '11px', width: '90px', borderRadius: '6px', marginTop: '6px' }} />
+              </div>
+            ) : (
+              <>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                  {isRouted ? kpis.watchCount : '—'}
+                </span>
+                {isRouted && (
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                    {formatINR(kpis.watchTax)}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            {isRouted ? 'Mixed signals; review again' : 'Awaiting routing'}
+            {isRouting ? '' : isRouted ? 'Mixed signals; review again' : 'Awaiting routing'}
           </div>
         </div>
 
@@ -662,17 +682,26 @@ export function DashboardHeader({
             <AlertTriangle size={15} color="var(--chase-color)" />
           </div>
           <div style={{ marginTop: '8px', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
-              {isRouted ? kpis.chaseCount : '—'}
-            </span>
-            {isRouted && (
-              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
-                {formatINR(kpis.chaseTax)}
-              </span>
+            {isRouting ? (
+              <div style={{ width: '100%' }}>
+                <div className="skeleton-shimmer" style={{ height: '28px', width: '56px', borderRadius: '6px' }} />
+                <div className="skeleton-shimmer" style={{ height: '11px', width: '90px', borderRadius: '6px', marginTop: '6px' }} />
+              </div>
+            ) : (
+              <>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                  {isRouted ? kpis.chaseCount : '—'}
+                </span>
+                {isRouted && (
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                    {formatINR(kpis.chaseTax)}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            {isRouted ? 'High urgency follow-up' : 'Awaiting routing'}
+            {isRouting ? '' : isRouted ? 'High urgency follow-up' : 'Awaiting routing'}
           </div>
         </div>
       </div>

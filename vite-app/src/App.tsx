@@ -20,6 +20,7 @@ export function App() {
 
   // Routing and modal state
   const [isRouted, setIsRouted] = useState(false);
+  const [isRouting, setIsRouting] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<ReconciledInvoice | null>(null);
   const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false);
   const [showSynopsis, setShowSynopsis] = useState(true);
@@ -126,6 +127,7 @@ export function App() {
 
   const handleReset = () => {
     setIsRouted(false);
+    setIsRouting(false);
     setSelectedInvoice(null);
     setSearchQuery('');
     setBucketFilter('ALL');
@@ -137,8 +139,12 @@ export function App() {
   };
 
   const handleRunRouting = () => {
-    setIsRouted(true);
-    setMatchFilter('UNMATCHED');
+    setIsRouting(true);
+    setTimeout(() => {
+      setIsRouted(true);
+      setMatchFilter('UNMATCHED');
+      setIsRouting(false);
+    }, 1600);
   };
 
   const handleSwitchView = (newView: 'overview' | 'dashboard') => {
@@ -182,6 +188,7 @@ export function App() {
         wf1Status={tinyFish.wf1Status}
         apiConnected={tinyFish.apiConnected}
         isRouted={isRouted}
+        isRouting={isRouting}
         onReset={handleReset}
         onOpenBacktestModal={() => setIsBacktestModalOpen(true)}
         onExportCsv={handleExportCsv}
