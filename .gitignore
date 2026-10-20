@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production builds
+dist/
+build/
+.next/
+out/
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archives & Temporary exports
+*.log
+gst-credit-at-risk-dashboard.zip
+gst-credit-at-risk-export-*.csv
+
+# Sandbox / cache internals
+.snowflake/
+.design-cache/
+.v0-trash/
+.vercel/

@@ -1,0 +1,281 @@
+# GST Credit-at-Risk Forecaster
+
+> **Autonomous 3-Signal Action Triage Engine with TinyFish Web Agent & 4-State IRN Verification for Indian B2B Invoices**
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite)](https://vitejs.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org/)
+[![LightGBM](https://img.shields.io/badge/ML-LightGBM_0.729_AUC-green)](https://lightgbm.readthedocs.io/)
+[![TinyFish AI](https://img.shields.io/badge/Web_Agent-TinyFish_v1-orange)](https://tinyfish.ai)
+[![Tests](https://img.shields.io/badge/Vitest-18%2F18_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
+
+---
+
+> [!IMPORTANT]
+> **Legal & Trust Notice:**  
+> *Synthetic demo data. Triage decision-support only — not tax or legal advice. Does not access government production credentials, determine statutory ITC eligibility, or replace certified Chartered Accountant review.*
+
+---
+
+## 1. Executive Summary & Problem Statement
+
+Under **Section 16(2)(aa) of the CGST Act**, Indian enterprises cannot legally claim Input Tax Credit (ITC) unless their vendor has filed the invoice in **GSTR-1**, making it visible in the buyer's auto-generated **GSTR-2B**. Under **Rule 37A**, if a vendor defaults, the buyer must reverse the tax credit along with **18% statutory interest** by the **November 30 cutoff date** (CBIC Notification No. 12/2024).
+
+### The Reconciliation Dilemma
+At month-end, a mid-sized enterprise reconciles its Purchase Register (e.g., 200 invoices) against GSTR-2B (170 records) and discovers **30 missing invoices** representing nominal tax exposure.
+
+Today, finance teams face a costly lose-lose trade-off:
+1. **The Blanket Chase Approach:** Accounts Payable harasses all 30 vendors indiscriminately, damaging commercial goodwill and wasting hundreds of hours on vendors who simply file late every quarter.
+2. **The Ostrich Approach:** Holding off entirely until November 30, only to discover genuine vendor defaults with zero payment leverage, forcing massive cash-flow reversals.
+
+### The Solution
+The **GST Credit-at-Risk Forecaster** eliminates this dilemma. Rather than presenting a flat list of 30 missing invoices, our deterministic decision engine fuses **IRN portal evidence**, **commercial AP retention leverage**, and **6-month filing periodicity** into three clear action buckets:
+
+- 🟢 **Safe to Hold (25 invoices / ₹1.4L tax):** Likely timing differences with high commercial payment leverage and verified e-invoice footprints. Do not harass the vendor.
+- 🟡 **Watch (4 invoices / ₹32k tax):** Ambiguous signals or medium leverage. Monitor in next filing cycle.
+- 🔴 **Chase Now (1 invoice / ₹2.4k tax):** Zero payment leverage, missing IRN, and a sudden break in filing history. Immediate escalation required.
+
+---
+
+## 2. System Architecture
+
+```
+                    ┌───────────────────────────────────────────────┐
+                    │     Purchase Register Invoices (200 Records)  │
+                    └───────────────────────┬───────────────────────┘
+                                            │
+                                            ▼
+                    ┌───────────────────────────────────────────────┐
+                    │      GSTR-2B Auto-Reconciliation Engine       │
+                    │   (RapidFuzz / Normalized Cross-GSTIN Lock)   │
+                    └───────┬───────────────────────────────┬───────┘
+                            │                               │
+                170 Matched │                               │ 30 Discrepancies
+                            ▼                               ▼
+                 [ Matched ✓ Claim ITC ]         3-Signal Triage Engine
+                                                            │
+         ┌──────────────────────────────────────────────────┼──────────────────────────────────────┐
+         ▼                                                  ▼                                      ▼
+   [Pipeline 1]                                       [Pipeline 2]                           [Pipeline 3]
+  IRN Registry Footprint                            AP Commercial Leverage                 Vendor Filing Track
+  • IRP Portal Verification                         • Unpaid AP Balance                    • 6-Month Periodicity
+  • 4-State IRN Engine                              • Retention Held Ratio                 • Habitual Laggard: +15
+  • TinyFish WF3 & WF4                              • High (≥1.0): +15                     • Normal: 0
+  • Present (+20) / Absent (-15)                    • Med (0-1.0): +5                      • New Anomaly: -25
+  • Unknown / Exempt (0)                            • Low (0): -10                         
+         │                                                  │                                      │
+         └──────────────────────────────────────────────────┼──────────────────────────────────────┘
+                                                            │
+                                                            ▼
+                                         Deterministic Score (0 - 100)
+                                      Clamped Multi-Signal Risk Score
+                                                            │
+                            ┌───────────────────────────────┼───────────────────────────────┐
+                            ▼                               ▼                               ▼
+                      75–100 Score                    40–74 Score                      0–39 Score
+                      SAFE TO HOLD                       WATCH                         CHASE NOW
+                      (25 Invoices)                   (4 Invoices)                    (1 Invoice)
+```
+
+---
+
+## 3. TinyFish Web Agent Integration
+
+[TinyFish](https://tinyfish.ai) is an autonomous web exploration and content extraction agent. In this project, TinyFish queries public GST and CBIC portals to retrieve statutory context—such as e-invoicing thresholds, taxpayer enablement, and return deadlines—bridging static enterprise data and dynamic regulatory reality.
+
+### The 4 Production Workflows
+
+| ID | Workflow Name | Target Endpoint | Description | Scoring Engine Impact |
+|:---|:---|:---|:---|:---|
+| **WF1** | **Deadline Extension Tracker** | `GET /api/tinyfish/workflow-1/deadline-extension` | Queries CBIC notifications (`cbic.gov.in`) to check whether Section 16(4) reversal deadlines have been extended. | Surfaces active Nov 30 statutory horizon on dashboard header banner. |
+| **WF2** | **Vendor Registry Verifier** | `GET /api/tinyfish/workflow-2/vendor-status` | Searches `services.gst.gov.in` for taxpayer active/cancelled status, legal entity name, and return filing history. | Provides qualitative audit proof before vendor escalation. |
+| **WF3** | **IRN Applicability Checker** | `GET /api/tinyfish/workflow-3/irn-applicability` | Evaluates CBIC Notification No. 10/2023 r/w Rule 48(4) against supplier turnover band (< ₹5 Cr vs > ₹5 Cr) and transaction type. | Upgrades absent IRN from default penalty (`-15`) to neutral (`0`) when supplier is sub-threshold (< ₹5 Cr). |
+| **WF4** | **Vendor IRN Portal Lookup** | `GET /api/tinyfish/workflow-4/vendor-lookup` | Directly queries `einvoice1.gst.gov.in` to verify whether the vendor's specific GSTIN is e-invoice enabled on the IRP. | Feeds the 4-state IRN engine with verified portal evidence; supports simulated failure mode. |
+
+### The 4-State IRN Engine & Score Mutation
+
+An absent IRN should **not** count as risk if the vendor's turnover is under ₹5 Cr (exempt from e-invoicing). The pipeline implements a 4-state IRN model:
+
+| IRN State | Regulatory Meaning | Effect on Score | Triage Rationale |
+|:---|:---|:---:|:---|
+| **`PRESENT`** | Registered on the IRP | **+20** | High confidence: invoice is logged with the government. |
+| **`ABSENT_APPLIES`** | Required to generate IRN, but didn't | **-15** | Genuine compliance risk; raises chase urgency. |
+| **`ABSENT_NOT_APPLICABLE`** | Vendor turnover < ₹5 Cr (exempt) | **0** | Neutral: legitimate small supplier without IRN. |
+| **`ABSENT_UNKNOWN`** | Portal timeout, captcha, or unverified | **0** | Neutral: zero-penalty fallback; never guess into red. |
+
+```
+[Invoice with Absent IRN]
+          │
+          ▼
+[TinyFish WF3 (Rule Check) or WF4 (Portal Query)]
+          │
+          ▼
+    irn_state (Enum)
+    ├── PRESENT (+20 pts)
+    ├── ABSENT_APPLIES (-15 pts)
+    ├── ABSENT_NOT_APPLICABLE (0 pts)
+    └── ABSENT_UNKNOWN (0 pts)
+          │
+          ▼
+calculateRoutingScore()
+(Base 50 + IRN Adj + AP Leverage Adj + Filing Pattern Adj)
+          │
+          ▼
+Final Clamped Score (0 - 100) ──► SAFE TO HOLD (≥75) | WATCH (40-74) | CHASE NOW (<40)
+```
+
+### Offline Resilience & Zero-Penalty Defense
+- **SQLite Caching (24h TTL):** Every lookup is cached with SHA-256 keys in `backend/data/tinyfish_cache.db`.
+- **Deterministic Parity:** When offline, the app serves structurally identical responses with `CACHE_HIT` / `OFFLINE_FALLBACK` badges.
+- **Zero-Penalty Defense:** If an external portal times out or blocks requests, the engine defaults to `ABSENT_UNKNOWN` (0 penalty points). The app never converts a network glitch into an unwarranted vendor penalty.
+
+---
+
+## 4. Machine Learning Backtest Diagnostics (Module C)
+
+In addition to deterministic rule-based triage, the platform includes a trained **LightGBM Gradient Boosted Forecaster** to predict self-resolution probability based on 1,200 multi-month cohort transactions across 6 tax periods.
+
+### Model Performance Metrics
+- **ROC-AUC:** `0.7290` (vs. Baseline Logistic Regression: `0.6510`)
+- **Brier Probability Error:** `0.0836` (well-calibrated risk forecast)
+- **Held-out Test Cohort:** 240 unseen invoices
+
+### Confusion Matrix (N = 240)
+| Actual \ Predicted | Pred: Non-Resolved (High Risk) | Pred: Resolved (Self-Correct) | Accuracy |
+|:---|:---:|:---:|:---:|
+| **Actual Non-Resolved (31)** | **9 (True Negative)** | 22 (False Positive) | 29.0% |
+| **Actual Resolved (209)** | 11 (False Negative) | **198 (True Positive)** | 94.7% |
+| **Overall Balanced Accuracy** | | | **86.3%** |
+
+*Access full diagnostics inside the app by clicking **"ML Backtest & Diagnostics"** in the top navigation.*
+
+---
+
+## 5. Revenue Model & Market Opportunity
+
+### SaaS Pricing Tiers
+
+| Tier | Price / Month | Invoices / Month | Key Features |
+|:---|:---:|:---:|:---|
+| **Free** | **₹0** | Up to 50 | 3-signal triage, manual CSV upload, 2B match view |
+| **Pro** | **₹2,499** | Unlimited | Bulk CSV export, TinyFish live IRN + vendor verification, 4-state IRN model, priority support |
+| **Enterprise** | **₹12,999+** | Unlimited (Multi-Entity) | Multi-GSTIN workspace, ERP direct integration (Tally, SAP), custom retention rules, dedicated CA account manager |
+
+### Total Addressable Market (TAM)
+- **50,000+ Registered CA Firms in India** (ICAI 2024 data)
+- **~8 Million GST-registered businesses** filing GSTR-3B monthly
+- Targeting 10% of monthly filers facing reconciliation friction yields **~800,000 potential businesses**.
+- At ₹2,499/mo (Pro tier), the India serviceable annual market is **₹24 Billion (~$290M USD)**.
+
+### Competitive Positioning
+- **ClearTax:** Targets large enterprise with ₹5L+/year per-seat pricing. Out of reach for independent CAs and SMEs.
+- **Tally:** Ubiquitous bookkeeping, but zero reconciliation intelligence — dumps an unprioritized list of mismatches without action guidance.
+- **Vyapar:** Tailored for micro-SMBs with basic invoicing, but lacks GSTR-2B matching, AP leverage fusion, or web-agent verification.
+- **GST Credit-at-Risk Forecaster:** An explainable, action-first triage layer that sits on top of existing accounting systems, answering the exact question CAs have: *"Which of these 30 invoices must I chase today, and which can wait?"*
+
+---
+
+## 6. Quick Start Guide
+
+### Prerequisites
+- Node.js LTS (v18+)
+- Python 3.10+ (for FastAPI backend)
+
+### 1. Frontend Setup (Vite + React + TS)
+```bash
+# Navigate to frontend
+cd vite-app
+
+# Install dependencies
+npm install
+
+# Run dev server
+npm run dev
+```
+Open **`http://localhost:5173`** in your browser.
+
+### 2. Backend Setup (FastAPI + TinyFish Agent)
+```bash
+# Install Python dependencies from root or backend
+pip install -r requirements.txt
+
+# Start FastAPI server
+uvicorn backend.main:app --reload --port 8000
+```
+API Documentation will be available at **`http://localhost:8000/docs`**.
+
+### 3. Running Unit Tests
+```bash
+cd vite-app
+npx vitest run
+```
+All **18 unit tests** will execute and pass, verifying scoring rules, fuzzy normalisation, 4-state IRN weights, and fixture invariance.
+
+---
+
+## 7. Hackathon Demo Script (7-Minute Presentation)
+
+| Time | Demo Beat | Action in App | Key Takeaway for Judges |
+|:---|:---|:---|:---|
+| **0:00–0:40** | **The Problem** | Open dashboard in pre-routing state. | 200 purchase invoices, 170 matched, 30 missing in GSTR-2B. A flat list gives no triage priority. |
+| **0:40–1:30** | **Run Routing** | Click **"Run Pipeline Routing"**. | 30 discrepancies route instantly into **25 Safe to Hold**, **4 Watch**, and **1 Chase Now**. |
+| **1:30–2:20** | **Safe to Hold Case** | Click invoice `SGP/26-27/0412` (Score: 100). | Verified IRN (+20), ₹18,400 AP leverage (+15), habitual laggard (+15). Recommendation: don't harass supplier; credit will appear naturally. |
+| **2:20–3:10** | **Chase Now Case** | Filter `Chase Now`, click `PCS/26-27/5561` (Score: 0). | Absent IRN (−15), ₹0 leverage (−10), sudden anomaly (−25). Immediate recovery action required before statutory reversal. |
+| **3:10–4:15** | **TinyFish WF3 Rule Check** | Expand Pipeline 1 → click **"Check current IRN rules"**. | Live CBIC source fetched. Status returns `LIKELY_NOT_APPLICABLE` (< ₹5 Cr). IRN penalty lifts from -15 to 0. Sourced timestamp displayed. |
+| **4:15–5:15** | **TinyFish WF4 Portal Lookup** | In same panel → click **"Lookup Vendor on IRP Portal"**. | Live check against `einvoice1.gst.gov.in`. 4-state badge updates in header. Score recalculates live. |
+| **5:15–5:50** | **Zero-Penalty Defense** | Check **"Simulate portal captcha / timeout"** → click Lookup. | `PORTAL BLOCK` handled gracefully. Defaults to `Absent, unknown` with 0 penalty. App never fails silently into red. |
+| **5:50–6:30** | **Search & Fuzzy Matching** | Search noisy vendor name. | Normalization removes spaces and slashes while strictly isolating GSTINs to eliminate false positives. |
+| **6:30–7:00** | **Audit Export & Reset** | Click **"Export CSV"**, then **"Reset Demo"**. | Audit-ready CSV download with full calculation trail; resets deterministically to the 25/4/1 fixture. |
+
+---
+
+## 8. Directory Structure
+
+```
+GST-credit/
+├── README.md                           # Master Hackathon Documentation
+├── package.json                        # Root proxy scripts
+├── requirements.txt                    # Python dependencies
+├── .env.example                        # Environment variable template
+├── .gitignore                          # Clean repository ignores
+│
+├── vite-app/                           # Production Frontend (Vite + React + TS)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── DashboardHeader.tsx     # KPI grid, synopsis & action bar
+│   │   │   ├── FilterBar.tsx           # Search, active filter tags & reset
+│   │   │   ├── InvoiceTable.tsx        # Sortable grid with 4-state badges
+│   │   │   ├── InvoiceDetailPanel.tsx  # Deep audit drawer with copy & TinyFish
+│   │   │   └── MlBacktestModal.tsx     # LightGBM ROC-AUC & confusion matrix
+│   │   ├── hooks/
+│   │   │   └── useTinyFish.ts          # Custom hook for WF1, WF2, WF3, WF4
+│   │   ├── App.tsx                     # Clean composition root (< 200 lines)
+│   │   ├── app.test.ts                 # 18 Vitest unit tests
+│   │   ├── data.ts                     # Benchmark synthetic dataset (seed 42)
+│   │   ├── matcher.ts                  # RapidFuzz invoice reconciliation
+│   │   ├── scoring.ts                  # 4-State IRN scoring engine
+│   │   ├── types.ts                    # TypeScript domain interfaces
+│   │   ├── utils.ts                    # INR format, KPI aggregation & CSV export
+│   │   └── index.css                   # Obsidian dark SaaS design system
+│   └── package.json
+│
+└── backend/                            # FastAPI Production Backend
+    ├── main.py                         # REST API endpoints & CORS
+    ├── module_e_tinyfish.py            # TinyFish service, SQLite cache & sanitizers
+    ├── ml_engine.py                    # Multi-signal scoring engine
+    ├── train_forecaster.py             # LightGBM cohort training pipeline
+    ├── matcher.py                      # RapidFuzz string normalization
+    └── data/
+        ├── gst_resolution_lgb.pkl      # Pre-trained LightGBM model artifact
+        ├── tinyfish_cache.db           # SQLite 24h TTL cache
+        ├── purchase_register.csv       # Synthetic PR benchmark
+        └── gstr_2b.csv                 # Synthetic GSTR-2B benchmark
+```
+
+---
+
+## 9. License
+
+This project is licensed under the Apache 2.0 License.

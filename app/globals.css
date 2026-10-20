@@ -1,0 +1,244 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --color-safe: var(--safe);
+  --color-safe-soft: var(--safe-soft);
+  --color-watch: var(--watch);
+  --color-watch-soft: var(--watch-soft);
+  --color-watch-strong: var(--watch-strong);
+  --color-chase: var(--chase);
+  --color-chase-soft: var(--chase-soft);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─── Light-surface tokens: cards and portals ─── */
+:root,
+.tower .bg-card,
+.tower .surface {
+  color-scheme: light;
+  --background: oklch(0.965 0.005 80);
+  --foreground: oklch(0.22 0.05 258);
+  --card: oklch(0.998 0.002 85);
+  --card-foreground: oklch(0.22 0.05 258);
+  --popover: oklch(0.998 0.002 85);
+  --popover-foreground: oklch(0.22 0.05 258);
+  --primary: oklch(0.50 0.10 198);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.006 80);
+  --secondary-foreground: oklch(0.22 0.05 258);
+  --muted: oklch(0.955 0.006 80);
+  --muted-foreground: oklch(0.47 0.03 258);
+  --accent: oklch(0.94 0.03 195);
+  --accent-foreground: oklch(0.30 0.08 205);
+  --destructive: oklch(0.55 0.17 30);
+  --border: oklch(0.895 0.008 80);
+  --input: oklch(0.87 0.009 80);
+  --ring: oklch(0.60 0.09 195);
+  --safe: oklch(0.50 0.10 178);
+  --safe-soft: oklch(0.95 0.035 178);
+  --watch: oklch(0.72 0.15 74);
+  --watch-strong: oklch(0.47 0.11 60);
+  --watch-soft: oklch(0.96 0.045 84);
+  --chase: oklch(0.55 0.17 30);
+  --chase-soft: oklch(0.96 0.028 32);
+  --chart-1: var(--safe);
+  --chart-2: var(--watch);
+  --chart-3: var(--chase);
+  --chart-4: var(--primary);
+  --chart-5: oklch(0.7 0.02 258);
+  --radius: 0.6rem;
+}
+
+/* ─── Midnight-navy workspace shell ─── */
+.tower {
+  color-scheme: dark;
+  --background: oklch(0.188 0.038 262);
+  --foreground: oklch(0.96 0.007 84);
+  --card-foreground: oklch(0.96 0.007 84);
+  --primary: oklch(0.76 0.12 190);
+  --primary-foreground: oklch(0.18 0.04 258);
+  --secondary: oklch(0.255 0.038 258);
+  --secondary-foreground: oklch(0.96 0.007 84);
+  --muted: oklch(0.245 0.038 258);
+  --muted-foreground: oklch(0.74 0.026 255);
+  --accent: oklch(0.275 0.05 215);
+  --accent-foreground: oklch(0.92 0.065 190);
+  --border: oklch(1 0 0 / 0.09);
+  --input: oklch(1 0 0 / 0.14);
+  --ring: oklch(0.76 0.12 190);
+  --safe: oklch(0.80 0.115 178);
+  --safe-soft: oklch(0.28 0.055 183);
+  --watch: oklch(0.82 0.14 77);
+  --watch-strong: oklch(0.88 0.12 81);
+  --watch-soft: oklch(0.28 0.055 73);
+  --chase: oklch(0.77 0.14 30);
+  --chase-soft: oklch(0.28 0.065 28);
+  --sidebar: oklch(0.158 0.038 262);
+  --sidebar-foreground: oklch(0.96 0.007 84);
+  --sidebar-primary: oklch(0.76 0.12 190);
+  --sidebar-primary-foreground: oklch(0.18 0.04 258);
+  --sidebar-accent: oklch(0.255 0.052 215);
+  --sidebar-accent-foreground: oklch(0.93 0.055 190);
+  --sidebar-border: oklch(1 0 0 / 0.07);
+  --sidebar-ring: oklch(0.76 0.12 190);
+}
+
+/* ─── Subtle grid overlay for the workspace shell ─── */
+.tower-grid {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* ─── Ambient glow effects for bucket-colored panels ─── */
+.glow-safe {
+  box-shadow: 0 0 0 1px oklch(0.50 0.10 178 / 0.18),
+              0 4px 24px -4px oklch(0.50 0.10 178 / 0.12);
+}
+.glow-watch {
+  box-shadow: 0 0 0 1px oklch(0.72 0.15 74 / 0.22),
+              0 4px 24px -4px oklch(0.72 0.15 74 / 0.12);
+}
+.glow-chase {
+  box-shadow: 0 0 0 1px oklch(0.55 0.17 30 / 0.22),
+              0 4px 24px -4px oklch(0.55 0.17 30 / 0.12);
+}
+.glow-primary {
+  box-shadow: 0 0 0 1px oklch(0.76 0.12 190 / 0.18),
+              0 4px 24px -4px oklch(0.76 0.12 190 / 0.10);
+}
+
+/* ─── Hero gradient text (used in overview heading) ─── */
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    oklch(0.96 0.007 84) 0%,
+    oklch(0.76 0.12 190) 60%,
+    oklch(0.80 0.115 178) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Signal flow animation on SVG connectors ─── */
+@keyframes signal-dash {
+  to { stroke-dashoffset: -16; }
+}
+
+.signal-flow {
+  stroke-dasharray: 4 4;
+  animation: signal-dash 0.55s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-flow { animation: none; }
+  .shimmer { animation: none; }
+  .fade-up { animation: none; }
+}
+
+/* ─── Shimmer skeleton for loading states ─── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.245 0.038 258 / 0.6) 0%,
+    oklch(0.32 0.04 255 / 0.8) 50%,
+    oklch(0.245 0.038 258 / 0.6) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* ─── Fade-up entrance animation ─── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Glass panel effect ─── */
+.glass {
+  background: oklch(1 0 0 / 0.04);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid oklch(1 0 0 / 0.10);
+}
+
+/* ─── Base layer reset ─── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html, body {
+    background-color: oklch(0.188 0.038 262);
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply text-foreground font-sans;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Thin custom scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(1 0 0 / 0.14);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(1 0 0 / 0.24);
+  }
+}

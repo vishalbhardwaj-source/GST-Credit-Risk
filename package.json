@@ -1,0 +1,23 @@
+{
+  "name": "gst-credit-at-risk-forecaster",
+  "version": "1.0.0",
+  "description": "GST Credit-at-Risk Forecaster & IRN Triage System with 3-Signal Decision Engine and TinyFish Web Agent",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix vite-app run dev",
+    "build": "npm --prefix vite-app run build",
+    "test": "npm --prefix vite-app test",
+    "server": "uvicorn backend.main:app --reload --port 8000"
+  },
+  "keywords": [
+    "gst",
+    "tax-tech",
+    "gstr-2b",
+    "e-invoicing",
+    "rule-37a",
+    "tinyfish",
+    "fintech"
+  ],
+  "author": "GST Credit Forecaster Team",
+  "license": "Apache-2.0"
+}
