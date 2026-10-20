@@ -1,5 +1,7 @@
 # GST Credit-at-Risk Forecaster
 
+**Live Demo:** [View Deployed Project] https://gst-credit-risk.vercel.app?_vercel_share=JNmXOG21P9DBkGABptLQI6PnAzn1SzdD
+
 > **Autonomous 3-Signal Action Triage Engine with TinyFish Web Agent & 4-State IRN Verification for Indian B2B Invoices**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
