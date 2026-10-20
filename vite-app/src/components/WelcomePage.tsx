@@ -232,8 +232,8 @@ type WelcomePageProps = {
 };
 
 const cardStyle: React.CSSProperties = {
-  background: '#111b2e',
-  border: '1px solid #263650',
+  background: '#23172F',
+  border: '1px solid #3B2A4A',
   borderRadius: 14,
   padding: 22,
 };
@@ -243,7 +243,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
     <main
       style={{
         minHeight: '100vh',
-        background: '#0b1220',
+        background: '#170D24',
         color: '#f8fafc',
         fontFamily: 'Arial, sans-serif',
       }}
@@ -256,14 +256,14 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
           justifyContent: 'space-between',
           alignItems: 'center',
           gap: 16,
-          borderBottom: '1px solid #263650',
-          background: '#0e1729',
+          borderBottom: '1px solid #3B2A4A',
+          background: '#1E1230',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div
             style={{
-              background: '#245bea',
+              background: '#9F6FF0',
               borderRadius: 12,
               padding: 10,
               display: 'flex',
@@ -276,7 +276,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
           </strong>
         </div>
 
-        <span style={{ color: '#8fa9ce', fontSize: 14 }}>
+        <span style={{ color: '#a89bc2', fontSize: 14 }}>
           Smarter Insights. Safer ITC.
         </span>
       </header>
@@ -296,9 +296,9 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
           <span
             style={{
               display: 'inline-block',
-              background: '#152b51',
-              border: '1px solid #244b88',
-              color: '#70a5ff',
+              background: '#2C1D3A',
+              border: '1px solid #5A3A8A',
+              color: '#C4A9F7',
               borderRadius: 8,
               padding: '8px 13px',
               fontWeight: 700,
@@ -318,14 +318,14 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
             }}
           >
             GST Credit-at-Risk{' '}
-            <span style={{ color: '#5790ff' }}>Forecaster</span>
+            <span style={{ color: '#B794F6' }}>Forecaster</span>
           </h1>
 
           <p
             style={{
               fontSize: 18,
               lineHeight: 1.8,
-              color: '#9db2d0',
+              color: '#a89bc2',
               maxWidth: 620,
             }}
           >
@@ -347,12 +347,12 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 ...cardStyle,
                 flex: '1 1 130px',
                 padding: 17,
-                borderColor: '#244b88',
+                borderColor: '#5A3A8A',
               }}
             >
-              <ShieldCheck size={28} color="#5790ff" />
+              <ShieldCheck size={28} color="#B794F6" />
               <h3 style={{ marginBottom: 8 }}>Detect</h3>
-              <p style={{ color: '#9db2d0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: '#a89bc2', lineHeight: 1.6, margin: 0 }}>
                 Missing invoices and mismatches
               </p>
             </div>
@@ -367,7 +367,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
             >
               <Target size={28} color="#25d6a0" />
               <h3 style={{ marginBottom: 8 }}>Prioritise</h3>
-              <p style={{ color: '#9db2d0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: '#a89bc2', lineHeight: 1.6, margin: 0 }}>
                 High-risk invoices and vendors
               </p>
             </div>
@@ -377,12 +377,12 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 ...cardStyle,
                 flex: '1 1 130px',
                 padding: 17,
-                borderColor: '#494078',
+                borderColor: '#6B4A9A',
               }}
             >
               <TrendingUp size={28} color="#a69bff" />
               <h3 style={{ marginBottom: 8 }}>Forecast</h3>
-              <p style={{ color: '#9db2d0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: '#a89bc2', lineHeight: 1.6, margin: 0 }}>
                 Potential ITC exposure
               </p>
             </div>
@@ -391,9 +391,9 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
           <button
             onClick={onExplore}
             style={{
-              background: '#245bea',
+              background: '#9F6FF0',
               color: '#ffffff',
-              border: '1px solid #3975ff',
+              border: '1px solid #B794F6',
               borderRadius: 10,
               padding: '16px 24px',
               fontSize: 16,
@@ -402,7 +402,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: 12,
-              boxShadow: '0 8px 24px rgba(36, 91, 234, 0.2)',
+              boxShadow: '0 8px 24px rgba(159, 111, 240, 0.25)',
             }}
           >
             Explore Dashboard <ArrowRight size={20} />
@@ -410,7 +410,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
 
           <p
             style={{
-              color: '#7087a9',
+              color: '#7a6b90',
               marginTop: 28,
               fontSize: 13,
             }}
@@ -438,7 +438,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
             <div>
               <p
                 style={{
-                  color: '#7faaff',
+                  color: '#C4A9F7',
                   fontSize: 12,
                   fontWeight: 700,
                   letterSpacing: 1,
@@ -451,23 +451,23 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 From data to decisions
               </h2>
             </div>
-            <ChartNoAxesCombined size={35} color="#5790ff" />
+            <ChartNoAxesCombined size={35} color="#B794F6" />
           </div>
 
           <div
             style={{
-              background: '#0b1425',
-              border: '1px solid #263650',
+              background: '#170D24',
+              border: '1px solid #3B2A4A',
               borderRadius: 12,
               padding: 18,
               marginBottom: 18,
             }}
           >
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <IndianRupee size={25} color="#5790ff" />
+              <IndianRupee size={25} color="#B794F6" />
               <div>
                 <strong>GST Reconciliation</strong>
-                <p style={{ color: '#8fa9ce', margin: '6px 0 0', fontSize: 14 }}>
+                <p style={{ color: '#a89bc2', margin: '6px 0 0', fontSize: 14 }}>
                   Purchase register vs. GSTR-2B
                 </p>
               </div>
@@ -477,7 +477,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 marginTop: 17,
                 height: 5,
                 borderRadius: 5,
-                background: '#263650',
+                background: '#3B2A4A',
                 overflow: 'hidden',
               }}
             >
@@ -485,21 +485,21 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 style={{
                   width: '72%',
                   height: '100%',
-                  background: '#3975ff',
+                  background: '#B794F6',
                 }}
               />
             </div>
-            <p style={{ color: '#7087a9', fontSize: 12, marginBottom: 0 }}>
+            <p style={{ color: '#7a6b90', fontSize: 12, marginBottom: 0 }}>
               Illustrative workflow indicator — not live performance data
             </p>
           </div>
 
           {[
             {
-              icon: <FileSearch size={23} color="#5790ff" />,
+              icon: <FileSearch size={23} color="#B794F6" />,
               title: 'Review discrepancies',
               description: 'Inspect missing and unmatched invoices',
-              color: '#244b88',
+              color: '#5A3A8A',
             },
             {
               icon: <ClipboardCheck size={23} color="#fbbf24" />,
@@ -521,12 +521,12 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 gap: 15,
                 alignItems: 'center',
                 padding: '17px 0',
-                borderBottom: index < 2 ? '1px solid #263650' : 'none',
+                borderBottom: index < 2 ? '1px solid #3B2A4A' : 'none',
               }}
             >
               <div
                 style={{
-                  background: '#0b1425',
+                  background: '#170D24',
                   border: `1px solid ${item.color}`,
                   borderRadius: 10,
                   padding: 11,
@@ -540,7 +540,7 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
                 <p
                   style={{
                     margin: '6px 0 0',
-                    color: '#8fa9ce',
+                    color: '#a89bc2',
                     fontSize: 14,
                     lineHeight: 1.5,
                   }}
@@ -571,9 +571,9 @@ export function WelcomePage({ onExplore }: WelcomePageProps) {
 
       <footer
         style={{
-          borderTop: '1px solid #263650',
+          borderTop: '1px solid #3B2A4A',
           padding: '20px 5%',
-          color: '#7087a9',
+          color: '#7a6b90',
           fontSize: 13,
           textAlign: 'center',
         }}
