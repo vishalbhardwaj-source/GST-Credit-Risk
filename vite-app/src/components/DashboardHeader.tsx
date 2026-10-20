@@ -125,7 +125,7 @@ export function DashboardHeader({
                 boxShadow: apiConnected ? '0 0 6px #10b981' : 'none',
               }}
             />
-            {apiConnected ? 'FastAPI Online (Port 8000)' : 'Standalone Local Mode'}
+            {apiConnected ? 'FastAPI Online (Port 8000)' : 'Backend Offline (Server Required)'}
           </span>
           <span style={{ color: '#94a3b8', fontSize: '11px', whiteSpace: 'nowrap' }}>
             Section 16(2)(aa) Decision Support

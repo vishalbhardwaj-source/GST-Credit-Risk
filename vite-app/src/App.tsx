@@ -1,8 +1,7 @@
-import { useMemo, useState } from 'react';
-import { generateSyntheticDataset } from './data';
-import { calculateRoutingScore } from './scoring';
+import { useEffect, useMemo, useState } from 'react';
 import type { Bucket, ReconciledInvoice } from './types';
-import { computeKpis, exportInvoicesToCsv, reconcileDataset } from './utils';
+import { computeKpis, exportInvoicesToCsv } from './utils';
+import { calculateRoutingScore } from './scoring';
 import { useTinyFish } from './hooks/useTinyFish';
 import { DashboardHeader } from './components/DashboardHeader';
 import { FilterBar } from './components/FilterBar';
@@ -13,8 +12,9 @@ import { WelcomePage } from './components/WelcomePage';
 import { ProjectOverview } from './components/ProjectOverview';
 
 export function App() {
-  const baseData = useMemo(() => generateSyntheticDataset(42), []);
-  const initialReconciled = useMemo(() => reconcileDataset(baseData), [baseData]);
+  const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
+  const [serverLoading, setServerLoading] = useState<boolean>(true);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
 
   // View state: 'overview' (Judge pitch landing) or 'dashboard' (Interactive triage console)
@@ -42,14 +42,37 @@ export function App() {
   // TinyFish Hook
   const tinyFish = useTinyFish();
 
-  // Enriched invoices with routing and TinyFish overrides
+  // Fetch server-side reconciled invoices from FastAPI backend
+  const fetchServerReconciled = async () => {
+    setServerLoading(true);
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/reconciled-invoices');
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+      setInitialReconciled(data);
+      setServerError(null);
+    } catch (err: any) {
+      console.warn('Backend server unreachable; client-side fallback rendering disabled.', err);
+      setInitialReconciled([]);
+      setServerError('FastAPI backend server is offline (http://127.0.0.1:8000). Client-side fallback calculation has been disabled. Please ensure the backend is running to load data and run pipeline routing.');
+    } finally {
+      setServerLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchServerReconciled();
+  }, []);
+
+  // Enriched invoices with server-side routing and client TinyFish overrides
   const enrichedInvoices = useMemo(() => {
     return initialReconciled.map((inv) => {
       const liveIrnCheck = tinyFish.irnApplicabilityMap.get(inv.id);
       const vendorLookup = tinyFish.vendorLookupMap.get(inv.id);
       const effectiveIrnState = vendorLookup?.irn_state;
 
-      if (!inv.matchResult.matched && isRouted) {
+      // Allow live TinyFish interaction overrides on specific invoice
+      if (!inv.matchResult.matched && isRouted && (liveIrnCheck || effectiveIrnState)) {
         const scoreExp = calculateRoutingScore(
           inv.irnRecord.irnPresent,
           inv.leverageTier,
@@ -63,19 +86,20 @@ export function App() {
           routingBucket: scoreExp.bucket,
           irnApplicability: liveIrnCheck,
           vendorIrnLookup: vendorLookup,
-          whyThisLabel: vendorLookup?.why_this_label,
+          whyThisLabel: vendorLookup?.why_this_label || inv.whyThisLabel,
         };
       }
+
       return {
         ...inv,
         irnApplicability: liveIrnCheck,
         vendorIrnLookup: vendorLookup,
-        whyThisLabel: vendorLookup?.why_this_label,
+        whyThisLabel: vendorLookup?.why_this_label || inv.whyThisLabel,
       };
     });
   }, [initialReconciled, isRouted, tinyFish.irnApplicabilityMap, tinyFish.vendorLookupMap]);
 
-  // Overall KPIs
+  // Overall KPIs computed from invoices
   const kpis = useMemo(() => computeKpis(enrichedInvoices), [enrichedInvoices]);
 
   // Filtered & Sorted Invoices
@@ -138,19 +162,32 @@ export function App() {
     setApFilter('ALL');
     setPatternFilter('ALL');
     tinyFish.handleResetAll();
+    fetchServerReconciled();
   };
 
-  const handleRunRouting = () => {
+  const handleRunRouting = async () => {
     setIsRouting(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/pipeline/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ invoices: initialReconciled }),
+      });
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+      setInitialReconciled(data.invoices);
       setIsRouted(true);
       setMatchFilter('UNMATCHED');
+    } catch (err: any) {
+      console.error('Server pipeline failed:', err);
+      alert('Pipeline execution failed on server. Ensure the FastAPI backend is running on http://127.0.0.1:8000.');
+    } finally {
       setIsRouting(false);
-    }, 1600);
+    }
   };
 
   const handleSwitchView = (newView: 'overview' | 'dashboard') => {
-    // Whenever transitioning to dashboard from another page, reset to clean starting demo state
+    // Whenever transitioning to dashboard from another page, reset to clean starting state
     if (newView === 'dashboard' && activeView !== 'dashboard') {
       handleReset();
     }
@@ -158,42 +195,42 @@ export function App() {
   };
 
   const handleSelectQuickDemo = (scenario: 'safe' | 'chase' | 'tinyfish') => {
-    handleRunRouting();
-    setActiveView('dashboard');
-    if (scenario === 'safe') {
-      setBucketFilter('SAFE TO HOLD');
-      const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('0412'));
-      if (inv) setSelectedInvoice(inv);
-    } else if (scenario === 'chase') {
-      setBucketFilter('CHASE NOW');
-      const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('5561'));
-      if (inv) setSelectedInvoice(inv);
-    } else if (scenario === 'tinyfish') {
-      setBucketFilter('WATCH');
-      const inv = enrichedInvoices.find((i) => !i.matchResult.matched && !i.irnRecord.irnPresent);
-      if (inv) setSelectedInvoice(inv);
-    }
+    handleRunRouting().then(() => {
+      setActiveView('dashboard');
+      if (scenario === 'safe') {
+        setBucketFilter('SAFE TO HOLD');
+        const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('0412'));
+        if (inv) setSelectedInvoice(inv);
+      } else if (scenario === 'chase') {
+        setBucketFilter('CHASE NOW');
+        const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('5561'));
+        if (inv) setSelectedInvoice(inv);
+      } else if (scenario === 'tinyfish') {
+        setBucketFilter('WATCH');
+        const inv = enrichedInvoices.find((i) => !i.matchResult.matched && !i.irnRecord.irnPresent);
+        if (inv) setSelectedInvoice(inv);
+      }
+    });
   };
 
   const handleExportCsv = () => {
     exportInvoicesToCsv(displayedInvoices);
   };
 
-
   const currentSelectedInvoice = useMemo(() => {
     if (!selectedInvoice) return null;
     return enrichedInvoices.find((i) => i.id === selectedInvoice.id) || selectedInvoice;
   }, [selectedInvoice, enrichedInvoices]);
 
-   if (showWelcome) {
-  return <WelcomePage onExplore={() => setShowWelcome(false)} />;
-}
+  if (showWelcome) {
+    return <WelcomePage onExplore={() => setShowWelcome(false)} />;
+  }
 
   return (
     <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <DashboardHeader
         wf1Status={tinyFish.wf1Status}
-        apiConnected={tinyFish.apiConnected}
+        apiConnected={!serverError && tinyFish.apiConnected}
         isRouted={isRouted}
         isRouting={isRouting}
         onReset={handleReset}
@@ -208,6 +245,49 @@ export function App() {
         matchFilter={matchFilter}
         setMatchFilter={setMatchFilter}
       />
+
+      {serverError && (
+        <div
+          style={{
+            padding: '16px 20px',
+            background: 'rgba(239, 68, 68, 0.12)',
+            border: '1px solid rgba(239, 68, 68, 0.4)',
+            borderRadius: '8px',
+            color: '#fca5a5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+          }}
+        >
+          <div>
+            <strong style={{ color: '#ef4444', display: 'block', fontSize: '14px', marginBottom: '4px' }}>
+              Backend Server Offline — Client-Side Calculation Disabled
+            </strong>
+            <span style={{ fontSize: '13px', lineHeight: '1.5' }}>
+              Reconciliation matching, LightGBM forecasting, and 3-signal risk routing are now shifted to the FastAPI server.
+              Please start the backend with <code>python -m uvicorn backend.main:app --port 8000</code>.
+            </span>
+          </div>
+          <button
+            onClick={fetchServerReconciled}
+            disabled={serverLoading}
+            style={{
+              padding: '8px 16px',
+              background: '#ef4444',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: 600,
+              fontSize: '13px',
+              cursor: serverLoading ? 'not-allowed' : 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {serverLoading ? 'Connecting...' : 'Retry Connection'}
+          </button>
+        </div>
+      )}
 
       {activeView === 'overview' ? (
         <ProjectOverview

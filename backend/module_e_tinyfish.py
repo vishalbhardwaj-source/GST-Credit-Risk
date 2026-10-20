@@ -8,9 +8,9 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field
 
-# SQLite Cache DB Path (disabled for now)
+# SQLite Cache DB Path
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "tinyfish_cache.db")
-ENABLE_CACHE = os.getenv("ENABLE_TINYFISH_CACHE", "false").lower() in ("true", "1")
+ENABLE_CACHE = os.getenv("ENABLE_TINYFISH_CACHE", "true").lower() in ("true", "1")
 
 def init_cache_db():
     if not ENABLE_CACHE:

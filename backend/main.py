@@ -17,6 +17,7 @@ from .matcher import (
 from .ml_engine import ml_engine
 from .module_e_tinyfish import tinyfish_service, Workflow1Result, Workflow2Result, Workflow3Result, Workflow4Result
 from .train_forecaster import GSTResolutionForecaster
+from .dataset_service import generate_server_dataset, run_server_pipeline
 
 app = FastAPI(
     title="GST Credit-at-Risk Forecaster API (Hackathon Architecture)",
@@ -134,6 +135,33 @@ def get_backtest_diagnostics():
                 {"feature": "is_timing_lag", "gain": 309.7, "description": "Indicator of routine 1-2 month filing lag"}
             ]
         }
+    }
+
+# Server-side Reconciled Invoices & Pipeline Engine
+SERVER_RECONCILED_CACHE = None
+
+@app.get("/api/reconciled-invoices")
+def get_reconciled_invoices():
+    global SERVER_RECONCILED_CACHE
+    if SERVER_RECONCILED_CACHE is None:
+        SERVER_RECONCILED_CACHE = generate_server_dataset()
+    return SERVER_RECONCILED_CACHE
+
+@app.post("/api/pipeline/run")
+def run_pipeline(payload: Optional[Dict[str, Any]] = None):
+    global SERVER_RECONCILED_CACHE
+    if SERVER_RECONCILED_CACHE is None:
+        SERVER_RECONCILED_CACHE = generate_server_dataset()
+    
+    invoices_to_route = SERVER_RECONCILED_CACHE
+    if payload and "invoices" in payload and payload["invoices"]:
+        invoices_to_route = payload["invoices"]
+        
+    routed_invoices, kpis = run_server_pipeline(invoices_to_route, trained_forecaster, ml_engine)
+    return {
+        "status": "success",
+        "invoices": routed_invoices,
+        "kpis": kpis
     }
 
 # Module A: RapidFuzz Match Engine

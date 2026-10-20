@@ -48,7 +48,5 @@ gst-credit-at-risk-export-*.csv
 .vercel/
 
 # Database and SQLite cache files
-*.db
 *.sqlite3
-backend/data/*.db
-backend/data/tinyfish_cache.db
+!backend/data/tinyfish_cache.db
