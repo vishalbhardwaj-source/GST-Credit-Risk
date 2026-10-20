@@ -23,7 +23,7 @@
 
 Reconciliation mismatches between purchase records and supplier-reported tax returns are a universal compliance problem — this tool solves it for India's GST system, where missing matches can trigger forced tax credit reversals worth thousands of rupees per invoice.
 
-Under **Section 16(2)(aa) of the CGST Act**, Indian enterprises cannot legally claim Input Tax Credit (ITC) unless their vendor has filed the invoice in **GSTR-1**, making it visible in the buyer's auto-generated **GSTR-2B**. Under **Rule 37A**, if a vendor defaults, the buyer must reverse the tax credit along with **18% statutory interest** by the **November 30 cutoff date** (CBIC Notification No. 12/2024).
+Under India's GST framework, ITC claims are subject to applicable statutory conditions. Section 16 of the CGST Act and the relevant rules govern ITC eligibility and supplier-related compliance requirements. GSTR-2B provides auto-drafted information that taxpayers can reconcile against their own purchase records. A missing invoice in GSTR-2B does not automatically mean that ITC is permanently lost. It may reflect a filing delay, a data mismatch, an e-invoicing applicability issue, or a supplier-compliance problem. The reason must be investigated against the applicable GST requirements and transaction details.
 
 ### The Reconciliation Dilemma
 At month-end, a mid-sized enterprise reconciles its Purchase Register (e.g., 200 invoices) against GSTR-2B (170 records) and discovers **30 missing invoices** representing nominal tax exposure.
@@ -98,7 +98,7 @@ The **GST Credit-at-Risk Forecaster** eliminates this dilemma. Rather than prese
 
 ### The 4-State IRN Engine & Score Mutation
 
-An absent IRN should **not** count as risk if the vendor's turnover is under ₹5 Cr (exempt from e-invoicing). The pipeline implements a 4-state IRN model:
+A missing IRN should not automatically be treated as a compliance failure. Applicability depends on the relevant rules, supplier circumstances, transaction type, and applicable exemptions.The pipeline implements a 4-state IRN model:
 
 | IRN State | Regulatory Meaning | Effect on Score | Triage Rationale |
 |:---|:---|:---:|:---|
@@ -165,6 +165,8 @@ In addition to deterministic rule-based triage, the platform includes a trained 
 | **Pro** | **₹2,499** | Unlimited | Bulk CSV export, TinyFish live IRN + vendor verification, 4-state IRN model, priority support |
 | **Enterprise** | **₹12,999+** | Unlimited (Multi-Entity) | Multi-GSTIN workspace, ERP direct integration (Tally, SAP), custom retention rules, dedicated CA account manager |
 
+These prices are illustrative and have not been established as validated commercial offerings. Actual pricing would depend on infrastructure costs, customer needs, external service costs, and market research.
+
 ### Market Sizing Funnel (TAM → SAM → SOM)
 
 | Market Layer | Definition & Methodology | Market Size |
@@ -219,23 +221,12 @@ npx vitest run
 ```
 All **18 unit tests** will execute and pass, verifying scoring rules, fuzzy normalisation, 4-state IRN weights, and fixture invariance.
 
----
+## Demo Data
 
-## 7. Hackathon Demo Script (7-Minute Presentation)
-
-| Time | Demo Beat | Action in App | Key Takeaway for Judges |
-|:---|:---|:---|:---|
-| **0:00–0:40** | **The Problem** | Open dashboard in pre-routing state. | 200 purchase invoices, 170 matched, 30 missing in GSTR-2B. A flat list gives no triage priority. |
-| **0:40–1:30** | **Run Routing** | Click **"Run Pipeline Routing"**. | 30 discrepancies route instantly into **25 Safe to Hold**, **4 Watch**, and **1 Chase Now**. |
-| **1:30–2:20** | **Safe to Hold Case** | Click invoice `SGP/26-27/0412` (Score: 100). | Verified IRN (+20), ₹18,400 AP leverage (+15), habitual laggard (+15). Recommendation: don't harass supplier; credit will appear naturally. |
-| **2:20–3:10** | **Chase Now Case** | Filter `Chase Now`, click `PCS/26-27/5561` (Score: 0). | Absent IRN (−15), ₹0 leverage (−10), sudden anomaly (−25). Immediate recovery action required before statutory reversal. |
-| **3:10–4:15** | **TinyFish WF3 Rule Check** | Expand Pipeline 1 → click **"Check current IRN rules"**. | Live CBIC source fetched. Status returns `LIKELY_NOT_APPLICABLE` (< ₹5 Cr). IRN penalty lifts from -15 to 0. Sourced timestamp displayed. |
-| **4:15–5:15** | **TinyFish WF4 Portal Lookup** | In same panel → click **"Lookup Vendor on IRP Portal"**. | Live check against `einvoice1.gst.gov.in`. 4-state badge updates in header. Score recalculates live. |
-| **5:15–5:50** | **Zero-Penalty Defense** | Check **"Simulate portal captcha / timeout"** → click Lookup. | `PORTAL BLOCK` handled gracefully. Defaults to `Absent, unknown` with 0 penalty. App never fails silently into red. |
-| **5:50–6:30** | **Search & Fuzzy Matching** | Search noisy vendor name. | Normalization removes spaces and slashes while strictly isolating GSTINs to eliminate false positives. |
-| **6:30–7:00** | **Audit Export & Reset** | Click **"Export CSV"**, then **"Reset Demo"**. | Audit-ready CSV download with full calculation trail; resets deterministically to the 25/4/1 fixture. |
+The current prototype uses synthetic purchase-register and GSTR-2B records. Example invoice numbers, vendors, tax amounts, scores, and routing outcomes are illustrative and should not be interpreted as real taxpayer information.
 
 ---
+
 
 ## 8. Directory Structure
 
