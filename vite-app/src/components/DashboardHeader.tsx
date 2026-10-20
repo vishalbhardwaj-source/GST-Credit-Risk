@@ -68,8 +68,8 @@ export function DashboardHeader({
       {/* Legal & Trust Persistent Banner */}
       <div
         style={{
-          background: 'rgba(59, 130, 246, 0.08)',
-          border: '1px solid rgba(59, 130, 246, 0.25)',
+          background: 'rgba(183, 148, 246, 0.08)',
+          border: '1px solid rgba(183, 148, 246, 0.25)',
           borderRadius: '10px',
           padding: '10px 16px',
           display: 'flex',
@@ -81,7 +81,7 @@ export function DashboardHeader({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Info size={16} color="#3b82f6" />
+          <Info size={16} color="#B794F6" />
           <span>
             <strong style={{ color: '#fff' }}>Synthetic demo data.</strong> Triage support only—not tax or legal advice. Does not access government systems or determine legal ITC eligibility.
           </span>
@@ -153,7 +153,7 @@ export function DashboardHeader({
               style={{
                 width: '36px',
                 height: '36px',
-                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
                 borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
@@ -195,7 +195,7 @@ export function DashboardHeader({
               padding: '6px 12px',
               borderRadius: '7px',
               border: 'none',
-              background: activeView === 'overview' ? '#2563eb' : 'transparent',
+              background: activeView === 'overview' ? '#9F6FF0' : 'transparent',
               color: activeView === 'overview' ? '#fff' : 'var(--navy-muted)',
               fontWeight: 700,
               fontSize: '12px',
@@ -214,7 +214,7 @@ export function DashboardHeader({
               padding: '6px 12px',
               borderRadius: '7px',
               border: 'none',
-              background: activeView === 'dashboard' ? '#2563eb' : 'transparent',
+              background: activeView === 'dashboard' ? '#9F6FF0' : 'transparent',
               color: activeView === 'dashboard' ? '#fff' : 'var(--navy-muted)',
               fontWeight: 700,
               fontSize: '12px',
@@ -257,8 +257,8 @@ export function DashboardHeader({
               gap: '6px',
               padding: '8px 14px',
               borderRadius: '8px',
-              background: 'rgba(99, 102, 241, 0.15)',
-              border: '1px solid rgba(99, 102, 241, 0.35)',
+              background: 'rgba(183, 148, 246, 0.15)',
+              border: '1px solid rgba(183, 148, 246, 0.35)',
               color: '#a5b4fc',
               fontWeight: 600,
               fontSize: '12px',
@@ -296,13 +296,13 @@ export function DashboardHeader({
               gap: '6px',
               padding: '9px 18px',
               borderRadius: '8px',
-              background: isRouted ? '#10b981' : '#2563eb',
+              background: isRouted ? '#10b981' : '#9F6FF0',
               color: '#fff',
               border: 'none',
               fontWeight: 700,
               fontSize: '13px',
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.3)',
+              boxShadow: '0 4px 14px rgba(159, 111, 240, 0.3)',
             }}
           >
             <Play size={14} fill="#fff" />
@@ -317,7 +317,7 @@ export function DashboardHeader({
       <div
         style={{
           background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          border: '1px solid rgba(183, 148, 246, 0.3)',
           borderRadius: '14px',
           padding: '16px 20px',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
@@ -331,8 +331,8 @@ export function DashboardHeader({
                 width: '28px',
                 height: '28px',
                 borderRadius: '8px',
-                background: 'rgba(59, 130, 246, 0.15)',
-                border: '1px solid rgba(59, 130, 246, 0.35)',
+                background: 'rgba(183, 148, 246, 0.15)',
+                border: '1px solid rgba(183, 148, 246, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -729,7 +729,7 @@ export function DashboardHeader({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sparkles size={14} color="#3b82f6" />
+            <Sparkles size={14} color="#B794F6" />
             <span style={{ fontWeight: 700, color: '#fff', fontSize: '13px' }}>
               {isRouted ? 'Pipeline Routing Complete' : 'Pre-Routing — Invoice Reconciliation View'}
             </span>
@@ -742,7 +742,7 @@ export function DashboardHeader({
                 padding: '4px 10px',
                 borderRadius: '6px',
                 border: '1px solid var(--navy-border)',
-                background: matchFilter === 'ALL' ? '#3b82f6' : 'transparent',
+                background: matchFilter === 'ALL' ? '#B794F6' : 'transparent',
                 color: matchFilter === 'ALL' ? '#fff' : 'var(--navy-muted)',
                 fontSize: '11px',
                 fontWeight: 600,
@@ -817,8 +817,8 @@ export function DashboardHeader({
           {/* Pipeline box */}
           <div
             style={{
-              background: 'rgba(37, 99, 235, 0.08)',
-              border: '1px solid rgba(59, 130, 246, 0.25)',
+              background: 'rgba(159, 111, 240, 0.08)',
+              border: '1px solid rgba(183, 148, 246, 0.25)',
               borderRadius: '10px',
               padding: '10px 16px',
               textAlign: 'center',
@@ -907,13 +907,13 @@ export function DashboardHeader({
                 gap: '6px',
                 padding: '10px 18px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
                 color: '#fff',
                 border: 'none',
                 fontWeight: 700,
                 fontSize: '13px',
                 cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(37, 99, 235, 0.35)',
+                boxShadow: '0 4px 14px rgba(159, 111, 240, 0.35)',
                 marginLeft: 'auto',
               }}
             >

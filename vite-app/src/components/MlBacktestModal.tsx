@@ -132,7 +132,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
                   <span style={{ fontFamily: 'monospace', color: '#818cf8', fontWeight: 600 }}>{f.gain} gain</span>
                 </div>
                 <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: `${f.pct}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #3b82f6)', borderRadius: '3px' }} />
+                  <div style={{ width: `${f.pct}%`, height: '100%', background: 'linear-gradient(90deg, #B794F6, #B794F6)', borderRadius: '3px' }} />
                 </div>
               </div>
             ))}
@@ -143,7 +143,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           <button
             onClick={onClose}
             style={{
-              background: '#2563eb',
+              background: '#9F6FF0',
               border: 'none',
               borderRadius: '8px',
               color: '#fff',

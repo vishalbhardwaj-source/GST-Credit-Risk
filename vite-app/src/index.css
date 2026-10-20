@@ -1,14 +1,14 @@
 :root {
-  --navy-bg: #090e17;
-  --navy-surface: #0f172a;
-  --navy-card: #131d31;
-  --navy-card-hover: #17243c;
-  --navy-border: rgba(255, 255, 255, 0.08);
-  --navy-border-hover: rgba(255, 255, 255, 0.16);
+  --navy-bg: #170D24;
+  --navy-surface: #1E1230;
+  --navy-card: #23172F;
+  --navy-card-hover: #2C1D3A;
+  --navy-border: #3B2A4A;
+  --navy-border-hover: #5A4070;
   --navy-text: #f8fafc;
-  --navy-muted: #94a3b8;
-  --navy-dim: #64748b;
-  
+  --navy-muted: #a89bc2;
+  --navy-dim: #7a6b90;
+
   --safe-color: #10b981;
   --safe-light: #34d399;
   --safe-bg: rgba(16, 185, 129, 0.12);
@@ -24,9 +24,9 @@
   --chase-bg: rgba(239, 68, 68, 0.12);
   --chase-border: rgba(239, 68, 68, 0.3);
 
-  --accent-blue: #3b82f6;
-  --accent-blue-hover: #2563eb;
-  --accent-indigo: #6366f1;
+  --accent-blue: #B794F6;
+  --accent-blue-hover: #9F6FF0;
+  --accent-indigo: #B794F6;
   
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   color-scheme: dark;
@@ -41,8 +41,8 @@
 body {
   background-color: var(--navy-bg);
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.07) 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
+    radial-gradient(circle at 50% 0%, rgba(183, 148, 246, 0.07) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(183, 148, 246, 0.04) 0%, transparent 50%);
   color: var(--navy-text);
   min-height: 100vh;
   font-size: 13px;
@@ -75,7 +75,7 @@ a {
   transition: color 0.15s ease;
 }
 a:hover {
-  color: #60a5fa;
+  color: #d8b4fe;
   text-decoration: underline;
 }
 
@@ -200,8 +200,8 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  border-color: rgba(59, 130, 246, 0.6) !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  border-color: rgba(183, 148, 246, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(183, 148, 246, 0.18);
 }
 
 input[type="text"]::placeholder {
@@ -214,8 +214,8 @@ select {
 }
 
 select:focus {
-  border-color: rgba(59, 130, 246, 0.6) !important;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+  border-color: rgba(183, 148, 246, 0.6) !important;
+  box-shadow: 0 0 0 2px rgba(183, 148, 246, 0.15);
 }
 
 select option {
@@ -234,7 +234,7 @@ select option {
 }
 
 .invoice-table-row:hover td:first-child {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid #B794F6;
 }
 
 th {

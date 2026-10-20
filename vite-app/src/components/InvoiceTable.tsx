@@ -204,7 +204,7 @@ export function InvoiceTable({
                               fontSize: '9px',
                               color: '#60a5fa',
                               fontWeight: 700,
-                              background: 'rgba(59, 130, 246, 0.15)',
+                              background: 'rgba(183, 148, 246, 0.15)',
                               padding: '1px 5px',
                               borderRadius: '4px',
                               width: 'fit-content',

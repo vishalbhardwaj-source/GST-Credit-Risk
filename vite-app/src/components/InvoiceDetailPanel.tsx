@@ -231,7 +231,7 @@ export function InvoiceDetailPanel({
                 style={{
                   fontSize: '10px',
                   color: '#60a5fa',
-                  background: 'rgba(59, 130, 246, 0.1)',
+                  background: 'rgba(183, 148, 246, 0.1)',
                   padding: '2px 8px',
                   borderRadius: '4px',
                   fontWeight: 600,
@@ -304,7 +304,7 @@ export function InvoiceDetailPanel({
                 ? 'rgba(245, 158, 11, 0.08)'
                 : selectedInvoice.routingBucket === 'CHASE NOW'
                 ? 'rgba(239, 68, 68, 0.12)'
-                : 'rgba(59, 130, 246, 0.08)',
+                : 'rgba(183, 148, 246, 0.08)',
               border: `1px solid ${
                 selectedInvoice.matchResult.matched
                   ? 'rgba(16, 185, 129, 0.3)'
@@ -314,7 +314,7 @@ export function InvoiceDetailPanel({
                   ? 'rgba(245, 158, 11, 0.35)'
                   : selectedInvoice.routingBucket === 'CHASE NOW'
                   ? 'rgba(239, 68, 68, 0.45)'
-                  : 'rgba(59, 130, 246, 0.3)'
+                  : 'rgba(183, 148, 246, 0.3)'
               }`,
               borderRadius: '12px',
               padding: '16px',
@@ -515,10 +515,10 @@ export function InvoiceDetailPanel({
                         fontSize: '10px',
                         padding: '1px 6px',
                         borderRadius: '4px',
-                        background: 'rgba(59, 130, 246, 0.15)',
+                        background: 'rgba(183, 148, 246, 0.15)',
                         color: '#60a5fa',
                         fontWeight: 700,
-                        border: '1px solid rgba(59, 130, 246, 0.3)',
+                        border: '1px solid rgba(183, 148, 246, 0.3)',
                       }}
                     >
                       TinyFish Sourced
@@ -602,7 +602,7 @@ export function InvoiceDetailPanel({
                   style={{
                     marginTop: '6px',
                     background: 'rgba(15, 23, 42, 0.75)',
-                    border: '1px solid rgba(59, 130, 246, 0.25)',
+                    border: '1px solid rgba(183, 148, 246, 0.25)',
                     borderRadius: '8px',
                     padding: '12px',
                     display: 'flex',
@@ -687,7 +687,7 @@ export function InvoiceDetailPanel({
                       onClick={() => handleCheckIrnApplicability(selectedInvoice)}
                       disabled={irnCheckingId === selectedInvoice.id}
                       style={{
-                        background: '#2563eb',
+                        background: '#9F6FF0',
                         border: 'none',
                         borderRadius: '6px',
                         color: '#fff',
@@ -698,7 +698,7 @@ export function InvoiceDetailPanel({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '5px',
-                        boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
+                        boxShadow: '0 2px 8px rgba(159, 111, 240, 0.3)',
                       }}
                     >
                       {irnCheckingId === selectedInvoice.id ? <Loader2 size={12} className="animate-spin" /> : <Search size={12} />}
@@ -794,7 +794,7 @@ export function InvoiceDetailPanel({
                   style={{
                     marginTop: '6px',
                     background: 'rgba(15, 23, 42, 0.75)',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                    border: '1px solid rgba(183, 148, 246, 0.3)',
                     borderRadius: '8px',
                     padding: '12px',
                     display: 'flex',
@@ -813,9 +813,9 @@ export function InvoiceDetailPanel({
                         style={{
                           fontSize: '9px',
                           fontWeight: 700,
-                          background: 'rgba(99, 102, 241, 0.15)',
+                          background: 'rgba(183, 148, 246, 0.15)',
                           color: '#a5b4fc',
-                          border: '1px solid rgba(99, 102, 241, 0.3)',
+                          border: '1px solid rgba(183, 148, 246, 0.3)',
                           padding: '1px 5px',
                           borderRadius: '4px',
                           textTransform: 'uppercase',
@@ -871,7 +871,7 @@ export function InvoiceDetailPanel({
                       onClick={() => handleLookupVendorIrn(selectedInvoice, simFailureMode)}
                       disabled={vendorLookupCheckingId === selectedInvoice.id}
                       style={{
-                        background: 'rgba(99, 102, 241, 0.8)',
+                        background: 'rgba(183, 148, 246, 0.8)',
                         border: 'none',
                         borderRadius: '6px',
                         color: '#fff',
@@ -882,7 +882,7 @@ export function InvoiceDetailPanel({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '5px',
-                        boxShadow: '0 2px 8px rgba(99, 102, 241, 0.3)',
+                        boxShadow: '0 2px 8px rgba(183, 148, 246, 0.3)',
                         opacity: vendorLookupCheckingId === selectedInvoice.id ? 0.7 : 1,
                       }}
                     >
@@ -978,7 +978,7 @@ export function InvoiceDetailPanel({
                                 fontWeight: 700,
                                 background: vl.cache_status?.includes('CACHE_HIT')
                                   ? 'rgba(245, 158, 11, 0.1)'
-                                  : 'rgba(59, 130, 246, 0.1)',
+                                  : 'rgba(183, 148, 246, 0.1)',
                                 padding: '1px 5px',
                                 borderRadius: '3px',
                               }}
@@ -1141,8 +1141,8 @@ export function InvoiceDetailPanel({
           {selectedInvoice.scoreExplanation ? (
             <div
               style={{
-                background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(16, 185, 129, 0.05))',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
+                background: 'linear-gradient(135deg, rgba(159, 111, 240, 0.1), rgba(16, 185, 129, 0.05))',
+                border: '1px solid rgba(183, 148, 246, 0.3)',
                 borderRadius: '12px',
                 padding: '16px',
               }}
@@ -1315,8 +1315,8 @@ export function InvoiceDetailPanel({
           {/* TinyFish Web Agent Live Evidence Block */}
           <div
             style={{
-              background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(59, 130, 246, 0.02))',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
+              background: 'linear-gradient(135deg, rgba(159, 111, 240, 0.08), rgba(183, 148, 246, 0.02))',
+              border: '1px solid rgba(183, 148, 246, 0.3)',
               borderRadius: '12px',
               padding: '16px',
               display: 'flex',
@@ -1326,15 +1326,15 @@ export function InvoiceDetailPanel({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6', display: 'inline-block' }} />
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#B794F6', display: 'inline-block' }} />
                 <span style={{ fontWeight: 700, fontSize: '12px', color: '#fff' }}>TinyFish Web Agent Evidence</span>
               </div>
               <button
                 onClick={() => handleVerifyVendor(selectedInvoice)}
                 disabled={tinyFishLoading}
                 style={{
-                  background: 'rgba(59, 130, 246, 0.15)',
-                  border: '1px solid rgba(59, 130, 246, 0.4)',
+                  background: 'rgba(183, 148, 246, 0.15)',
+                  border: '1px solid rgba(183, 148, 246, 0.4)',
                   borderRadius: '6px',
                   color: '#60a5fa',
                   fontSize: '11px',

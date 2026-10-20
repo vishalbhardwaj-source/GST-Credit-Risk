@@ -120,8 +120,8 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: bucketFilter !== 'ALL' ? '1px solid #3b82f6' : '1px solid var(--navy-border)',
-            background: bucketFilter !== 'ALL' ? 'rgba(59, 130, 246, 0.12)' : 'var(--navy-bg)',
+            border: bucketFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            background: bucketFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
             color: bucketFilter !== 'ALL' ? '#93c5fd' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
@@ -140,8 +140,8 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: irnFilter !== 'ALL' ? '1px solid #3b82f6' : '1px solid var(--navy-border)',
-            background: irnFilter !== 'ALL' ? 'rgba(59, 130, 246, 0.12)' : 'var(--navy-bg)',
+            border: irnFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            background: irnFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
             color: irnFilter !== 'ALL' ? '#93c5fd' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
@@ -159,8 +159,8 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: apFilter !== 'ALL' ? '1px solid #3b82f6' : '1px solid var(--navy-border)',
-            background: apFilter !== 'ALL' ? 'rgba(59, 130, 246, 0.12)' : 'var(--navy-bg)',
+            border: apFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            background: apFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
             color: apFilter !== 'ALL' ? '#93c5fd' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
@@ -179,8 +179,8 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: patternFilter !== 'ALL' ? '1px solid #3b82f6' : '1px solid var(--navy-border)',
-            background: patternFilter !== 'ALL' ? 'rgba(59, 130, 246, 0.12)' : 'var(--navy-bg)',
+            border: patternFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            background: patternFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
             color: patternFilter !== 'ALL' ? '#93c5fd' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,

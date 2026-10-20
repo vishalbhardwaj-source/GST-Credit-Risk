@@ -41,8 +41,8 @@ export function ProjectOverview({
       {/* Top Hackathon & Statutory Notice Banner */}
       <div
         style={{
-          background: 'linear-gradient(90deg, rgba(37, 99, 235, 0.15), rgba(99, 102, 241, 0.15))',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          background: 'linear-gradient(90deg, rgba(159, 111, 240, 0.15), rgba(183, 148, 246, 0.15))',
+          border: '1px solid rgba(183, 148, 246, 0.3)',
           borderRadius: '12px',
           padding: '12px 20px',
           display: 'flex',
@@ -55,7 +55,7 @@ export function ProjectOverview({
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span
             style={{
-              background: '#2563eb',
+              background: '#9F6FF0',
               color: '#fff',
               fontSize: '10px',
               fontWeight: 800,
@@ -104,7 +104,7 @@ export function ProjectOverview({
             right: '-60px',
             width: '260px',
             height: '260px',
-            background: 'radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(159, 111, 240, 0.2) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -117,8 +117,8 @@ export function ProjectOverview({
                 alignItems: 'center',
                 gap: '6px',
                 color: '#60a5fa',
-                background: 'rgba(59, 130, 246, 0.1)',
-                border: '1px solid rgba(59, 130, 246, 0.25)',
+                background: 'rgba(183, 148, 246, 0.1)',
+                border: '1px solid rgba(183, 148, 246, 0.25)',
                 padding: '4px 10px',
                 borderRadius: '9999px',
                 fontSize: '11px',
@@ -164,13 +164,13 @@ export function ProjectOverview({
                 gap: '8px',
                 padding: '13px 26px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
                 color: '#fff',
                 border: 'none',
                 fontWeight: 800,
                 fontSize: '14px',
                 cursor: 'pointer',
-                boxShadow: '0 4px 20px rgba(37, 99, 235, 0.4)',
+                boxShadow: '0 4px 20px rgba(159, 111, 240, 0.4)',
               }}
             >
               <Play size={16} fill="#fff" />
@@ -435,7 +435,7 @@ export function ProjectOverview({
       <div
         style={{
           background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
-          border: '1px solid rgba(59, 130, 246, 0.3)',
+          border: '1px solid rgba(183, 148, 246, 0.3)',
           borderRadius: '16px',
           padding: '24px',
         }}
@@ -452,7 +452,7 @@ export function ProjectOverview({
           <button
             onClick={onLaunchDemo}
             style={{
-              background: '#2563eb',
+              background: '#9F6FF0',
               color: '#fff',
               border: 'none',
               padding: '8px 16px',
@@ -530,8 +530,8 @@ export function ProjectOverview({
           <div
             onClick={() => onSelectQuickDemo?.('tinyfish')}
             style={{
-              background: 'rgba(59, 130, 246, 0.08)',
-              border: '1px solid rgba(59, 130, 246, 0.25)',
+              background: 'rgba(183, 148, 246, 0.08)',
+              border: '1px solid rgba(183, 148, 246, 0.25)',
               borderRadius: '12px',
               padding: '16px',
               cursor: 'pointer',
