@@ -228,7 +228,7 @@ The current prototype uses synthetic purchase-register and GSTR-2B records. Exam
 ---
 
 
-## 8. Directory Structure
+## 7. Directory Structure
 
 ```
 GST-credit/
@@ -273,6 +273,6 @@ GST-credit/
 
 ---
 
-## 9. License
+## 8. License
 
 This project is licensed under the Apache 2.0 License.
