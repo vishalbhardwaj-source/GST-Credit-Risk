@@ -21,6 +21,8 @@
 
 ## 1. Executive Summary & Problem Statement
 
+Reconciliation mismatches between purchase records and supplier-reported tax returns are a universal compliance problem — this tool solves it for India's GST system, where missing matches can trigger forced tax credit reversals worth thousands of rupees per invoice.
+
 Under **Section 16(2)(aa) of the CGST Act**, Indian enterprises cannot legally claim Input Tax Credit (ITC) unless their vendor has filed the invoice in **GSTR-1**, making it visible in the buyer's auto-generated **GSTR-2B**. Under **Rule 37A**, if a vendor defaults, the buyer must reverse the tax credit along with **18% statutory interest** by the **November 30 cutoff date** (CBIC Notification No. 12/2024).
 
 ### The Reconciliation Dilemma
@@ -163,11 +165,15 @@ In addition to deterministic rule-based triage, the platform includes a trained 
 | **Pro** | **₹2,499** | Unlimited | Bulk CSV export, TinyFish live IRN + vendor verification, 4-state IRN model, priority support |
 | **Enterprise** | **₹12,999+** | Unlimited (Multi-Entity) | Multi-GSTIN workspace, ERP direct integration (Tally, SAP), custom retention rules, dedicated CA account manager |
 
-### Total Addressable Market (TAM)
-- **50,000+ Registered CA Firms in India** (ICAI 2024 data)
-- **~8 Million GST-registered businesses** filing GSTR-3B monthly
-- Targeting 10% of monthly filers facing reconciliation friction yields **~800,000 potential businesses**.
-- At ₹2,499/mo (Pro tier), the India serviceable annual market is **₹24 Billion (~$290M USD)**.
+### Market Sizing Funnel (TAM → SAM → SOM)
+
+| Market Layer | Definition & Methodology | Market Size |
+|:---|:---|:---:|
+| **TAM (Total Addressable Market)** | All ~8 Million GST-registered businesses filing GSTR-3B monthly in India | **₹240 Billion** (~$2.9B USD) |
+| **SAM (Serviceable Addressable Market)** | ~10% of monthly filers (~800,000 businesses) facing recurring GSTR-2B discrepancies | **₹24 Billion** (~$290M USD) |
+| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹240 Crore** (~$29M USD) |
+
+*The SOM (₹240 Cr) is the defensible Year-1 milestone in a venture pitch — assuming a realistic blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
 
 ### Competitive Positioning
 - **ClearTax:** Targets large enterprise with ₹5L+/year per-seat pricing. Out of reach for independent CAs and SMEs.

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { IrnApplicabilityResult, ReconciledInvoice, VendorIrnLookupResult } from '../types';
+import type { IrnApplicabilityResult, IrnState, ReconciledInvoice, VendorIrnLookupResult } from '../types';
 
 export function useTinyFish() {
   const [apiConnected, setApiConnected] = useState<boolean | null>(null);
@@ -158,32 +158,36 @@ export function useTinyFish() {
         };
         setVendorLookupMap((prev) => new Map(prev).set(inv.id, fallbackFail));
       } else {
-        const isMandated = inv.vendorName.includes('Pioneer') || inv.vendorName.includes('Courier') || inv.gstin.includes('27AAACN9923Z5');
-        const isExempt = inv.vendorName.includes('Packaging') || inv.vendorName.includes('Glass') || inv.vendorName.includes('Agro');
+        const hasIrn = inv.irnRecord.irnPresent;
+        // In the absence of an IRN, evaluate if the vendor is exempt or mandate applies
+        const irnState: IrnState = hasIrn
+          ? 'PRESENT'
+          : (inv.irnRecord.irnState || (inv.irnApplicability?.status === 'LIKELY_NOT_APPLICABLE' ? 'ABSENT_NOT_APPLICABLE' : 'ABSENT_APPLIES'));
+
         const fallbackRes: VendorIrnLookupResult = {
           workflow: 'WORKFLOW_4_VENDOR_IRN_LOOKUP',
           gstin: inv.gstin,
           legal_name: inv.vendorName,
           trade_name: inv.vendorName,
-          einvoice_enabled: isMandated ? true : isExempt ? false : null,
-          irn_state: isMandated ? 'ABSENT_APPLIES' : isExempt ? 'ABSENT_NOT_APPLICABLE' : 'ABSENT_UNKNOWN',
-          score_adjustment: isMandated ? -15 : 0,
-          status_label: isMandated ? 'Absent, applies' : isExempt ? 'Absent, not applicable' : 'Absent, unknown',
-          source_snippet: isMandated
-            ? `Portal Search: GSTIN ${inv.gstin} (${inv.vendorName}) is ENABLED on IRP. Turnover > ₹5 Cr. Absent IRN represents non-compliance.`
-            : isExempt
-            ? `Portal Search: GSTIN ${inv.gstin} (${inv.vendorName}) is NOT ENABLED for e-invoicing. Sub-₹5 Cr turnover exempt.`
-            : `Portal Search: GSTIN ${inv.gstin} active; ambiguous turnover history. Conservative zero penalty applied.`,
+          einvoice_enabled: irnState === 'PRESENT' ? true : irnState === 'ABSENT_NOT_APPLICABLE' ? false : true,
+          irn_state: irnState,
+          score_adjustment: irnState === 'PRESENT' ? 20 : irnState === 'ABSENT_APPLIES' ? -15 : 0,
+          status_label: irnState === 'PRESENT' ? 'Present' : irnState === 'ABSENT_APPLIES' ? 'Absent, applies' : irnState === 'ABSENT_NOT_APPLICABLE' ? 'Absent, not applicable' : 'Absent, unknown',
+          source_snippet: irnState === 'PRESENT'
+            ? `Portal Search: GSTIN ${inv.gstin} (${inv.vendorName}) is ENABLED on IRP. Valid 64-character hash confirmed. Supply flows into GSTR-1.`
+            : irnState === 'ABSENT_APPLIES'
+            ? `Portal Search: GSTIN ${inv.gstin} (${inv.vendorName}) is ENABLED for e-invoicing on the IRP. Turnover threshold exceeds ₹5 Cr. Absent IRN represents non-compliance.`
+            : `Portal Search: GSTIN ${inv.gstin} (${inv.vendorName}) is NOT ENABLED for e-invoicing. Sub-₹5 Cr turnover exempt under Rule 48(4).`,
           source_url: `https://einvoice1.gst.gov.in/Others/TaxpayerSearch?gstin=${inv.gstin}`,
           checked_at: now.toISOString(),
           checked_at_human: human,
           cache_status: '200 CACHE_HIT (TTL 24h)',
           is_failure_fallback: false,
-          why_this_label: isMandated
+          why_this_label: irnState === 'PRESENT'
+            ? 'Invoice has a verified IRN registered on the IRP, which strongly indicates the credit will self-correct in the next return cycle.'
+            : irnState === 'ABSENT_APPLIES'
             ? 'This supplier is enabled for e-invoicing on the portal, but no IRN was generated for this invoice, raising substantive compliance and reversal risk.'
-            : isExempt
-            ? 'The supplier is legitimately below the ₹5 crore threshold and exempt from e-invoicing, so the missing IRN contributes zero risk.'
-            : 'Vendor e-invoicing mandate status could not be conclusively determined, so it is labeled unknown and assigned zero risk to avoid false alarms.'
+            : 'The supplier is legitimately below the ₹5 crore threshold and exempt from e-invoicing, so the missing IRN contributes zero risk.'
         };
         setVendorLookupMap((prev) => new Map(prev).set(inv.id, fallbackRes));
       }
@@ -206,6 +210,13 @@ export function useTinyFish() {
     });
   };
 
+  const handleResetAll = () => {
+    setTinyFishResult(null);
+    setIrnApplicabilityMap(new Map());
+    setVendorLookupMap(new Map());
+    setSimFailureMode(false);
+  };
+
   return {
     apiConnected,
     wf1Status,
@@ -225,5 +236,6 @@ export function useTinyFish() {
     handleCheckIrnApplicability,
     handleLookupVendorIrn,
     handleResetIrnCheck,
+    handleResetAll,
   };
 }

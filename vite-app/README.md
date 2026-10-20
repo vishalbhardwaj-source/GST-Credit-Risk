@@ -1,5 +1,7 @@
 # GST Credit-at-Risk Forecaster (Hackathon MVP)
 
+Reconciliation mismatches between purchase records and supplier-reported tax returns are a universal compliance problem — this tool solves it for India's GST system, where missing matches can trigger forced tax credit reversals worth thousands of rupees per invoice.
+
 An explainable decision-support dashboard for Indian businesses and Chartered Accountants to triage invoices that appear in the purchase register but are missing from GSTR-2B reconciliation.
 
 > **Legal & Trust Notice:**  
@@ -191,9 +193,15 @@ Run `npx vitest run` inside `vite-app` to verify all **18 unit tests** (11 origi
 
 *All prices in INR, billed monthly. Annual plans receive a 20% discount.*
 
-### Total Addressable Market (TAM)
+### Market Sizing Funnel (TAM → SAM → SOM)
 
-India has approximately **50,000 registered CA firms** (ICAI, 2024) and **8 million GST-registered businesses** filing GSTR-3B monthly. Even targeting the 10% of GST filers that regularly face reconciliation discrepancies yields a serviceable market of ~800,000 businesses. At an average Pro subscription of ₹2,499/month, the India-alone revenue opportunity exceeds **₹24 billion annually** — before accounting for the broader SME accounting software market estimated at USD 1.2 billion by 2027.
+| Market Layer | Definition & Methodology | Market Size |
+|:---|:---|:---:|
+| **TAM (Total Addressable Market)** | All ~8 Million GST-registered businesses filing GSTR-3B monthly in India | **₹240 Billion** (~$2.9B USD) |
+| **SAM (Serviceable Addressable Market)** | ~10% of monthly filers (~800,000 businesses) facing recurring GSTR-2B discrepancies | **₹24 Billion** (~$290M USD) |
+| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹240 Crore** (~$29M USD) |
+
+*The SOM (₹240 Cr) represents the defensible Year-1 milestone in a venture pitch — assuming a blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
 
 ### Competitive Positioning
 
