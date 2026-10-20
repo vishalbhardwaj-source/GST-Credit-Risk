@@ -1,5 +1,4 @@
 import numpy as np
-import lightgbm as lgb
 from sklearn.linear_model import Ridge
 from typing import Dict, Any, List
 

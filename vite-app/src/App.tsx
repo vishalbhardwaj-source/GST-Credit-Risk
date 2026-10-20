@@ -55,7 +55,11 @@ export function App() {
     } catch (err: any) {
       console.warn('Backend server unreachable; client-side fallback rendering disabled.', err);
       setInitialReconciled([]);
-      setServerError('FastAPI backend server is offline (http://127.0.0.1:8000). Client-side fallback calculation has been disabled. Please ensure the backend is running to load data and run pipeline routing.');
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      setServerError(isLocal
+        ? 'FastAPI backend server is offline (http://127.0.0.1:8000). Client-side fallback calculation has been disabled. Please ensure the backend is running to load data and run pipeline routing.'
+        : 'Backend serverless API is connecting or offline. Please click Retry Connection.'
+      );
     } finally {
       setServerLoading(false);
     }
@@ -181,7 +185,8 @@ export function App() {
       setMatchFilter('UNMATCHED');
     } catch (err: any) {
       console.error('Server pipeline failed:', err);
-      alert('Pipeline execution failed on server. Ensure the FastAPI backend is running on http://127.0.0.1:8000.');
+      const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      alert(`Pipeline execution failed on server. ${isLocal ? 'Ensure the FastAPI backend is running on http://127.0.0.1:8000.' : 'Please retry in a moment.'}`);
     } finally {
       setIsRouting(false);
     }

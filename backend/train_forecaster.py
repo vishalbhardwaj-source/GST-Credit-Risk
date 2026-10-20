@@ -2,7 +2,10 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-import lightgbm as lgb
+try:
+    import lightgbm as lgb
+except (ImportError, OSError):
+    lgb = None
 from sklearn.metrics import roc_auc_score, brier_score_loss, confusion_matrix
 from sklearn.model_selection import train_test_split
 
