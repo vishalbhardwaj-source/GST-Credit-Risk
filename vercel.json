@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "buildCommand": "npm --prefix vite-app install && npm --prefix vite-app run build",
+  "installCommand": "npm --prefix vite-app install",
+  "buildCommand": "npm --prefix vite-app run build",
   "outputDirectory": "vite-app/dist",
   "rewrites": [
     {
