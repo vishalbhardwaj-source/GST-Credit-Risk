@@ -15,7 +15,6 @@ import { ProjectOverview } from './components/ProjectOverview';
 
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
-  const [serverLoading, setServerLoading] = useState<boolean>(true);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
 
@@ -46,7 +45,6 @@ export function App() {
 
   // Fetch server-side reconciled invoices from FastAPI backend with seamless fallback
   const fetchServerReconciled = async () => {
-    setServerLoading(true);
     try {
       const res = await fetch(`${getApiBaseUrl()}/api/reconciled-invoices`);
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -61,8 +59,6 @@ export function App() {
       const fallbackData = reconcileDataset(baseData);
       setInitialReconciled(fallbackData);
       setServerError('Running in Standalone Demo Mode (Backend serverless initializing or offline).');
-    } finally {
-      setServerLoading(false);
     }
   };
 
@@ -255,46 +251,6 @@ export function App() {
         matchFilter={matchFilter}
         setMatchFilter={setMatchFilter}
       />
-
-      {serverError && (
-        <div
-          style={{
-            padding: '12px 18px',
-            background: 'rgba(245, 158, 11, 0.1)',
-            border: '1px solid rgba(245, 158, 11, 0.3)',
-            borderRadius: '8px',
-            color: '#fbbf24',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '16px',
-          }}
-        >
-          <div style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '16px' }}>⚡</span>
-            <span>
-              <strong>Standalone Interactive Mode:</strong> The dashboard is fully functional with live 3-signal triage. Server API connection can be refreshed at any time.
-            </span>
-          </div>
-          <button
-            onClick={fetchServerReconciled}
-            disabled={serverLoading}
-            style={{
-              padding: '6px 14px',
-              background: 'rgba(245, 158, 11, 0.2)',
-              border: '1px solid #fbbf24',
-              color: '#fbbf24',
-              borderRadius: '6px',
-              fontWeight: 600,
-              fontSize: '12px',
-              cursor: serverLoading ? 'not-allowed' : 'pointer',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {serverLoading ? 'Reconnecting...' : 'Refresh Server'}
-          </button>
-        </div>
-      )}
 
       {activeView === 'overview' ? (
         <ProjectOverview
