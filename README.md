@@ -1,4 +1,4 @@
-# GST Credit-at-Risk Forecaster
+﻿# GST Credit-at-Risk Forecaster
 
 **Live Demo:** [View Deployed Project] https://gst-credit-risk.vercel.app?_vercel_share=JNmXOG21P9DBkGABptLQI6PnAzn1SzdD
 
@@ -12,6 +12,9 @@
 [![LightGBM](https://img.shields.io/badge/ML-LightGBM_0.986_AUC-green)](https://lightgbm.readthedocs.io/)
 [![TinyFish AI](https://img.shields.io/badge/Web_Agent-TinyFish_v1-orange)](https://tinyfish.ai)
 [![Tests](https://img.shields.io/badge/Vitest-18%2F18_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
+[![CI](https://github.com/vishalbhardwaj-source/GST-credit/actions/workflows/ci.yml/badge.svg)](https://github.com/vishalbhardwaj-source/GST-credit/actions/workflows/ci.yml)
+
+### 🚀 [Live Demo → gst-credit-forecaster.vercel.app](https://gst-credit-forecaster.vercel.app)
 
 ---
 

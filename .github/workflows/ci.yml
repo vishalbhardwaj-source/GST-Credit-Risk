@@ -1,0 +1,50 @@
+name: CI — Test Suite
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  vitest:
+    name: Run 18 Unit Tests (Vitest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: vite-app/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: vite-app
+        run: npm ci
+
+      - name: Run Vitest unit tests
+        working-directory: vite-app
+        run: npx vitest run --reporter=verbose
+
+  python-backend:
+    name: Python Backend Lint & Import Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check backend imports are valid
+        run: python -c "import backend.matcher; import backend.ml_engine; import backend.train_forecaster; print('All backend imports OK')"
