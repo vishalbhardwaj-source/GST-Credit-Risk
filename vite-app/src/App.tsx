@@ -133,11 +133,20 @@ export function App() {
     setIrnFilter('ALL');
     setApFilter('ALL');
     setPatternFilter('ALL');
+    tinyFish.handleResetAll();
   };
 
   const handleRunRouting = () => {
     setIsRouted(true);
     setMatchFilter('UNMATCHED');
+  };
+
+  const handleSwitchView = (newView: 'overview' | 'dashboard') => {
+    // Whenever transitioning to dashboard from another page, reset to clean starting demo state
+    if (newView === 'dashboard' && activeView !== 'dashboard') {
+      handleReset();
+    }
+    setActiveView(newView);
   };
 
   const handleSelectQuickDemo = (scenario: 'safe' | 'chase' | 'tinyfish') => {
@@ -180,7 +189,7 @@ export function App() {
         showSynopsis={showSynopsis}
         setShowSynopsis={setShowSynopsis}
         activeView={activeView}
-        onViewChange={setActiveView}
+        onViewChange={handleSwitchView}
         kpis={kpis}
         matchFilter={matchFilter}
         setMatchFilter={setMatchFilter}
@@ -189,7 +198,7 @@ export function App() {
       {activeView === 'overview' ? (
         <ProjectOverview
           onLaunchDemo={() => {
-            handleRunRouting();
+            handleReset();
             setActiveView('dashboard');
           }}
           onOpenBacktestModal={() => setIsBacktestModalOpen(true)}

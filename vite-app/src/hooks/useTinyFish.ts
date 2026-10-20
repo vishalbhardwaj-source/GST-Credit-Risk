@@ -206,6 +206,13 @@ export function useTinyFish() {
     });
   };
 
+  const handleResetAll = () => {
+    setTinyFishResult(null);
+    setIrnApplicabilityMap(new Map());
+    setVendorLookupMap(new Map());
+    setSimFailureMode(false);
+  };
+
   return {
     apiConnected,
     wf1Status,
@@ -225,5 +232,6 @@ export function useTinyFish() {
     handleCheckIrnApplicability,
     handleLookupVendorIrn,
     handleResetIrnCheck,
+    handleResetAll,
   };
 }
