@@ -27,6 +27,8 @@ export interface DashboardHeaderProps {
   onRunRouting: () => void;
   showSynopsis: boolean;
   setShowSynopsis: (val: boolean) => void;
+  activeView?: 'overview' | 'dashboard';
+  onViewChange?: (view: 'overview' | 'dashboard') => void;
   kpis: {
     total: number;
     matched: number;
@@ -53,6 +55,8 @@ export function DashboardHeader({
   onRunRouting,
   showSynopsis,
   setShowSynopsis,
+  activeView = 'dashboard',
+  onViewChange,
   kpis,
   matchFilter,
   setMatchFilter,
@@ -170,6 +174,56 @@ export function DashboardHeader({
           </div>
         </div>
 
+        {/* View Switcher: Overview vs Dashboard */}
+        <div
+          style={{
+            display: 'inline-flex',
+            background: 'rgba(0, 0, 0, 0.4)',
+            padding: '3px',
+            borderRadius: '9px',
+            border: '1px solid var(--navy-border)',
+          }}
+        >
+          <button
+            onClick={() => onViewChange?.('overview')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '7px',
+              border: 'none',
+              background: activeView === 'overview' ? '#2563eb' : 'transparent',
+              color: activeView === 'overview' ? '#fff' : 'var(--navy-muted)',
+              fontWeight: 700,
+              fontSize: '12px',
+              cursor: 'pointer',
+            }}
+          >
+            <FileText size={13} />
+            Executive Pitch
+          </button>
+          <button
+            onClick={() => onViewChange?.('dashboard')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '7px',
+              border: 'none',
+              background: activeView === 'dashboard' ? '#2563eb' : 'transparent',
+              color: activeView === 'dashboard' ? '#fff' : 'var(--navy-muted)',
+              fontWeight: 700,
+              fontSize: '12px',
+              cursor: 'pointer',
+            }}
+          >
+            <Activity size={13} />
+            Live Triage Console
+          </button>
+        </div>
+
         {/* Global Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {isRouted && (
@@ -255,7 +309,9 @@ export function DashboardHeader({
         </div>
       </header>
 
-      {/* Starting Situation Synopsis / Executive Briefing Card */}
+      {activeView === 'dashboard' && (
+        <>
+          {/* Starting Situation Synopsis / Executive Briefing Card */}
       <div
         style={{
           background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
@@ -838,6 +894,8 @@ export function DashboardHeader({
           )}
         </div>
       </div>
+        </>
+      )}
     </>
   );
 }

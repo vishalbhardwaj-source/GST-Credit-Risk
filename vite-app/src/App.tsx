@@ -9,10 +9,14 @@ import { FilterBar } from './components/FilterBar';
 import { InvoiceTable } from './components/InvoiceTable';
 import { InvoiceDetailPanel } from './components/InvoiceDetailPanel';
 import { MlBacktestModal } from './components/MlBacktestModal';
+import { ProjectOverview } from './components/ProjectOverview';
 
 export function App() {
   const baseData = useMemo(() => generateSyntheticDataset(42), []);
   const initialReconciled = useMemo(() => reconcileDataset(baseData), [baseData]);
+
+  // View state: 'overview' (Judge pitch landing) or 'dashboard' (Interactive triage console)
+  const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('overview');
 
   // Routing and modal state
   const [isRouted, setIsRouted] = useState(false);
@@ -136,6 +140,24 @@ export function App() {
     setMatchFilter('UNMATCHED');
   };
 
+  const handleSelectQuickDemo = (scenario: 'safe' | 'chase' | 'tinyfish') => {
+    handleRunRouting();
+    setActiveView('dashboard');
+    if (scenario === 'safe') {
+      setBucketFilter('SAFE TO HOLD');
+      const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('0412'));
+      if (inv) setSelectedInvoice(inv);
+    } else if (scenario === 'chase') {
+      setBucketFilter('CHASE NOW');
+      const inv = enrichedInvoices.find((i) => i.invoiceNumber.includes('5561'));
+      if (inv) setSelectedInvoice(inv);
+    } else if (scenario === 'tinyfish') {
+      setBucketFilter('WATCH');
+      const inv = enrichedInvoices.find((i) => !i.matchResult.matched && !i.irnRecord.irnPresent);
+      if (inv) setSelectedInvoice(inv);
+    }
+  };
+
   const handleExportCsv = () => {
     exportInvoicesToCsv(displayedInvoices);
   };
@@ -157,34 +179,50 @@ export function App() {
         onRunRouting={handleRunRouting}
         showSynopsis={showSynopsis}
         setShowSynopsis={setShowSynopsis}
+        activeView={activeView}
+        onViewChange={setActiveView}
         kpis={kpis}
         matchFilter={matchFilter}
         setMatchFilter={setMatchFilter}
       />
 
-      <FilterBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        bucketFilter={bucketFilter}
-        setBucketFilter={setBucketFilter}
-        irnFilter={irnFilter}
-        setIrnFilter={setIrnFilter}
-        apFilter={apFilter}
-        setApFilter={setApFilter}
-        patternFilter={patternFilter}
-        setPatternFilter={setPatternFilter}
-        displayedCount={displayedInvoices.length}
-        totalCount={enrichedInvoices.length}
-      />
+      {activeView === 'overview' ? (
+        <ProjectOverview
+          onLaunchDemo={() => {
+            handleRunRouting();
+            setActiveView('dashboard');
+          }}
+          onOpenBacktestModal={() => setIsBacktestModalOpen(true)}
+          onSelectQuickDemo={handleSelectQuickDemo}
+          kpis={kpis}
+        />
+      ) : (
+        <>
+          <FilterBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            bucketFilter={bucketFilter}
+            setBucketFilter={setBucketFilter}
+            irnFilter={irnFilter}
+            setIrnFilter={setIrnFilter}
+            apFilter={apFilter}
+            setApFilter={setApFilter}
+            patternFilter={patternFilter}
+            setPatternFilter={setPatternFilter}
+            displayedCount={displayedInvoices.length}
+            totalCount={enrichedInvoices.length}
+          />
 
-      <InvoiceTable
-        invoices={displayedInvoices}
-        sortField={sortField}
-        setSortField={setSortField}
-        sortDirection={sortDirection}
-        setSortDirection={setSortDirection}
-        onSelect={(inv) => setSelectedInvoice(inv)}
-      />
+          <InvoiceTable
+            invoices={displayedInvoices}
+            sortField={sortField}
+            setSortField={setSortField}
+            sortDirection={sortDirection}
+            setSortDirection={setSortDirection}
+            onSelect={(inv) => setSelectedInvoice(inv)}
+          />
+        </>
+      )}
 
       <InvoiceDetailPanel
         invoice={currentSelectedInvoice}
