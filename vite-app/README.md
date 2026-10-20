@@ -1,4 +1,4 @@
-# GST Credit-at-Risk Forecaster (Hackathon MVP)
+﻿# GST Credit-at-Risk Forecaster (Hackathon MVP)
 
 Reconciliation mismatches between purchase records and supplier-reported tax returns are a universal compliance problem — this tool solves it for India's GST system, where missing matches can trigger forced tax credit reversals worth thousands of rupees per invoice.
 
