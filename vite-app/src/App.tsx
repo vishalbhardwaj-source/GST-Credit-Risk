@@ -9,10 +9,12 @@ import { FilterBar } from './components/FilterBar';
 import { InvoiceTable } from './components/InvoiceTable';
 import { InvoiceDetailPanel } from './components/InvoiceDetailPanel';
 import { MlBacktestModal } from './components/MlBacktestModal';
+import { WelcomePage } from './components/WelcomePage';
 
 export function App() {
   const baseData = useMemo(() => generateSyntheticDataset(42), []);
   const initialReconciled = useMemo(() => reconcileDataset(baseData), [baseData]);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Routing and modal state
   const [isRouted, setIsRouted] = useState(false);
@@ -140,10 +142,15 @@ export function App() {
     exportInvoicesToCsv(displayedInvoices);
   };
 
+
   const currentSelectedInvoice = useMemo(() => {
     if (!selectedInvoice) return null;
     return enrichedInvoices.find((i) => i.id === selectedInvoice.id) || selectedInvoice;
   }, [selectedInvoice, enrichedInvoices]);
+
+   if (showWelcome) {
+  return <WelcomePage onExplore={() => setShowWelcome(false)} />;
+}
 
   return (
     <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
