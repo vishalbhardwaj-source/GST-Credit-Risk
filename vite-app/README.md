@@ -199,9 +199,9 @@ Run `npx vitest run` inside `vite-app` to verify all **18 unit tests** (11 origi
 |:---|:---|:---:|
 | **TAM (Total Addressable Market)** | All ~8 Million GST-registered businesses filing GSTR-3B monthly in India | **₹240 Billion** (~$2.9B USD) |
 | **SAM (Serviceable Addressable Market)** | ~10% of monthly filers (~800,000 businesses) facing recurring GSTR-2B discrepancies | **₹24 Billion** (~$290M USD) |
-| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹240 Crore** (~$29M USD) |
+| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹24 Crore** (~$2.9M USD) |
 
-*The SOM (₹240 Cr) represents the defensible Year-1 milestone in a venture pitch — assuming a blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
+*The SOM (₹24 Cr) represents the defensible Year-1 milestone in a venture pitch — assuming a blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
 
 ### Competitive Positioning
 

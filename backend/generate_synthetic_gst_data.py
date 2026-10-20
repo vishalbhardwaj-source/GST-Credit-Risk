@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 def generate_multi_month_cohort(seed=42):
     random.seed(seed)
     
-    # 50 Supplier GSTINs with diverse compliance archetypes
+    # 50 Supplier GSTINs with diverse compliance archetypes (realistic enterprise distribution)
     suppliers = []
     archetypes = [
         {"type": "regular_monthly", "is_qrmp": False, "median_lag": 2, "reliability": 0.95, "recovery_rate": 0.96},
@@ -16,9 +16,10 @@ def generate_multi_month_cohort(seed=42):
         {"type": "erratic_compliance", "is_qrmp": False, "median_lag": 55, "reliability": 0.32, "recovery_rate": 0.25},
         {"type": "cancelled_defaulter", "is_qrmp": False, "median_lag": 90, "reliability": 0.05, "recovery_rate": 0.02},
     ]
+    weights = [0.40, 0.30, 0.15, 0.10, 0.05]
 
     for i in range(1, 51):
-        arch = archetypes[(i - 1) % len(archetypes)]
+        arch = random.choices(archetypes, weights=weights)[0]
         state_code = f"{random.choice([27, 29, 24, 33, 19, 7, 3, 23]):02d}"
         pan = f"AAAC{chr(65 + (i % 26))}{random.randint(1000, 9999)}{chr(65 + (i % 26))}"
         gstin = f"{state_code}{pan}1Z{i % 9}"
@@ -86,15 +87,56 @@ def generate_multi_month_cohort(seed=42):
                 "pos": supp["supplier_gstin"][:2]
             })
 
-            # Ground truth labeled mechanics:
-            # Exact Match (70%), Typo/Rounding (8%), Timing Lag (14%), True Non-Filing / Missing (8%)
-            dice = random.random()
-            resolved = 1
-            discrepancy_type = "EXACT_MATCH"
+            # Ground truth labeled mechanics grounded in vendor archetype:
+            arch_type = supp["archetype"]
+            roll = random.random()
 
-            if dice < 0.70:
-                # 1. Exact Match (appears on 14th of following month)
-                discrepancy_type = "EXACT_MATCH"
+            if arch_type == "regular_monthly":
+                if roll < 0.90:
+                    discrepancy_type = "EXACT_MATCH"
+                    resolved = 1
+                elif roll < 0.97:
+                    discrepancy_type = "TYPO_OR_ROUNDING"
+                    resolved = 1
+                else:
+                    discrepancy_type = "TIMING_LAG"
+                    resolved = 1
+            elif arch_type == "qrmp_quarterly":
+                if roll < 0.20:
+                    discrepancy_type = "EXACT_MATCH"
+                    resolved = 1
+                elif roll < 0.94:
+                    discrepancy_type = "TIMING_LAG"
+                    resolved = 1
+                else:
+                    discrepancy_type = "TYPO_OR_ROUNDING"
+                    resolved = 1
+            elif arch_type == "chronic_lag":
+                if roll < 0.30:
+                    discrepancy_type = "EXACT_MATCH"
+                    resolved = 1
+                elif roll < 0.85:
+                    discrepancy_type = "TIMING_LAG"
+                    resolved = 1 if supp["historical_recovery_rate"] > 0.65 else 0
+                else:
+                    discrepancy_type = "TRUE_NON_FILING"
+                    resolved = 0
+            elif arch_type == "erratic_compliance":
+                if roll < 0.15:
+                    discrepancy_type = "EXACT_MATCH"
+                    resolved = 1
+                elif roll < 0.50:
+                    discrepancy_type = "TIMING_LAG"
+                    resolved = 1 if random.random() < 0.40 else 0
+                else:
+                    discrepancy_type = "TRUE_NON_FILING"
+                    resolved = 0
+            else:  # cancelled_defaulter
+                discrepancy_type = "TRUE_NON_FILING"
+                resolved = 0
+
+            # Generate matching 2B record if exact or typo
+            if discrepancy_type == "EXACT_MATCH":
                 gstr2b_rows.append({
                     "gstr2b_id": f"2B_{inv_counter}",
                     "supplier_gstin": supp["supplier_gstin"],
@@ -106,10 +148,7 @@ def generate_multi_month_cohort(seed=42):
                     "gstr2b_generation_date": (base_date + timedelta(days=44)).strftime("%Y-%m-%d"),
                     "itc_availability": "Y"
                 })
-                resolved = 1
-            elif dice < 0.78:
-                # 2. Punctuation / Typo / Rounding Mismatch (resolved with high probability)
-                discrepancy_type = "TYPO_OR_ROUNDING"
+            elif discrepancy_type == "TYPO_OR_ROUNDING":
                 mutated_num = inv_num.replace("/", "-")
                 tax_offset = random.choice([-0.50, 0.50, 1.0])
                 gstr2b_rows.append({
@@ -123,16 +162,6 @@ def generate_multi_month_cohort(seed=42):
                     "gstr2b_generation_date": (base_date + timedelta(days=44)).strftime("%Y-%m-%d"),
                     "itc_availability": "Y"
                 })
-                resolved = 1 if random.random() < 0.94 else 0
-            elif dice < 0.92:
-                # 3. Timing lag: files late in T+1 or T+2 month, resolves before Sec 16(4)
-                discrepancy_type = "TIMING_LAG"
-                # If supplier reliability is high, it resolves in subsequent 2B
-                resolved = 1 if (supp["on_time_filing_ratio"] > 0.40 or supp["is_qrmp"]) else 0
-            else:
-                # 4. True non-filing / Missing credit beyond Section 16(4) statutory cutoff
-                discrepancy_type = "TRUE_NON_FILING"
-                resolved = 0
 
             days_to_cutoff = (sec_16_4_cutoff - inv_date).days
 

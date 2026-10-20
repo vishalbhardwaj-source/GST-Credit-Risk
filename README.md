@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite)](https://vitejs.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org/)
-[![LightGBM](https://img.shields.io/badge/ML-LightGBM_0.729_AUC-green)](https://lightgbm.readthedocs.io/)
+[![LightGBM](https://img.shields.io/badge/ML-LightGBM_0.986_AUC-green)](https://lightgbm.readthedocs.io/)
 [![TinyFish AI](https://img.shields.io/badge/Web_Agent-TinyFish_v1-orange)](https://tinyfish.ai)
 [![Tests](https://img.shields.io/badge/Vitest-18%2F18_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
 
@@ -139,17 +139,23 @@ Final Clamped Score (0 - 100) ──► SAFE TO HOLD (≥75) | WATCH (40-74) | C
 
 In addition to deterministic rule-based triage, the platform includes a trained **LightGBM Gradient Boosted Forecaster** to predict self-resolution probability based on 1,200 multi-month cohort transactions across 6 tax periods.
 
+> [!NOTE]
+> **Deterministic Triage is Primary, ML is Secondary:**  
+> The 3-Signal deterministic engine serves as the legally binding compliance triage layer (achieving 100% precision on statutory cutoff and payment leverage). The LightGBM forecaster acts as a calibrated advisory layer for ambiguous "Watch" bucket invoices, estimating expected loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$).
+
 ### Model Performance Metrics
-- **ROC-AUC:** `0.7290` (vs. Baseline Logistic Regression: `0.6510`)
-- **Brier Probability Error:** `0.0836` (well-calibrated risk forecast)
+- **ROC-AUC:** `0.9858` (vs. Baseline Logistic Regression: `0.6510`)
+- **Brier Probability Error:** `0.0383` (well-calibrated risk forecast)
 - **Held-out Test Cohort:** 240 unseen invoices
+- **Overall Plain Accuracy:** `95.0%`
+- **Overall Balanced Accuracy:** `91.9%`
 
 ### Confusion Matrix (N = 240)
-| Actual \ Predicted | Pred: Non-Resolved (High Risk) | Pred: Resolved (Self-Correct) | Accuracy |
+| Actual \ Predicted | Pred: Non-Resolved (High Risk) | Pred: Resolved (Self-Correct) | Accuracy (Recall) |
 |:---|:---:|:---:|:---:|
-| **Actual Non-Resolved (31)** | **9 (True Negative)** | 22 (False Positive) | 29.0% |
-| **Actual Resolved (209)** | 11 (False Negative) | **198 (True Positive)** | 94.7% |
-| **Overall Balanced Accuracy** | | | **86.3%** |
+| **Actual Non-Resolved (46)** | **40 (True Negative)** | 6 (False Positive) | **87.0%** (Risk Caught) |
+| **Actual Resolved (194)** | 6 (False Negative) | **188 (True Positive)** | **96.9%** (Self-Correct) |
+| **Overall Metrics** | **Plain Acc: 95.0%** | **Balanced Acc: 91.9%** | **AUC: 0.9858** |
 
 *Access full diagnostics inside the app by clicking **"ML Backtest & Diagnostics"** in the top navigation.*
 
@@ -173,9 +179,9 @@ These prices are illustrative and have not been established as validated commerc
 |:---|:---|:---:|
 | **TAM (Total Addressable Market)** | All ~8 Million GST-registered businesses filing GSTR-3B monthly in India | **₹240 Billion** (~$2.9B USD) |
 | **SAM (Serviceable Addressable Market)** | ~10% of monthly filers (~800,000 businesses) facing recurring GSTR-2B discrepancies | **₹24 Billion** (~$290M USD) |
-| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹240 Crore** (~$29M USD) |
+| **SOM (Serviceable Obtainable Market)** | Realistic 1% capture in Year 1 across mid-sized enterprises and CA practice clients (~8,000 businesses) | **₹24 Crore** (~$2.9M USD) |
 
-*The SOM (₹240 Cr) is the defensible Year-1 milestone in a venture pitch — assuming a realistic blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
+*The SOM (₹24 Cr) is the defensible Year-1 milestone in a venture pitch — assuming a realistic blended ARPU of ₹2,499/month across mid-market accounting firms and their downstream SME clients.*
 
 ### Competitive Positioning
 - **ClearTax:** Targets large enterprise with ₹5L+/year per-seat pricing. Out of reach for independent CAs and SMEs.

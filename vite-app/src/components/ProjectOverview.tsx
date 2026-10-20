@@ -80,7 +80,7 @@ export function ProjectOverview({
             <Globe size={13} /> TinyFish Web Agent Active
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#a5b4fc' }}>
-            <Cpu size={13} /> LightGBM 0.729 AUC
+            <Cpu size={13} /> LightGBM 0.986 AUC
           </span>
         </div>
       </div>
@@ -195,7 +195,7 @@ export function ProjectOverview({
               }}
             >
               <Activity size={16} color="#818cf8" />
-              View ML Backtest &amp; Diagnostics (0.729 AUC)
+              View ML Backtest &amp; Diagnostics (0.986 AUC)
             </button>
           </div>
         </div>
@@ -575,10 +575,10 @@ export function ProjectOverview({
             Commercial Viability &amp; SaaS Economics
           </span>
           <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', marginTop: '4px' }}>
-            TAM: ₹240B · SAM: ₹24B · Defensible Year 1 SOM: ₹240 Crore
+            TAM: ₹240B · SAM: ₹24B · Defensible Year 1 SOM: ₹24 Crore
           </h4>
           <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px', lineHeight: 1.5 }}>
-            Targeting ~800,000 businesses with recurring 2B mismatches. A realistic 1% Year 1 capture (~8,000 clients) at ₹2,499/mo generates ₹240 Cr ($29M ARR).
+            Targeting ~800,000 businesses with recurring 2B mismatches. A realistic 1% Year 1 capture (~8,000 clients) at ₹2,499/mo generates ₹24 Cr ($2.9M ARR).
           </p>
         </div>
 

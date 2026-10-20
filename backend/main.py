@@ -127,11 +127,11 @@ def get_backtest_diagnostics():
         "metrics": trained_forecaster.model_metrics,
         "interpretability": {
             "top_drivers": [
-                {"feature": "vendor_filing_lag_median", "gain": 1150.2, "description": "Supplier historical median delay in days"},
-                {"feature": "on_time_filing_ratio", "gain": 1073.5, "description": "Supplier consistency ratio over past 6 periods"},
-                {"feature": "invoice_tax_amount_log", "gain": 897.4, "description": "Size of tax amount at risk"},
-                {"feature": "days_to_statutory_cutoff", "gain": 843.9, "description": "Time buffer until Section 16(4) statutory cutoff"},
-                {"feature": "is_timing_lag", "gain": 820.0, "description": "Indicator of routine 1-2 month filing lag"}
+                {"feature": "vendor_filing_lag_median", "gain": 5411.8, "description": "Supplier historical median delay in days — strongest predictor of default"},
+                {"feature": "on_time_filing_ratio", "gain": 1623.7, "description": "Supplier consistency ratio over past 6 periods"},
+                {"feature": "invoice_tax_amount_log", "gain": 546.7, "description": "Log-scaled tax amount at risk"},
+                {"feature": "days_to_statutory_cutoff", "gain": 546.6, "description": "Time buffer until Section 16(4) statutory cutoff"},
+                {"feature": "is_timing_lag", "gain": 309.7, "description": "Indicator of routine 1-2 month filing lag"}
             ]
         }
     }

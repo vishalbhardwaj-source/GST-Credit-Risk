@@ -59,21 +59,26 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
         </div>
 
         {/* Core Validation Metrics Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>ROC-AUC Metric</span>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>0.7290</div>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>0.9858</div>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Baseline Logistic: 0.651</span>
           </div>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Brier Score</span>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: '#60a5fa', marginTop: '4px' }}>0.0836</div>
-            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Calibrated probability error</span>
+            <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Balanced Accuracy</span>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: '#a78bfa', marginTop: '4px' }}>91.9%</div>
+            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Plain Accuracy: 95.0%</span>
           </div>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Test Cohort</span>
-            <div style={{ fontSize: '24px', fontWeight: 800, color: '#f59e0b', marginTop: '4px' }}>240 Invoices</div>
-            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Held-out evaluation split</span>
+            <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Risk Catch Rate</span>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>87.0%</div>
+            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>40 of 46 defaults caught</span>
+          </div>
+          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
+            <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Brier Error</span>
+            <div style={{ fontSize: '24px', fontWeight: 800, color: '#60a5fa', marginTop: '4px' }}>0.0383</div>
+            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Calibrated probability error</span>
           </div>
         </div>
 
@@ -93,21 +98,21 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
             </thead>
             <tbody>
               <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '8px', fontWeight: 600, color: '#f87171' }}>Actual: Non-Resolved (31)</td>
-                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>9 (True Neg)</td>
-                <td style={{ padding: '8px', color: '#f59e0b' }}>22 (False Pos)</td>
-                <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>29.0%</td>
+                <td style={{ padding: '8px', fontWeight: 600, color: '#f87171' }}>Actual: Non-Resolved (46)</td>
+                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>40 (True Neg)</td>
+                <td style={{ padding: '8px', color: '#f59e0b' }}>6 (False Pos)</td>
+                <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>87.0%</td>
               </tr>
               <tr>
-                <td style={{ padding: '8px', fontWeight: 600, color: '#34d399' }}>Actual: Resolved (209)</td>
-                <td style={{ padding: '8px', color: '#f87171' }}>1 (False Neg)</td>
-                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>208 (True Pos)</td>
-                <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>99.5%</td>
+                <td style={{ padding: '8px', fontWeight: 600, color: '#34d399' }}>Actual: Resolved (194)</td>
+                <td style={{ padding: '8px', color: '#f87171' }}>6 (False Neg)</td>
+                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>188 (True Pos)</td>
+                <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>96.9%</td>
               </tr>
             </tbody>
           </table>
           <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            *High sensitivity ensures zero false sense of security: 99.5% of self-correcting invoices correctly identified.
+            *Overall Plain Accuracy: 95.0% ((40 + 188) / 240) | Balanced Accuracy: 91.9% ((87.0% + 96.9%) / 2). High sensitivity on defaulting invoices catches 87.0% of genuine tax risks.
           </div>
         </div>
 
@@ -118,13 +123,12 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           </span>
           <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {[
-              { name: 'Supplier Historical Filing Lag Median', gain: '1,150.2', pct: 100 },
-              { name: 'On-Time Filing Ratio (6-Month Cohort)', gain: '1,073.5', pct: 93 },
-              { name: 'Invoice Tax Amount Log Scale', gain: '897.4', pct: 78 },
-              { name: 'Days Remaining to Statutory Cutoff', gain: '843.9', pct: 73 },
-              { name: 'Routine Timing Lag Flag', gain: '820.0', pct: 71 },
-              { name: 'QRMP Scheme Quarterly Filer Indicator', gain: '54.6', pct: 5 },
-              { name: 'Punctuation / Typo Discrepancy Indicator', gain: '27.7', pct: 2 },
+              { name: 'Supplier Historical Filing Lag Median', gain: '5,411.8', pct: 100 },
+              { name: 'On-Time Filing Ratio (6-Month Cohort)', gain: '1,623.7', pct: 30 },
+              { name: 'Invoice Tax Amount Log Scale', gain: '546.7', pct: 10 },
+              { name: 'Days Remaining to Statutory Cutoff', gain: '546.6', pct: 10 },
+              { name: 'Routine Timing Lag Flag', gain: '309.7', pct: 6 },
+              { name: 'Historical Recovery Rate', gain: '20.1', pct: 1 },
             ].map((f) => (
               <div key={f.name}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '2px' }}>

@@ -78,11 +78,20 @@ class GSTResolutionForecaster:
         preds = self.model.predict(X_test)
         auc = roc_auc_score(y_test, preds)
         brier = brier_score_loss(y_test, preds)
-        cm = confusion_matrix(y_test, (preds >= 0.50).astype(int)).tolist()
+        pred_bin = (preds >= 0.50).astype(int)
+        cm = confusion_matrix(y_test, pred_bin).tolist()
+        plain_acc = float((pred_bin == y_test).mean())
+        spec = cm[0][0] / (cm[0][0] + cm[0][1]) if (cm[0][0] + cm[0][1]) > 0 else 0.0
+        sens = cm[1][1] / (cm[1][0] + cm[1][1]) if (cm[1][0] + cm[1][1]) > 0 else 0.0
+        balanced_acc = float((spec + sens) / 2.0)
 
         self.model_metrics = {
             "roc_auc": round(float(auc), 4),
             "brier_score": round(float(brier), 4),
+            "plain_accuracy": round(plain_acc * 100, 2),
+            "balanced_accuracy": round(balanced_acc * 100, 2),
+            "specificity": round(spec * 100, 2),
+            "sensitivity": round(sens * 100, 2),
             "confusion_matrix": cm,
             "test_sample_size": len(y_test),
             "feature_importance": dict(zip(self.feature_cols, [float(x) for x in self.model.feature_importance(importance_type="gain")]))
