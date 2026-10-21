@@ -20,7 +20,7 @@
 
 > [!IMPORTANT]
 > **Legal & Trust Notice:**  
-> *Synthetic demo data. Triage decision-support only — not tax or legal advice. Does not access government production credentials, determine statutory ITC eligibility, or replace certified Chartered Accountant review.*
+> *Triage decision-support only — not tax or legal advice. Does not access government production credentials, determine statutory ITC eligibility, or replace certified Chartered Accountant review.*
 
 ---
 
