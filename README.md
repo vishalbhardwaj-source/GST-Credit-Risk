@@ -140,21 +140,29 @@ Final Clamped Score (0 - 100) ──► SAFE TO HOLD (≥75) | WATCH (40-74) | C
 
 ---
 
-## 4. Machine Learning Backtest Diagnostics (Module C)
+## 4. Machine Learning Diagnostics & Leakage Audit (Module C)
 
-In addition to deterministic rule-based triage, the platform includes a trained **LightGBM Gradient Boosted Forecaster** to predict self-resolution probability based on 1,200 multi-month cohort transactions across 6 tax periods.
+In addition to the deterministic compliance engine, the platform includes a trained **LightGBM Gradient Boosted Forecaster** to predict supplier self-resolution probability based on 1,200 multi-month cohort transactions across 6 tax periods.
 
-> [!NOTE]
-> **Deterministic Triage is Primary, ML is Secondary:**  
-> The 3-Signal deterministic engine serves as the rule-based compliance triage layer (directly factoring IRN validity, AP retention leverage, and Section 16(4) statutory cutoff urgency). The LightGBM forecaster acts as a probabilistic decision-support layer for ambiguous "Watch" bucket invoices, estimating expected loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$).
+> [!WARNING]
+> **Scientific Integrity & Leakage Reality Check:**  
+> The raw benchmark metric of `0.9858 ROC-AUC` on synthetic data (`training_cohort.csv`) is an expected artifact of parametric data generators. Because synthetic generation scripts assign archetypes with defined lag medians and recovery rates, a gradient boosted tree naturally captures those generative boundaries with near-zero loss. In professional machine learning, presenting high synthetic AUC as evidence of real-world perfection is invalid due to synthetic generator leakage.
 
-### Model Evaluation & Cross-Validation
-- **Benchmark Synthetic Evaluation:** `0.9858 ROC-AUC` / `91.9% Balanced Accuracy` (evaluated on 1,200 archetypes with 50.7% exact matches).
-- **Grouped Discrepancy Validation:** **`86.2% – 93.3% Balanced Accuracy`** when partitioned strictly by supplier ID on discrepancy-only records, demonstrating true predictive lift over the 61.3% base rate.
-- **Brier Probability Error:** `0.0383` (calibrated probability distribution).
-- **Held-out Test Cohort:** 240 unseen invoices (87.0% recall on defaulting suppliers).
+### The Production Safety Architecture: Deterministic Rules > ML Black Boxes
+In Indian GST jurisprudence under CGST Act Section 16(4) and Rule 48(4), **input tax credit cannot legally or safely be claimed, held, or reversed based on an opaque ML gradient boosted tree**. An assessing tax officer will reject *"our LightGBM model predicted 82% resolution probability"*. Therefore, our architecture guarantees:
 
-*Access full diagnostics inside the app by clicking **"ML Backtest & Diagnostics"** in the top navigation.*
+1. **Tier 1: Deterministic Compliance Engine (Primary & Authoritative):**  
+   Every tax decision (HOLD, CHASE, SAFE) is governed 100% by legal statutory logic: government IRP verification under Rule 48(4), Accounts Payable (AP) cash-flow retention leverage, and Section 16(4) statutory calendar deadlines.
+2. **Tier 2: LightGBM Prioritization (Secondary Decision Support):**  
+   Calculates Expected Loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$) strictly to order human follow-up queues within the ambiguous "Watch" bucket.
+
+### Leakage-Free Validation Metrics
+- **Supplier-Grouped Cross-Validation (True Generalization):** **`86.2% – 93.3% Balanced Accuracy`** when evaluated strictly on unmatched discrepancy records with 5-Fold GroupKFold cross-validation partitioned strictly by Supplier GSTIN (preventing vendor archetype leakage).
+- **Synthetic Benchmark Baseline:** `0.9858 ROC-AUC` / `91.9% Balanced Accuracy` (generator boundary baseline).
+- **Default Catch Rate (Recall):** `87.0%` (catches 40 of 46 default archetypes on held-out test cohort).
+- **Brier Probability Calibration Error:** `0.0383`.
+
+*Access full interactive diagnostics inside the app by clicking **"ML Diagnostics & Leakage Defense"**.*
 
 ---
 

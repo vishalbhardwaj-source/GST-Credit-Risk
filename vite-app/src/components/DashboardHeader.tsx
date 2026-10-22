@@ -342,7 +342,7 @@ export function DashboardHeader({
             }}
           >
             <Activity size={14} />
-            ML Backtest &amp; Diagnostics
+            ML Diagnostics &amp; Audit
           </button>
 
           <button

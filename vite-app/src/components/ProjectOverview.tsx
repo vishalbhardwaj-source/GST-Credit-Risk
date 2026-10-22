@@ -74,13 +74,13 @@ export function ProjectOverview({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '11px', color: 'var(--navy-muted)' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
-            <CheckCircle2 size={13} /> 18/18 Unit Tests Passing
+            <CheckCircle2 size={13} /> 28 Unit Tests Passing
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#60a5fa' }}>
             <Globe size={13} /> TinyFish Web Agent Active
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#a5b4fc' }}>
-            <Cpu size={13} /> LightGBM 0.986 AUC
+            <Cpu size={13} /> LightGBM ML Diagnostics
           </span>
         </div>
       </div>
@@ -195,7 +195,7 @@ export function ProjectOverview({
               }}
             >
               <Activity size={16} color="#818cf8" />
-              View ML Backtest &amp; Diagnostics (0.986 AUC)
+              ML Diagnostics &amp; Leakage Defense
             </button>
           </div>
         </div>
