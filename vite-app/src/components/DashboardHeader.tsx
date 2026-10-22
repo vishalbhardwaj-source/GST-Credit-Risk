@@ -134,7 +134,7 @@ export function DashboardHeader({
                 boxShadow: apiConnected ? '0 0 6px #10b981' : 'none',
               }}
             />
-            {apiConnected ? 'FastAPI Online (Port 8000)' : 'Backend Offline (Server Required)'}
+            {apiConnected ? 'Cloud API Connected (FastAPI & TinyFish)' : 'Standalone Client Mode (Offline Engine)'}
           </span>
           <span style={{ color: '#94a3b8', fontSize: '11px', whiteSpace: 'nowrap' }}>
             Section 16(2)(aa) Decision Support

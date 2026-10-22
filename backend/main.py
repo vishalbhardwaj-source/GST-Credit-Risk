@@ -33,6 +33,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:3000",
         "https://gst-credit-risk.vercel.app",
+        "https://gst-credit-forecaster.vercel.app",
     ],
     allow_origin_regex=r"^https:\/\/.*\.vercel\.app$",
     allow_credentials=True,
