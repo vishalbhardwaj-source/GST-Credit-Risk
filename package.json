@@ -7,6 +7,7 @@
     "dev": "npm --prefix vite-app run dev",
     "build": "npm --prefix vite-app run build",
     "test": "npm --prefix vite-app test",
+    "test:all": "npm --prefix vite-app test && npm --prefix vite-app run build && python -m pytest tests/",
     "server": "uvicorn backend.main:app --reload --port 8000"
   },
   "keywords": [
