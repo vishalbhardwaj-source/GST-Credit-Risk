@@ -28,6 +28,7 @@ export interface DashboardHeaderProps {
   onExportCsv: () => void;
   onRunRouting: () => void;
   onOpenUploadModal?: () => void;
+  onOpenTinyFishModal?: () => void;
   isCustomDataActive?: boolean;
   customDataName?: string;
   onResetToDemo?: () => void;
@@ -61,6 +62,7 @@ export function DashboardHeader({
   onExportCsv,
   onRunRouting,
   onOpenUploadModal,
+  onOpenTinyFishModal,
   isCustomDataActive,
   customDataName,
   onResetToDemo,
@@ -280,6 +282,27 @@ export function DashboardHeader({
               </button>
             )
           )}
+
+          <button
+            onClick={onOpenTinyFishModal}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              background: 'rgba(56, 189, 248, 0.15)',
+              border: '1px solid rgba(56, 189, 248, 0.4)',
+              color: '#38bdf8',
+              fontWeight: 600,
+              fontSize: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <Sparkles size={14} />
+            Test Any GSTIN
+          </button>
 
           <button
             onClick={onOpenUploadModal}

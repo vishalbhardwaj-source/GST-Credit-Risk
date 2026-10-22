@@ -13,6 +13,7 @@ import { MlBacktestModal } from './components/MlBacktestModal';
 import { WelcomePage } from './components/WelcomePage';
 import { ProjectOverview } from './components/ProjectOverview';
 import { UploadDataModal } from './components/UploadDataModal';
+import { TinyFishArbitraryModal } from './components/TinyFishArbitraryModal';
 
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
@@ -37,6 +38,7 @@ export function App() {
   const [isRouting, setIsRouting] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<ReconciledInvoice | null>(null);
   const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false);
+  const [isTinyFishModalOpen, setIsTinyFishModalOpen] = useState(false);
   const [showSynopsis, setShowSynopsis] = useState(true);
 
   // Filter & Search states
@@ -284,6 +286,7 @@ export function App() {
         isCustomDataActive={isCustomDataActive}
         customDataName={customDataInfo?.name}
         onResetToDemo={handleResetToDemo}
+        onOpenTinyFishModal={() => setIsTinyFishModalOpen(true)}
         showSynopsis={showSynopsis}
         setShowSynopsis={setShowSynopsis}
         activeView={activeView}
@@ -353,6 +356,11 @@ export function App() {
       <MlBacktestModal
         isOpen={isBacktestModalOpen}
         onClose={() => setIsBacktestModalOpen(false)}
+      />
+
+      <TinyFishArbitraryModal
+        isOpen={isTinyFishModalOpen}
+        onClose={() => setIsTinyFishModalOpen(false)}
       />
 
       <UploadDataModal

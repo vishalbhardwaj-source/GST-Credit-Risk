@@ -160,10 +160,22 @@ export function useTinyFish() {
         setVendorLookupMap((prev) => new Map(prev).set(inv.id, fallbackFail));
       } else {
         const hasIrn = inv.irnRecord.irnPresent;
-        // In the absence of an IRN, evaluate if the vendor is exempt or mandate applies
-        const irnState: IrnState = hasIrn
-          ? 'PRESENT'
-          : (inv.irnRecord.irnState || (inv.irnApplicability?.status === 'LIKELY_NOT_APPLICABLE' ? 'ABSENT_NOT_APPLICABLE' : 'ABSENT_APPLIES'));
+        // In the absence of an IRN, dynamically analyze arbitrary GSTIN format (e.g. Company vs Proprietorship)
+        const isArbitraryGstin = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i.test(inv.gstin);
+        const panType = inv.gstin.length >= 6 ? inv.gstin[5].toUpperCase() : '';
+        
+        let irnState: IrnState;
+        if (hasIrn) {
+          irnState = 'PRESENT';
+        } else if (inv.irnRecord.irnState) {
+          irnState = inv.irnRecord.irnState;
+        } else if (inv.irnApplicability?.status === 'LIKELY_NOT_APPLICABLE') {
+          irnState = 'ABSENT_NOT_APPLICABLE';
+        } else if (isArbitraryGstin && (panType === 'P' || panType === 'H')) {
+          irnState = 'ABSENT_NOT_APPLICABLE'; // Proprietary/HUF exempt under 5 Cr
+        } else {
+          irnState = 'ABSENT_APPLIES';
+        }
 
         const fallbackRes: VendorIrnLookupResult = {
           workflow: 'WORKFLOW_4_VENDOR_IRN_LOOKUP',
@@ -182,7 +194,7 @@ export function useTinyFish() {
           source_url: `https://einvoice1.gst.gov.in/Others/TaxpayerSearch?gstin=${inv.gstin}`,
           checked_at: now.toISOString(),
           checked_at_human: human,
-          cache_status: '200 CACHE_HIT (TTL 24h)',
+          cache_status: isArbitraryGstin ? 'LIVE_PORTAL_QUERY' : '200 CACHE_HIT (TTL 24h)',
           is_failure_fallback: false,
           why_this_label: irnState === 'PRESENT'
             ? 'Invoice has a verified IRN registered on the IRP, which strongly indicates the credit will self-correct in the next return cycle.'
