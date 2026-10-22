@@ -51,3 +51,5 @@ gst-credit-at-risk-export-*.csv
 *.sqlite3
 *.db
 backend/data/*.db
+*.pkl
+backend/data/*.pkl

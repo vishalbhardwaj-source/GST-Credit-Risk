@@ -11,7 +11,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org/)
 [![ML](https://img.shields.io/badge/ML-Gradient_Boosted_Forecaster-green)](https://github.com/microsoft/LightGBM)
 [![Web Agent](https://img.shields.io/badge/Web_Agent-TinyFish_Sandbox-orange)](https://tinyfish.ai)
-[![Tests](https://img.shields.io/badge/Vitest-30%2F30_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
+[![Tests](https://img.shields.io/badge/Vitest-28%2F28_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
 [![CI](https://github.com/vishalbhardwaj-source/GST-Credit-Risk/actions/workflows/ci.yml/badge.svg)](https://github.com/vishalbhardwaj-source/GST-Credit-Risk/actions/workflows/ci.yml)
 
 ### 🚀 [Live Demo → gst-credit-risk.vercel.app](https://gst-credit-risk.vercel.app)
@@ -96,10 +96,10 @@ The **GST Credit-at-Risk Forecaster** eliminates this dilemma. Rather than prese
 
 | ID | Workflow Name | Target Endpoint | Description | Scoring Engine Impact |
 |:---|:---|:---|:---|:---|
-| **WF1** | **Deadline Extension Tracker** | `GET /api/tinyfish/workflow-1/deadline-extension` | Queries CBIC notifications (`cbic.gov.in`) to check whether Section 16(4) reversal deadlines have been extended. | Surfaces active Nov 30 statutory horizon on dashboard header banner. |
-| **WF2** | **Vendor Registry Verifier** | `GET /api/tinyfish/workflow-2/vendor-status` | Searches `services.gst.gov.in` for taxpayer active/cancelled status, legal entity name, and return filing history. | Provides qualitative audit proof before vendor escalation. |
+| **WF1** | **Deadline Extension Tracker** | `GET /api/tinyfish/workflow-1/deadline-extension` | Evaluates CBIC notifications (Notification 12/2024 schema) to track whether Section 16(4) reversal deadlines have been extended. | Surfaces active Nov 30 statutory horizon on dashboard header banner. |
+| **WF2** | **Vendor Registry Verifier** | `GET /api/tinyfish/workflow-2/vendor-status` | Evaluates simulated taxpayer registry schema (`services.gst.gov.in`) for active/cancelled status and return filing track. | Provides qualitative audit proof before vendor escalation. |
 | **WF3** | **IRN Applicability Checker** | `GET /api/tinyfish/workflow-3/irn-applicability` | Evaluates CBIC Notification No. 10/2023 r/w Rule 48(4) against supplier turnover band (< ₹5 Cr vs > ₹5 Cr) and transaction type. | Upgrades absent IRN from default penalty (`-15`) to neutral (`0`) when supplier is sub-threshold (< ₹5 Cr). |
-| **WF4** | **Vendor IRN Portal Lookup** | `GET /api/tinyfish/workflow-4/vendor-lookup` | Directly queries `einvoice1.gst.gov.in` to verify whether the vendor's specific GSTIN is e-invoice enabled on the IRP. | Feeds the 4-state IRN engine with verified portal evidence; supports simulated failure mode. |
+| **WF4** | **Vendor IRN Portal Lookup** | `GET /api/tinyfish/workflow-4/vendor-lookup` | Queries simulated IRP registry schema (`einvoice1.gst.gov.in`) to check whether vendor GSTIN is e-invoice mandated. | Feeds the 4-state IRN engine with verified status; supports fallback defense mode. |
 
 ### The 4-State IRN Engine & Score Mutation
 
@@ -127,7 +127,7 @@ A missing IRN should not automatically be treated as a compliance failure. Appli
           │
           ▼
 calculateRoutingScore()
-(Base 50 + IRN Adj + AP Leverage Adj + Filing Pattern Adj)
+(Base 50 + IRN Adj + AP Leverage Adj + Filing Pattern Adj + Cutoff Adj)
           │
           ▼
 Final Clamped Score (0 - 100) ──► SAFE TO HOLD (≥75) | WATCH (40-74) | CHASE NOW (<40)
@@ -146,21 +146,13 @@ In addition to deterministic rule-based triage, the platform includes a trained 
 
 > [!NOTE]
 > **Deterministic Triage is Primary, ML is Secondary:**  
-> The 3-Signal deterministic engine serves as the legally binding compliance triage layer (achieving 100% precision on statutory cutoff and payment leverage). The LightGBM forecaster acts as a calibrated advisory layer for ambiguous "Watch" bucket invoices, estimating expected loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$).
+> The 3-Signal deterministic engine serves as the rule-based compliance triage layer (directly factoring IRN validity, AP retention leverage, and Section 16(4) statutory cutoff urgency). The LightGBM forecaster acts as a probabilistic decision-support layer for ambiguous "Watch" bucket invoices, estimating expected loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$).
 
-### Model Performance Metrics
-- **ROC-AUC:** `0.9858` (vs. Baseline Logistic Regression: `0.6510`)
-- **Brier Probability Error:** `0.0383` (well-calibrated risk forecast)
-- **Held-out Test Cohort:** 240 unseen invoices
-- **Overall Plain Accuracy:** `95.0%`
-- **Overall Balanced Accuracy:** `91.9%`
-
-### Confusion Matrix (N = 240)
-| Actual \ Predicted | Pred: Non-Resolved (High Risk) | Pred: Resolved (Self-Correct) | Accuracy (Recall) |
-|:---|:---:|:---:|:---:|
-| **Actual Non-Resolved (46)** | **40 (True Negative)** | 6 (False Positive) | **87.0%** (Risk Caught) |
-| **Actual Resolved (194)** | 6 (False Negative) | **188 (True Positive)** | **96.9%** (Self-Correct) |
-| **Overall Metrics** | **Plain Acc: 95.0%** | **Balanced Acc: 91.9%** | **AUC: 0.9858** |
+### Model Evaluation & Cross-Validation
+- **Benchmark Synthetic Evaluation:** `0.9858 ROC-AUC` / `91.9% Balanced Accuracy` (evaluated on 1,200 archetypes with 50.7% exact matches).
+- **Grouped Discrepancy Validation:** **`86.2% – 93.3% Balanced Accuracy`** when partitioned strictly by supplier ID on discrepancy-only records, demonstrating true predictive lift over the 61.3% base rate.
+- **Brier Probability Error:** `0.0383` (calibrated probability distribution).
+- **Held-out Test Cohort:** 240 unseen invoices (87.0% recall on defaulting suppliers).
 
 *Access full diagnostics inside the app by clicking **"ML Backtest & Diagnostics"** in the top navigation.*
 

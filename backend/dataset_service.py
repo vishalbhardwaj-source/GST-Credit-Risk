@@ -276,10 +276,24 @@ def run_server_pipeline(invoices: List[Dict[str, Any]], trained_forecaster=None,
             routed_invoices.append(inv)
             continue
 
-        # 3 Signals
-        irn_present = inv.get("irnRecord", {}).get("irnPresent", False)
-        irn_adj = 20 if irn_present else -15
+        # 1. 4-State IRN Signal Engine
+        irn_record = inv.get("irnRecord", {})
+        vendor_lookup = inv.get("vendorIrnLookup", {})
+        explicit_irn_state = vendor_lookup.get("irn_state") or irn_record.get("irnState")
+        irn_present = irn_record.get("irnPresent", False)
 
+        if explicit_irn_state == "PRESENT":
+            irn_adj = 20
+        elif explicit_irn_state == "ABSENT_APPLIES":
+            irn_adj = -15
+        elif explicit_irn_state in ("ABSENT_NOT_APPLICABLE", "ABSENT_UNKNOWN"):
+            irn_adj = 0
+        elif irn_present:
+            irn_adj = 20
+        else:
+            irn_adj = -15
+
+        # 2. Commercial AP Leverage Signal
         tier = inv.get("leverageTier", "LOW")
         if tier == "HIGH":
             ap_adj = 15
@@ -288,6 +302,7 @@ def run_server_pipeline(invoices: List[Dict[str, Any]], trained_forecaster=None,
         else:
             ap_adj = -10
 
+        # 3. Filing History Periodicity Signal
         pattern = inv.get("vendor", {}).get("filingPattern", "NORMAL/PUNCTUAL")
         if pattern == "HABITUAL LAGGARD":
             filing_adj = 15
@@ -296,7 +311,15 @@ def run_server_pipeline(invoices: List[Dict[str, Any]], trained_forecaster=None,
         else:
             filing_adj = 0
 
-        raw_score = base_score + irn_adj + ap_adj + filing_adj
+        # 4. Section 16(4) Statutory Deadline Proximity Adjustment
+        days_to_cutoff = inv.get("daysToCutoff", 45)
+        cutoff_adj = 0
+        if days_to_cutoff <= 15:
+            cutoff_adj = -20
+        elif days_to_cutoff <= 35:
+            cutoff_adj = -10
+
+        raw_score = base_score + irn_adj + ap_adj + filing_adj + cutoff_adj
         clamped_score = max(0, min(100, raw_score))
 
         if clamped_score >= 75:
@@ -307,13 +330,14 @@ def run_server_pipeline(invoices: List[Dict[str, Any]], trained_forecaster=None,
             reason = "Mixed signals: Action needed before Section 16(4) statutory cutoff."
         else:
             bucket = "CHASE NOW"
-            reason = "High credit risk: IRN missing, low buyer AP leverage, and sudden filing anomaly. Immediate supplier outreach required."
+            reason = "High credit risk: IRN missing, low buyer AP leverage, or imminent statutory deadline. Immediate supplier outreach required."
 
         explanation = {
             "baseScore": base_score,
             "irnAdjustment": irn_adj,
             "apAdjustment": ap_adj,
             "filingAdjustment": filing_adj,
+            "cutoffAdjustment": cutoff_adj,
             "rawScore": raw_score,
             "clampedScore": clamped_score,
             "bucket": bucket,

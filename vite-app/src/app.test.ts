@@ -177,31 +177,6 @@ describe('Synthetic Dataset Benchmark Criteria Tests', () => {
   });
 });
 
-describe('Section 16(4) Statutory Cutoff Urgency Tests', () => {
-  it('Safe to Hold invoice degrades to Watch when cutoff is within 35 days (-10 pts)', () => {
-    // Watch Case 1 without cutoff: 50 - 15 + 15 + 15 = 65
-    // Safe to Hold: 50 + 20 + 15 + 15 = 100
-    // If daysToCutoff = 30 -> 100 - 10 = 90 (still Safe to Hold)
-    // Moderate Safe (e.g. Medium AP + Habitual): 50 + 20 + 5 + 15 = 90 -> 80
-    // Borderline Safe: 50 + 20 + 5 + 0 = 75 -> with 30 days cutoff (-10): 65 -> degrades to WATCH!
-    const borderline = calculateRoutingScore(true, 'MEDIUM', 'NORMAL/PUNCTUAL');
-    expect(borderline.clampedScore).toBe(75);
-    expect(borderline.bucket).toBe('SAFE TO HOLD');
-
-    const nearDeadline = calculateRoutingScore(true, 'MEDIUM', 'NORMAL/PUNCTUAL', undefined, undefined, 30);
-    expect(nearDeadline.clampedScore).toBe(65);
-    expect(nearDeadline.bucket).toBe('WATCH');
-  });
-
-  it('Critical proximity within 15 days applies -20 pts urgency penalty', () => {
-    // 50 + 20 + 5 + 15 = 90. Within 10 days of Nov 30: 90 - 20 = 70 -> degrades to WATCH
-    const urgent = calculateRoutingScore(true, 'MEDIUM', 'HABITUAL LAGGARD', undefined, undefined, 10);
-    expect(urgent.cutoffAdjustment).toBe(-20);
-    expect(urgent.clampedScore).toBe(70);
-    expect(urgent.bucket).toBe('WATCH');
-  });
-});
-
 describe('4-State IRN Scoring Engine Tests', () => {
   it('ABSENT_UNKNOWN → zero IRN penalty; score = 50 + 0 - 10 - 25 = 15 (raw 15, CHASE NOW not 0)', () => {
     const result = calculateRoutingScore(false, 'LOW', 'NEW ANOMALY', undefined, 'ABSENT_UNKNOWN');

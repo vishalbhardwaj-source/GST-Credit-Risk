@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Bucket, ReconciledInvoice } from './types';
-import { computeKpis, exportInvoicesToCsv, reconcileDataset } from './utils';
+import { computeKpis, exportInvoicesToCsv, getDaysToStatutoryCutoff, reconcileDataset } from './utils';
 import { generateSyntheticDataset } from './data';
 import { calculateRoutingScore } from './scoring';
 import { getApiBaseUrl } from './config';
@@ -86,12 +86,14 @@ export function App() {
 
       // If routed and unbucketed (or live TinyFish override applied)
       if (!inv.matchResult.matched && isRouted && (!inv.routingBucket || liveIrnCheck || effectiveIrnState)) {
+        const daysToCutoff = getDaysToStatutoryCutoff(inv.invoiceDate);
         const scoreExp = calculateRoutingScore(
           inv.irnRecord.irnPresent,
           inv.leverageTier,
           inv.vendor.filingPattern,
           liveIrnCheck?.status,
-          effectiveIrnState
+          effectiveIrnState,
+          daysToCutoff
         );
         return {
           ...inv,

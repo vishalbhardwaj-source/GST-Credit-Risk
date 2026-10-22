@@ -527,7 +527,8 @@ export function reconcileUploadedLists(
     let routingBucket: Bucket | undefined = undefined;
 
     if (autoRoute && !matchResult.matched) {
-      scoreExp = calculateRoutingScore(irnPresent, leverageTier, filingPattern);
+      // 39 days to Nov 30, 2026 cutoff
+      scoreExp = calculateRoutingScore(irnPresent, leverageTier, filingPattern, undefined, undefined, 39);
       routingBucket = scoreExp.bucket;
     }
 

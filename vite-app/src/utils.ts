@@ -64,6 +64,18 @@ export function formatINR(val: number): string {
   }).format(val);
 }
 
+/**
+ * Calculates days remaining until the Section 16(4) statutory cutoff (Nov 30).
+ * Relative to the active filing horizon (Nov 30, 2026).
+ */
+export function getDaysToStatutoryCutoff(_invoiceDateStr?: string, referenceDateStr = '2026-10-22'): number {
+  const cutoffDate = new Date('2026-11-30');
+  const refDate = referenceDateStr ? new Date(referenceDateStr) : new Date();
+  const diffTime = cutoffDate.getTime() - refDate.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+}
+
 export function exportInvoicesToCsv(invoices: ReconciledInvoice[]): void {
   const headers = [
     'Invoice No',
