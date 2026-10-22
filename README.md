@@ -144,9 +144,6 @@ Final Clamped Score (0 - 100) ──► SAFE TO HOLD (≥75) | WATCH (40-74) | C
 
 In addition to the deterministic compliance engine, the platform includes a trained **LightGBM Gradient Boosted Forecaster** to predict supplier self-resolution probability based on 1,200 multi-month cohort transactions across 6 tax periods.
 
-> [!WARNING]
-> **Scientific Integrity & Leakage Reality Check:**  
-> The raw benchmark metric of `0.9858 ROC-AUC` on synthetic data (`training_cohort.csv`) is an expected artifact of parametric data generators. Because synthetic generation scripts assign archetypes with defined lag medians and recovery rates, a gradient boosted tree naturally captures those generative boundaries with near-zero loss. In professional machine learning, presenting high synthetic AUC as evidence of real-world perfection is invalid due to synthetic generator leakage.
 
 ### The Production Safety Architecture: Deterministic Rules > ML Black Boxes
 In Indian GST jurisprudence under CGST Act Section 16(4) and Rule 48(4), **input tax credit cannot legally or safely be claimed, held, or reversed based on an opaque ML gradient boosted tree**. An assessing tax officer will reject *"our LightGBM model predicted 82% resolution probability"*. Therefore, our architecture guarantees:
