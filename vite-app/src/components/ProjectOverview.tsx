@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -14,6 +15,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { formatINR } from '../utils';
+import { CommercialModal } from './CommercialModal';
 
 export interface ProjectOverviewProps {
   onLaunchDemo: () => void;
@@ -36,6 +38,7 @@ export function ProjectOverview({
   onSelectQuickDemo,
   kpis,
 }: ProjectOverviewProps) {
+  const [isCommercialModalOpen, setIsCommercialModalOpen] = useState(false);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '40px' }}>
       {/* Top Hackathon & Statutory Notice Banner */}
@@ -575,34 +578,61 @@ export function ProjectOverview({
             Commercial Viability &amp; SaaS Economics
           </span>
           <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', marginTop: '4px' }}>
-            TAM: ₹240B · SAM: ₹24B · Defensible Year 1 SOM: ₹24 Crore
+            TAM: ₹1,140 Cr · SAM: ₹210 Cr · SOM: ₹4.68 Cr ARR
           </h4>
           <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px', lineHeight: 1.5 }}>
-            Targeting ~800,000 businesses with recurring 2B mismatches. A realistic 1% Year 1 capture (~8,000 clients) at ₹2,499/mo generates ₹24 Cr ($2.9M ARR).
+            Bottom-up model driven by 50,000 practicing CA firms (holding 30–150 corporate portfolios each) &amp; 280,000 formal B2B SMEs (&gt;₹5 Cr turnover). Replaces naive kirana math with viral CA channel distribution.
           </p>
         </div>
 
-        <button
-          onClick={onLaunchDemo}
-          style={{
-            padding: '12px 24px',
-            borderRadius: '10px',
-            background: '#10b981',
-            color: '#fff',
-            border: 'none',
-            fontWeight: 800,
-            fontSize: '13px',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <Play size={15} fill="#fff" />
-          Enter Live Dashboard
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setIsCommercialModalOpen(true)}
+            style={{
+              padding: '12px 20px',
+              borderRadius: '10px',
+              background: 'rgba(16, 185, 129, 0.15)',
+              color: '#34d399',
+              border: '1px solid rgba(16, 185, 129, 0.35)',
+              fontWeight: 700,
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <TrendingUp size={15} />
+            CA Economics &amp; Pricing
+          </button>
+
+          <button
+            onClick={onLaunchDemo}
+            style={{
+              padding: '12px 24px',
+              borderRadius: '10px',
+              background: '#10b981',
+              color: '#fff',
+              border: 'none',
+              fontWeight: 800,
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Play size={15} fill="#fff" />
+            Enter Live Dashboard
+          </button>
+        </div>
       </div>
+      <CommercialModal
+        isOpen={isCommercialModalOpen}
+        onClose={() => setIsCommercialModalOpen(false)}
+      />
     </div>
   );
 }
