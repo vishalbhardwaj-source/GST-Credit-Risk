@@ -14,6 +14,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   Sparkles,
+  Upload,
 } from 'lucide-react';
 import { formatINR } from '../utils';
 
@@ -26,6 +27,10 @@ export interface DashboardHeaderProps {
   onOpenBacktestModal: () => void;
   onExportCsv: () => void;
   onRunRouting: () => void;
+  onOpenUploadModal?: () => void;
+  isCustomDataActive?: boolean;
+  customDataName?: string;
+  onResetToDemo?: () => void;
   showSynopsis: boolean;
   setShowSynopsis: (val: boolean) => void;
   activeView?: 'overview' | 'dashboard';
@@ -55,6 +60,10 @@ export function DashboardHeader({
   onOpenBacktestModal,
   onExportCsv,
   onRunRouting,
+  onOpenUploadModal,
+  isCustomDataActive,
+  customDataName,
+  onResetToDemo,
   showSynopsis,
   setShowSynopsis,
   activeView = 'dashboard',
@@ -228,26 +237,70 @@ export function DashboardHeader({
 
         {/* Global Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {isRouted && (
+          {isCustomDataActive ? (
             <button
-              onClick={onReset}
+              onClick={onResetToDemo}
+              title="Click to reset to default 200-invoice demo"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '8px 14px',
+                padding: '6px 12px',
                 borderRadius: '8px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--navy-border)',
+                background: 'rgba(16, 185, 129, 0.15)',
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                color: '#34d399',
                 fontWeight: 600,
                 fontSize: '12px',
                 cursor: 'pointer',
               }}
             >
-              <RotateCcw size={14} />
-              Reset Demo
+              <RotateCcw size={13} />
+              Reset Demo ({customDataName ? customDataName.slice(0, 18) + (customDataName.length > 18 ? '...' : '') : 'Custom Active'})
             </button>
+          ) : (
+            isRouted && (
+              <button
+                onClick={onReset}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid var(--navy-border)',
+                  fontWeight: 600,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                <RotateCcw size={14} />
+                Reset Demo
+              </button>
+            )
           )}
+
+          <button
+            onClick={onOpenUploadModal}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              background: 'rgba(159, 111, 240, 0.15)',
+              border: '1px solid rgba(159, 111, 240, 0.4)',
+              color: '#d8b4fe',
+              fontWeight: 600,
+              fontSize: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <Upload size={14} />
+            Upload Data
+          </button>
 
           <button
             onClick={onOpenBacktestModal}

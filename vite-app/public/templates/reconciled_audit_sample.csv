@@ -1,0 +1,8 @@
+# GST CREDIT-AT-RISK RECONCILED AUDIT SAMPLE
+Invoice No,Invoice Date,Vendor Name,Vendor GSTIN,Taxable Amount (INR),GST Rate %,GST Amount at Risk (INR),Gross Amount (INR),GSTR-2B Matched,IRN Status,AP Leverage,Filing Pattern,Signal Score,Routing Bucket,Reason
+"INV-2026-101","2026-09-05","Apex Engineering Works","27AAACA1234A1Z1","85000","18","15300","100300","No","Present","HIGH","HABITUAL LAGGARD","100","SAFE TO HOLD","Verified IRN and high payment hold indicate timing lag."
+"INV-2026-102","2026-09-08","Zenith Logistics Solutions","07AAACB2345B1Z2","64000","18","11520","75520","No","Absent","MEDIUM","NEW ANOMALY","40","WATCH","Mixed signals: missing IRN with moderate AP leverage."
+"INV-2026-103","2026-09-12","Orion Raw Materials Corp","29AAACC3456C1Z3","110000","18","19800","129800","No","Absent","LOW","NEW ANOMALY","0","CHASE NOW","Critical discrepancy: zero payment leverage, missing IRN, and abrupt non-filing."
+"INV-2026-104","2026-09-15","Delta Packaging LLP","33AAACD4567D1Z4","42000","18","7560","49560","Yes","Present","HIGH","NORMAL/PUNCTUAL","N/A","UNROUTED","Exact match in GSTR-2B return."
+"INV-2026-105","2026-09-18","Sigma Industrial Spares","03AAACE5678E1Z5","72000","18","12960","84960","Yes","Present","HIGH","NORMAL/PUNCTUAL","N/A","UNROUTED","Exact match in GSTR-2B return."
+"INV-2026-106","2026-09-22","Nexus Chemical Industries","24AAACF6789F1Z6","53000","18","9540","62540","No","Present","HIGH","HABITUAL LAGGARD","100","SAFE TO HOLD","Known quarterly filing lag with strong retention leverage."

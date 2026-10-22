@@ -12,6 +12,7 @@ import { InvoiceDetailPanel } from './components/InvoiceDetailPanel';
 import { MlBacktestModal } from './components/MlBacktestModal';
 import { WelcomePage } from './components/WelcomePage';
 import { ProjectOverview } from './components/ProjectOverview';
+import { UploadDataModal } from './components/UploadDataModal';
 
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
@@ -20,6 +21,16 @@ export function App() {
 
   // View state: 'overview' (Judge pitch landing) or 'dashboard' (Interactive triage console)
   const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('overview');
+
+  // Custom data upload state
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isCustomDataActive, setIsCustomDataActive] = useState(false);
+  const [customDataInfo, setCustomDataInfo] = useState<{
+    name: string;
+    total: number;
+    matched: number;
+    unmatched: number;
+  } | null>(null);
 
   // Routing and modal state
   const [isRouted, setIsRouted] = useState(false);
@@ -167,6 +178,30 @@ export function App() {
     fetchServerReconciled();
   };
 
+  const handleResetToDemo = () => {
+    setIsCustomDataActive(false);
+    setCustomDataInfo(null);
+    handleReset();
+  };
+
+  const handleDataLoaded = (
+    invoices: ReconciledInvoice[],
+    sourceInfo: { name: string; total: number; matched: number; unmatched: number }
+  ) => {
+    setIsCustomDataActive(true);
+    setCustomDataInfo(sourceInfo);
+    setInitialReconciled(invoices);
+    setIsRouted(true);
+    setSelectedInvoice(null);
+    setSearchQuery('');
+    setBucketFilter('ALL');
+    setMatchFilter(sourceInfo.unmatched > 0 ? 'UNMATCHED' : 'ALL');
+    setIrnFilter('ALL');
+    setApFilter('ALL');
+    setPatternFilter('ALL');
+    setActiveView('dashboard');
+  };
+
   const handleRunRouting = async () => {
     setIsRouting(true);
     try {
@@ -243,6 +278,10 @@ export function App() {
         onOpenBacktestModal={() => setIsBacktestModalOpen(true)}
         onExportCsv={handleExportCsv}
         onRunRouting={handleRunRouting}
+        onOpenUploadModal={() => setIsUploadModalOpen(true)}
+        isCustomDataActive={isCustomDataActive}
+        customDataName={customDataInfo?.name}
+        onResetToDemo={handleResetToDemo}
         showSynopsis={showSynopsis}
         setShowSynopsis={setShowSynopsis}
         activeView={activeView}
@@ -312,6 +351,15 @@ export function App() {
       <MlBacktestModal
         isOpen={isBacktestModalOpen}
         onClose={() => setIsBacktestModalOpen(false)}
+      />
+
+      <UploadDataModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onDataLoaded={handleDataLoaded}
+        onResetToDemo={handleResetToDemo}
+        isCustomDataActive={isCustomDataActive}
+        customDataName={customDataInfo?.name}
       />
     </div>
   );
