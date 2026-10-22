@@ -151,7 +151,7 @@ In Indian GST jurisprudence under CGST Act Section 16(4) and Rule 48(4), **input
 1. **Tier 1: Deterministic Compliance Engine (Primary & Authoritative):**  
    Every tax decision (HOLD, CHASE, SAFE) is governed 100% by legal statutory logic: government IRP verification under Rule 48(4), Accounts Payable (AP) cash-flow retention leverage, and Section 16(4) statutory calendar deadlines.
 2. **Tier 2: LightGBM Prioritization (Secondary Decision Support):**  
-   Calculates Expected Loss ($E[\text{Loss}] = \text{Tax} \times (1 - P_{\text{res}})$) strictly to order human follow-up queues within the ambiguous "Watch" bucket.
+   Calculates Expected Loss (`Expected Loss = Invoice Tax * (1 - P_resolution)`) strictly to order human follow-up queues within the ambiguous "Watch" bucket.
 
 ### Leakage-Free Validation Metrics
 - **Supplier-Grouped Cross-Validation (True Generalization):** **`86.2% – 93.3% Balanced Accuracy`** when evaluated strictly on unmatched discrepancy records with 5-Fold GroupKFold cross-validation partitioned strictly by Supplier GSTIN (preventing vendor archetype leakage).
