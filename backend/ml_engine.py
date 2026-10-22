@@ -84,7 +84,7 @@ class MLExplainabilityEngine:
             "rule_based_urgency_score": base_rule_score,
             "feature_attribution_weights": importance_pct,
             "local_attribution_summary": summary,
-            "model_type": "LightGBM/Ridge Feature Attribution"
+            "model_type": "Linear Ridge Attribution Surrogate (Calibration Archetypes)"
         }
 
 ml_engine = MLExplainabilityEngine()

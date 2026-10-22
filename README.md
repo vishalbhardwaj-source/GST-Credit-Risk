@@ -1,17 +1,17 @@
-﻿# GST Credit-at-Risk Forecaster
+# GST Credit-at-Risk Forecaster
 
-**Live Demo:** [View Deployed Project] https://gst-credit-risk.vercel.app?_vercel_share=JNmXOG21P9DBkGABptLQI6PnAzn1SzdD
+**Live Demo:** [View Deployed Project](https://gst-credit-risk.vercel.app)
 
-> **Autonomous 3-Signal Action Triage Engine with TinyFish Web Agent & 4-State IRN Verification for Indian B2B Invoices**
+> **Autonomous 3-Signal Action Triage Engine with Multi-Agent Verification & 4-State IRN Modeling for Indian B2B Invoices**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite)](https://vitejs.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org/)
-[![LightGBM](https://img.shields.io/badge/ML-LightGBM_0.986_AUC-green)](https://lightgbm.readthedocs.io/)
-[![TinyFish AI](https://img.shields.io/badge/Web_Agent-TinyFish_v1-orange)](https://tinyfish.ai)
-[![Tests](https://img.shields.io/badge/Vitest-18%2F18_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
+[![ML](https://img.shields.io/badge/ML-Gradient_Boosted_Forecaster-green)](https://github.com/microsoft/LightGBM)
+[![Web Agent](https://img.shields.io/badge/Web_Agent-TinyFish_Sandbox-orange)](https://tinyfish.ai)
+[![Tests](https://img.shields.io/badge/Vitest-30%2F30_Passing-brightgreen?logo=vitest)](https://vitest.dev/)
 [![CI](https://github.com/vishalbhardwaj-source/GST-Credit-Risk/actions/workflows/ci.yml/badge.svg)](https://github.com/vishalbhardwaj-source/GST-Credit-Risk/actions/workflows/ci.yml)
 
 ### 🚀 [Live Demo → gst-credit-risk.vercel.app](https://gst-credit-risk.vercel.app)
@@ -90,7 +90,7 @@ The **GST Credit-at-Risk Forecaster** eliminates this dilemma. Rather than prese
 
 ## 3. TinyFish Web Agent Integration
 
-[TinyFish](https://tinyfish.ai) is an autonomous web exploration and content extraction agent. In this project, TinyFish queries public GST and CBIC portals to retrieve statutory context—such as e-invoicing thresholds, taxpayer enablement, and return deadlines—bridging static enterprise data and dynamic regulatory reality.
+[TinyFish](https://tinyfish.ai) is an autonomous web exploration and content extraction agent architecture. In this public showcase demo, TinyFish workflows operate in **Sandboxed Multi-Agent Simulation Mode** (with cached official CBIC/GSTN statutory schemas) to prevent portal IP bans and CAPTCHA rate-limiting while demonstrating how web-extracted regulatory reality bridges static enterprise data with 4-state IRN verification.
 
 ### The 4 Production Workflows
 
@@ -190,7 +190,7 @@ These prices are illustrative and have not been established as validated commerc
 
 ### Competitive Positioning
 - **ClearTax:** Targets large enterprise with ₹5L+/year per-seat pricing. Out of reach for independent CAs and SMEs.
-- **Tally:** Ubiquitous bookkeeping, but zero reconciliation intelligence — dumps an unprioritized list of mismatches without action guidance.
+- **Traditional ERPs (e.g., Tally Prime):** Widely adopted for core accounting and baseline GSTR-2B matching, but stops at flat discrepancy lists without multi-signal risk triage (Safe vs Watch vs Chase) or automated AP retention guidance.
 - **Vyapar:** Tailored for micro-SMBs with basic invoicing, but lacks GSTR-2B matching, AP leverage fusion, or web-agent verification.
 - **GST Credit-at-Risk Forecaster:** An explainable, action-first triage layer that sits on top of existing accounting systems, answering the exact question CAs have: *"Which of these 30 invoices must I chase today, and which can wait?"*
 
@@ -262,8 +262,9 @@ GST-credit/
 │   │   ├── App.tsx                     # Clean composition root (< 200 lines)
 │   │   ├── app.test.ts                 # 18 Vitest unit tests
 │   │   ├── data.ts                     # Benchmark synthetic dataset (seed 42)
-│   │   ├── matcher.ts                  # RapidFuzz invoice reconciliation
-│   │   ├── scoring.ts                  # 4-State IRN scoring engine
+│   │   ├── matcher.ts                  # Levenshtein & token reconciliation (Fast in-browser)
+│   │   ├── parser.ts                   # CSV ingestion & column alias mapping
+│   │   ├── scoring.ts                  # 4-State IRN scoring & deadline engine
 │   │   ├── types.ts                    # TypeScript domain interfaces
 │   │   ├── utils.ts                    # INR format, KPI aggregation & CSV export
 │   │   └── index.css                   # Obsidian dark SaaS design system
@@ -272,12 +273,11 @@ GST-credit/
 └── backend/                            # FastAPI Production Backend
     ├── main.py                         # REST API endpoints & CORS
     ├── module_e_tinyfish.py            # TinyFish service, SQLite cache & sanitizers
-    ├── ml_engine.py                    # Multi-signal scoring engine
+    ├── ml_engine.py                    # Multi-signal scoring engine & surrogate explainability
     ├── train_forecaster.py             # LightGBM cohort training pipeline
-    ├── matcher.py                      # RapidFuzz string normalization
+    ├── matcher.py                      # RapidFuzz high-throughput normalization
     └── data/
         ├── gst_resolution_lgb.pkl      # Pre-trained LightGBM model artifact
-        ├── tinyfish_cache.db           # SQLite 24h TTL cache
         ├── purchase_register.csv       # Synthetic PR benchmark
         └── gstr_2b.csv                 # Synthetic GSTR-2B benchmark
 ```

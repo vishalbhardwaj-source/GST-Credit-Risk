@@ -168,11 +168,11 @@ class TinyFishService:
             "financial_year": financial_year,
             "extension_granted": False,
             "revised_deadline": None,
-            "notification_ref": sanitize_untrusted_text("CBIC Notification No. 12/2024 - Central Tax (Active Standard Schedule)"),
+            "notification_ref": sanitize_untrusted_text("CBIC Notification No. 12/2024 - Central Tax (Standard 30 Nov Deadline Active)"),
             "source_url": source_url,
             "confidence": 0.98,
             "retrieved_at": now_str,
-            "cache_status": "LIVE_FETCH"
+            "cache_status": "SIMULATED_DEMO_FIXTURE"
         }
 
         # Cache valid structured response
@@ -192,7 +192,7 @@ class TinyFishService:
         # Untrusted Content Defense & Extraction
         safe_name = sanitize_untrusted_text(vendor_name)
         status = "ACTIVE" if has_irn else ("SUSPENDED" if "Pioneer" in vendor_name or "5561" in vendor_name else "ACTIVE")
-        signals = "Taxpayer verified active on official registry. e-Invoicing enabled." if has_irn else "Taxpayer registry indicates compliance inquiry or delayed returns flagged."
+        signals = "[Sandbox Profile] Taxpayer verified active in demo benchmark. Regular filing track." if has_irn else "[Sandbox Profile] Delayed filing history observed. Verification recommended."
 
         result_data = {
             "workflow": "WORKFLOW_2_VENDOR_STATUS_SEARCH",
@@ -203,7 +203,7 @@ class TinyFishService:
             "source_url": source_url,
             "confidence": 0.94 if has_irn else 0.72,
             "retrieved_at": now_str,
-            "cache_status": "LIVE_FETCH"
+            "cache_status": "SIMULATED_DEMO_FIXTURE"
         }
 
         set_cached_response(cache_key, "WF2", result_data)
@@ -391,12 +391,12 @@ class TinyFishService:
         status_label = "Absent, applies"
         einvoice_enabled = True
         snippet = (
-            f"Portal Search: GSTIN {gstin} ({vendor_name}) is ENABLED for e-invoicing on the IRP. "
-            f"Turnover threshold exceeds ₹5 Cr. An absent IRN on this B2B invoice represents non-compliance."
+            f"[Simulated Sandbox Check] Supplier profile for GSTIN {gstin} ({vendor_name}) meets turnover benchmark under Rule 48(4). "
+            f"Absence of IRN flagged as unverified e-invoice discrepancy pending certified portal confirmation."
         )
         why = (
-            f"This supplier is enabled for e-invoicing on the portal, but no IRN was generated for this invoice, "
-            f"raising substantive compliance and reversal risk."
+            f"In this simulated profile, vendor turnover implies e-invoicing mandate. Missing IRN incurs penalty "
+            f"unless verified as sub-threshold (<₹5 Cr) or exempt."
         )
 
         result_data = {
@@ -412,7 +412,7 @@ class TinyFishService:
             "source_url": source_url,
             "checked_at": now_str,
             "checked_at_human": human_time,
-            "cache_status": "LIVE_FETCH",
+            "cache_status": "SIMULATED_DEMO_FIXTURE",
             "is_failure_fallback": False,
             "why_this_label": why
         }

@@ -49,4 +49,5 @@ gst-credit-at-risk-export-*.csv
 
 # Database and SQLite cache files
 *.sqlite3
-!backend/data/tinyfish_cache.db
+*.db
+backend/data/*.db

@@ -99,6 +99,7 @@ export interface ScoreExplanation {
   irnAdjustment: number;
   apAdjustment: number;
   filingAdjustment: number;
+  cutoffAdjustment?: number;
   rawScore: number;
   clampedScore: number;
   bucket: Bucket;

@@ -47,7 +47,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
               </h2>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px' }}>
-              Module C Architecture: LightGBM Gradient Boosted Trees trained on 1,200 multi-month synthetic cohort transactions across 6 tax periods (Apr–Sep 2025).
+              Module C Architecture: LightGBM Gradient Boosted Trees evaluated on a synthetic 1,200-record cohort across 6 tax periods.
             </p>
           </div>
           <button
@@ -58,12 +58,27 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           </button>
         </div>
 
+        {/* Audit & Methodology Disclosure Notice */}
+        <div
+          style={{
+            background: 'rgba(59, 130, 246, 0.08)',
+            border: '1px solid rgba(59, 130, 246, 0.25)',
+            borderRadius: '10px',
+            padding: '10px 14px',
+            fontSize: '11px',
+            color: '#93c5fd',
+            lineHeight: 1.5,
+          }}
+        >
+          <strong>Methodology Transparency Note:</strong> This benchmark evaluates how gradient boosted trees recover multi-signal resolution dynamics from synthetic archetype records (<code>training_cohort.csv</code>). For production enterprise deployment, cross-validation must be grouped by supplier ID and restricted strictly to discrepancy rows (excluding exact matches) against an ~80.8% majority-class baseline.
+        </div>
+
         {/* Core Validation Metrics Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>ROC-AUC Metric</span>
             <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>0.9858</div>
-            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Baseline Logistic: 0.651</span>
+            <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Majority Baseline: ~80.8%</span>
           </div>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Balanced Accuracy</span>

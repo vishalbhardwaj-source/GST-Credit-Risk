@@ -43,7 +43,8 @@ export function calculateRoutingScore(
   leverageTier: ApLeverageTier,
   filingPattern: FilingPattern,
   irnApplicabilityStatus?: 'LIKELY_APPLICABLE' | 'APPLICABILITY_UNCLEAR' | 'LIKELY_NOT_APPLICABLE',
-  explicitIrnState?: IrnState
+  explicitIrnState?: IrnState,
+  daysToCutoff?: number
 ): ScoreExplanation {
   const baseScore = 50;
 
@@ -86,7 +87,19 @@ export function calculateRoutingScore(
     filingAdjustment = 0;
   }
 
-  const rawScore = baseScore + irnAdjustment + apAdjustment + filingAdjustment;
+  // Statutory Deadline Urgency Adjustment (Section 16(4) Reversal Cutoff)
+  let cutoffAdjustment = 0;
+  if (daysToCutoff !== undefined) {
+    if (daysToCutoff <= 15) {
+      // Critical proximity: holding is high risk because statutory credit reversal window is closing
+      cutoffAdjustment = -20;
+    } else if (daysToCutoff <= 35) {
+      // Approaching deadline: moderate caution downgrade
+      cutoffAdjustment = -10;
+    }
+  }
+
+  const rawScore = baseScore + irnAdjustment + apAdjustment + filingAdjustment + cutoffAdjustment;
   const clampedScore = Math.max(0, Math.min(100, rawScore));
 
   let bucket: Bucket;
@@ -103,7 +116,7 @@ export function calculateRoutingScore(
   } else {
     bucket = 'CHASE NOW';
     reason =
-      'Critical discrepancy risk (missing IRN, zero payment leverage, and sudden filing anomaly). Prioritize supplier outreach and review potential ITC reversal.';
+      'Critical discrepancy risk (missing IRN, zero payment leverage, or imminent Section 16(4) statutory cutoff). Prioritize supplier outreach and review potential ITC reversal.';
   }
 
   return {
@@ -111,6 +124,7 @@ export function calculateRoutingScore(
     irnAdjustment,
     apAdjustment,
     filingAdjustment,
+    cutoffAdjustment,
     rawScore,
     clampedScore,
     bucket,
