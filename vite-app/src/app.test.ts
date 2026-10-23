@@ -3,6 +3,7 @@ import { calculateApLeverage, calculateRoutingScore } from './scoring';
 import { matchInvoice, normalizeInvoiceNumber } from './matcher';
 import { generateSyntheticDataset } from './data';
 import type { PurchaseInvoice, Gstr2bRecord } from './types';
+import { predictLightGbmResolution } from './mlForecaster';
 
 describe('GST Credit-at-Risk Scoring Engine Tests', () => {
   it('Scenario 1: Safe to Hold (IRN Present + High AP + Habitual Laggard) = 100', () => {
@@ -280,5 +281,46 @@ describe('Section 16(4) Statutory Cutoff Urgency Tests', () => {
     expect(urgent.cutoffAdjustment).toBe(-20);
     expect(urgent.clampedScore).toBe(70);
     expect(urgent.bucket).toBe('WATCH');
+  });
+});
+
+describe('LightGBM 120-Tree Ensemble Inference Tests', () => {
+  it('evaluates all 120 gradient-boosted trees and computes continuous P(res)', () => {
+    const result = predictLightGbmResolution({
+      vendorFilingLagMedian: 2,
+      vendorQrmpFlag: 0,
+      daysToStatutoryCutoff: 45,
+      invoiceTaxAmountLog: Math.log1p(25000),
+      onTimeFilingRatio: 0.98,
+      historicalRecoveryRate: 0.99,
+      isTypoDiscrepancy: 0,
+      isTimingLag: 0,
+      rawTaxAmount: 25000,
+    });
+
+    expect(result.numTreesEvaluated).toBe(120);
+    expect(result.pResolution).toBeGreaterThan(0.90);
+    expect(result.pResolutionPct).toBeGreaterThan(90);
+    expect(result.expectedLoss).toBeLessThan(2500);
+    expect(result.featureAttributions.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it('correctly predicts high risk on erratic anomaly defaulter', () => {
+    const result = predictLightGbmResolution({
+      vendorFilingLagMedian: 55,
+      vendorQrmpFlag: 0,
+      daysToStatutoryCutoff: 10,
+      invoiceTaxAmountLog: Math.log1p(100000),
+      onTimeFilingRatio: 0.20,
+      historicalRecoveryRate: 0.15,
+      isTypoDiscrepancy: 0,
+      isTimingLag: 0,
+      rawTaxAmount: 100000,
+    });
+
+    expect(result.numTreesEvaluated).toBe(120);
+    expect(result.pResolution).toBeLessThan(0.60);
+    expect(result.expectedLoss).toBeGreaterThan(45000);
+    expect(result.primaryDriver).toContain('median delay');
   });
 });

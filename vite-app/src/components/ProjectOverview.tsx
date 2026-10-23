@@ -77,7 +77,7 @@ export function ProjectOverview({
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '11px', color: 'var(--navy-muted)' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#34d399' }}>
-            <CheckCircle2 size={13} /> 28 Unit Tests Passing
+            <CheckCircle2 size={13} /> 30 Unit Tests Passing
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#60a5fa' }}>
             <Globe size={13} /> TinyFish Web Agent Active

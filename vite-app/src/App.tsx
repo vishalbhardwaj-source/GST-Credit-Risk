@@ -14,6 +14,7 @@ import { WelcomePage } from './components/WelcomePage';
 import { ProjectOverview } from './components/ProjectOverview';
 import { UploadDataModal } from './components/UploadDataModal';
 import { TinyFishArbitraryModal } from './components/TinyFishArbitraryModal';
+import { computeInvoiceMlForecast } from './mlForecaster';
 
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
@@ -85,10 +86,11 @@ export function App() {
       const liveIrnCheck = tinyFish.irnApplicabilityMap.get(inv.id);
       const vendorLookup = tinyFish.vendorLookupMap.get(inv.id);
       const effectiveIrnState = vendorLookup?.irn_state;
+      const daysToCutoff = getDaysToStatutoryCutoff(inv.invoiceDate);
+      const mlForecast = computeInvoiceMlForecast(inv, daysToCutoff);
 
       // If routed and unbucketed (or live TinyFish override applied)
       if (!inv.matchResult.matched && isRouted && (!inv.routingBucket || liveIrnCheck || effectiveIrnState)) {
-        const daysToCutoff = getDaysToStatutoryCutoff(inv.invoiceDate);
         const scoreExp = calculateRoutingScore(
           inv.irnRecord.irnPresent,
           inv.leverageTier,
@@ -104,6 +106,7 @@ export function App() {
           irnApplicability: liveIrnCheck,
           vendorIrnLookup: vendorLookup,
           whyThisLabel: vendorLookup?.why_this_label || inv.whyThisLabel,
+          mlForecast,
         };
       }
 
@@ -112,6 +115,7 @@ export function App() {
         irnApplicability: liveIrnCheck,
         vendorIrnLookup: vendorLookup,
         whyThisLabel: vendorLookup?.why_this_label || inv.whyThisLabel,
+        mlForecast,
       };
     });
   }, [initialReconciled, isRouted, tinyFish.irnApplicabilityMap, tinyFish.vendorLookupMap]);

@@ -111,6 +111,7 @@ def classify_mismatch_reason(
     }
 
 @app.get("/")
+@app.get("/api/health")
 def health_check():
     return {
         "status": "online",

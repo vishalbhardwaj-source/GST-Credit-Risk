@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import type { ReconciledInvoice } from '../types';
+import { computeInvoiceMlForecast } from '../mlForecaster';
 import { formatINR } from '../utils';
 
 export interface InvoiceDetailPanelProps {
@@ -63,6 +64,7 @@ export function InvoiceDetailPanel({
 
   if (!invoice) return null;
   const selectedInvoice = invoice;
+  const mlForecast = selectedInvoice.mlForecast || computeInvoiceMlForecast(selectedInvoice);
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -1181,134 +1183,117 @@ export function InvoiceDetailPanel({
             </div>
           )}
 
-          {/* ML Feature Attribution Card */}
-          <div
-            style={{
-              background: 'var(--navy-card)',
-              border: '1px solid rgba(16, 185, 129, 0.25)',
-              borderRadius: '12px',
-              padding: '16px',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981' }}>
-                ML Feature Attribution (LightGBM / TreeSHAP Proxy)
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  background: 'rgba(16, 185, 129, 0.15)',
-                  color: '#10b981',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  fontWeight: 700,
-                }}
-              >
-                Local Attribution
-              </span>
-            </div>
-            <p style={{ fontSize: '12px', color: '#f8fafc', marginTop: '8px', fontWeight: 600 }}>
-              {selectedInvoice.leverageTier === 'HIGH'
-                ? '65.4% driven by buyer AP retention leverage.'
-                : selectedInvoice.vendor.filingPattern === 'NEW ANOMALY'
-                ? '74.2% driven by recent unexpected compliance anomaly.'
-                : '48.1% driven by IRN verification status.'}
-            </p>
-            <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>AP Commercial Leverage:</span>
-                <span style={{ color: '#fff', fontWeight: 600 }}>
-                  {selectedInvoice.leverageTier === 'HIGH' ? '65.4%' : '14.2%'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>IRN Footprint:</span>
-                <span style={{ color: '#fff', fontWeight: 600 }}>
-                  {selectedInvoice.irnRecord.irnPresent ? '23.2%' : '11.6%'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>Supplier Filing Lag:</span>
-                <span style={{ color: '#fff', fontWeight: 600 }}>
-                  {selectedInvoice.vendor.filingPattern === 'NEW ANOMALY' ? '74.2%' : '11.4%'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Module C: Expected Loss Engine Card */}
+          {/* Module C: LightGBM Gradient Boosted Forecaster Card */}
           {selectedInvoice.routingBucket && (
             <div
               style={{
-                background: 'rgba(239, 68, 68, 0.05)',
-                border: '1px solid rgba(239, 68, 68, 0.25)',
+                background: 'rgba(16, 185, 129, 0.04)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
                 borderRadius: '12px',
                 padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#f87171' }}>
-                  Expected Loss Engine: E[ITC at Risk]
-                </span>
-                <span style={{ fontSize: '11px', fontFamily: 'monospace', color: '#94a3b8' }}>
-                  E[Loss] = Tax × (1 - P(res))
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Cpu size={15} color="#10b981" />
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981' }}>
+                    Module C: LightGBM Booster (120 Trees Evaluated)
+                  </span>
+                </div>
+                <span
+                  style={{
+                    fontSize: '10px',
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    color: '#34d399',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontWeight: 700,
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  LIVE TREE INFERENCE
                 </span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '10px' }}>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Nominal Tax</div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', marginTop: '2px' }}>
+              {/* 3 Metrics: Nominal Tax, Continuous P(res), E[ITC Loss] */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase' }}>Nominal Tax</div>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
                     {formatINR(selectedInvoice.taxAmount)}
                   </div>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>P(Resolution)</div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase' }}>P(Resolution)</div>
                   <div
                     style={{
-                      fontSize: '13px',
-                      fontWeight: 700,
+                      fontSize: '14px',
+                      fontWeight: 800,
                       color:
-                        selectedInvoice.routingBucket === 'SAFE TO HOLD'
+                        mlForecast.pResolutionPct >= 70
                           ? '#10b981'
-                          : selectedInvoice.routingBucket === 'WATCH'
+                          : mlForecast.pResolutionPct >= 40
                           ? '#f59e0b'
                           : '#ef4444',
                       marginTop: '2px',
                     }}
                   >
-                    {selectedInvoice.routingBucket === 'SAFE TO HOLD'
-                      ? '94%'
-                      : selectedInvoice.routingBucket === 'WATCH'
-                      ? '58%'
-                      : '12%'}
+                    {mlForecast.pResolutionPct}%
                   </div>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.25)', padding: '8px', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>E[ITC Loss]</div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#f87171', marginTop: '2px' }}>
-                    {formatINR(
-                      Math.round(
-                        selectedInvoice.taxAmount *
-                          (1 -
-                            (selectedInvoice.routingBucket === 'SAFE TO HOLD'
-                              ? 0.94
-                              : selectedInvoice.routingBucket === 'WATCH'
-                              ? 0.58
-                              : 0.12))
-                      )
-                    )}
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase' }}>Expected Loss</div>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#f87171', marginTop: '2px' }}>
+                    {formatINR(mlForecast.expectedLoss)}
                   </div>
                 </div>
               </div>
 
-              <p style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '8px', lineHeight: 1.4 }}>
-                {selectedInvoice.routingBucket === 'SAFE TO HOLD'
-                  ? 'AP retention and high resolution probability safely absorb 94% of nominal risk before Section 16(4) cutoff.'
-                  : selectedInvoice.routingBucket === 'WATCH'
-                  ? 'Moderate default probability. Hold AP payment and queue second verification pass.'
-                  : 'High risk of irreversible tax credit forfeiture under Section 16(4). Priority supplier escalation.'}
-              </p>
+              {/* Natural language synthesis */}
+              <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: 1.5, background: 'rgba(0,0,0,0.2)', padding: '8px 12px', borderRadius: '6px' }}>
+                {mlForecast.localExplanation}
+              </div>
+
+              {/* TreeSHAP Localized Feature Attribution */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
+                  <span>TreeSHAP Feature Attributions</span>
+                  <span style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 400 }}>
+                    {mlForecast.primaryDriver}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {mlForecast.featureAttributions.map((attr) => (
+                    <div key={attr.feature}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', marginBottom: '2px' }}>
+                        <span style={{ color: '#94a3b8' }}>{attr.label}</span>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            fontFamily: 'monospace',
+                            color: attr.direction === 'RECOVERY_SUPPORTING' ? '#34d399' : '#f87171',
+                          }}
+                        >
+                          {attr.direction === 'RECOVERY_SUPPORTING' ? '+' : '-'}{attr.importancePct}%
+                        </span>
+                      </div>
+                      <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                        <div
+                          style={{
+                            width: `${Math.min(100, attr.importancePct * 1.5)}%`,
+                            height: '100%',
+                            background: attr.direction === 'RECOVERY_SUPPORTING' ? '#10b981' : '#ef4444',
+                            borderRadius: '2px',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

@@ -22,6 +22,10 @@ export interface Vendor {
   state: string;
   filingPattern: FilingPattern;
   filingCycles: FilingCycle[];
+  medianFilingDelayDays?: number;
+  onTimeFilingRatio?: number;
+  historicalRecoveryRate?: number;
+  isQrmp?: boolean;
 }
 
 export interface PurchaseInvoice {
@@ -134,5 +138,6 @@ export interface ReconciledInvoice extends PurchaseInvoice {
   irnApplicability?: IrnApplicabilityResult;
   vendorIrnLookup?: VendorIrnLookupResult;
   whyThisLabel?: string;
+  mlForecast?: import('./mlForecaster').MlForecastResult;
 }
 

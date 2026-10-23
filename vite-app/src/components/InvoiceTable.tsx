@@ -277,20 +277,27 @@ export function InvoiceTable({
                       )}
                     </td>
 
-                    {/* Routing Bucket */}
+                    {/* Routing Bucket & LightGBM Inference */}
                     <td style={{ padding: '12px 16px' }}>
                       {bucket ? (
-                        <span
-                          className={`badge ${
-                            bucket === 'SAFE TO HOLD'
-                              ? 'badge-safe'
-                              : bucket === 'WATCH'
-                              ? 'badge-watch'
-                              : 'badge-chase'
-                          }`}
-                        >
-                          {bucket}
-                        </span>
+                        <div>
+                          <span
+                            className={`badge ${
+                              bucket === 'SAFE TO HOLD'
+                                ? 'badge-safe'
+                                : bucket === 'WATCH'
+                                ? 'badge-watch'
+                                : 'badge-chase'
+                            }`}
+                          >
+                            {bucket}
+                          </span>
+                          {inv.mlForecast && (
+                            <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px', fontFamily: 'monospace' }}>
+                              ML P(res): <span style={{ color: inv.mlForecast.pResolutionPct >= 70 ? '#34d399' : inv.mlForecast.pResolutionPct >= 40 ? '#f59e0b' : '#f87171', fontWeight: 700 }}>{inv.mlForecast.pResolutionPct}%</span>
+                            </div>
+                          )}
+                        </div>
                       ) : (
                         <span className="badge badge-neutral">Raw Mismatch</span>
                       )}
