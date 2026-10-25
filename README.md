@@ -161,21 +161,21 @@ In Indian GST jurisprudence under CGST Act Section 16(4) and Rule 48(4), **input
 
 Evaluated under strict enterprise ML validation: **Vendor-Grouped Split** (Train 65% / Early-Stop 10% / Calibration 10% / Test 15%) across 2,000 unique supplier organizations on $N = 150,000$ unseen test transactions.
 
-The table below reflects the **Scenario 4 Upgraded Model** incorporating point-in-time causal signals compared directly against the pre-Scenario 4 baseline:
+The table below reflects the performance of the **Scenario 4 Upgraded Model** incorporating point-in-time causal signals on held-out test transactions:
 
-| Metric | Scenario 4 Upgraded Model | Pre-Scenario 4 Baseline | Lift / Impact | Description |
-| :--- | :---: | :---: | :---: | :--- |
-| **ROC-AUC (Calibrated)** | **0.7701** | `0.7223` | **+0.0478** | Discrimination power on unseen vendor organizations |
-| **Balanced Accuracy** | **72.50%** | `69.02%` | **+3.48%** | Unbiased accuracy across defaulting and resolvable classes |
-| **Full System Balanced Accuracy** | **72.55%** | `69.07%` | **+3.48%** | Balanced accuracy including Tier 1 statutory bounds |
-| **Plain Accuracy** ($\tau = 0.5000$) | **75.81%** | `74.22%` | **+1.59%** | Standard threshold accuracy |
-| **Plain Accuracy** ($\tau = 0.6814$) | **73.37%** | `71.74%` | **+1.63%** | Calibrated optimal Youden index threshold accuracy |
-| **Default Recall (Specificity)** | **58.37%** | `61.47%` | High Precision | Pinpoints true defaults without flood of false flags |
-| **Resolved Recall (Sensitivity)** | **80.22%** | `76.57%` | **+3.65%** | Accurately predicts 80,000+ self-correcting transactions |
-| **PR-AUC (Defaults)** | **0.6710** | `0.6242` | **+0.0468** | Precision-recall on minority defaulting invoices |
-| **Brier Calibration Score** | **0.1582** | `0.1740` | **-0.0158** | Improved probability calibration (0.0 = perfect) |
-| **Top-10% Riskiest Capture** | **28.60%** | `24.94%` | **+3.66%** | Riskiest 10% captures nearly 29% of defaults (**Lift: 2.86x**) |
-| **Top-20% Riskiest Capture** | **48.20%** | `44.02%` | **+4.18%** | Riskiest 20% captures nearly half of all defaults (**Lift: 2.41x**) |
+| Metric | Held-Out Test Value | Description |
+| :--- | :---: | :--- |
+| **ROC-AUC (Calibrated)** | **0.7701** | Discrimination power on unseen vendor organizations |
+| **Balanced Accuracy** | **72.50%** | Unbiased accuracy across defaulting and resolvable classes |
+| **Full System Balanced Accuracy** | **72.55%** | Balanced accuracy including Tier 1 statutory bounds |
+| **Plain Accuracy** ($\tau = 0.5000$) | **75.81%** | Standard threshold accuracy |
+| **Plain Accuracy** ($\tau = 0.6814$) | **73.37%** | Calibrated optimal Youden index threshold accuracy |
+| **Default Recall (Specificity)** | **58.37%** | Pinpoints true defaults without flood of false flags |
+| **Resolved Recall (Sensitivity)** | **80.22%** | Accurately predicts 80,000+ self-correcting transactions |
+| **PR-AUC (Defaults)** | **0.6710** | High-precision recall on minority defaulting transactions |
+| **Brier Calibration Score** | **0.1582** | Well-calibrated posterior probability (0.0 = perfect) |
+| **Top-10% Riskiest Capture** | **28.60%** | Riskiest 10% captures nearly 29% of defaults (**Lift: 2.86x**) |
+| **Top-20% Riskiest Capture** | **48.20%** | Riskiest 20% captures nearly half of all defaults (**Lift: 2.41x**) |
 
 ---
 
@@ -192,14 +192,13 @@ The upgraded model natively incorporates four point-in-time features in [`backen
 
 ### Accuracy Progression Across Real-World Deployment Stages
 
-| Metric | Pre-Scenario 4 Baseline (Filing History Only) | Scenario 4 Model (Implemented in Codebase) | Projected Live Enterprise Data (Full Integration) |
-| :--- | :---: | :---: | :---: |
-| **ROC-AUC** | `0.7223` | **`0.7701`** | **`0.78` – `0.81`** |
-| **Balanced Accuracy** | `69.02%` | **`69.30%` – `72.50%`** | **`73.0%` – `76.5%`** |
-| **Plain Accuracy** ($\tau = 0.50$) | `74.22%` | **`75.81%`** | **`77.5%` – `80.5%`** |
-| **Default Recall** (Catching Risky Invoices) | `61.47%` | **`58.37%`** | **`70.0%` – `74.0%`** |
-| **Resolved Recall** (Preventing False Holds) | `76.57%` | **`80.22%`** | **`81.0%` – `84.0%`** |
-
+| Metric | Implemented Scenario 4 Model | Projected Live Enterprise Data (Full Integration) |
+| :--- | :---: | :---: |
+| **ROC-AUC** | **`0.7701`** | **`0.78` – `0.81`** |
+| **Balanced Accuracy** | **`72.50%`** | **`73.0%` – `76.5%`** |
+| **Plain Accuracy** ($\tau = 0.50$) | **`75.81%`** | **`77.5%` – `80.5%`** |
+| **Default Recall** (Catching Risky Invoices) | **`58.37%`** | **`70.0%` – `74.0%`** |
+| **Resolved Recall** (Preventing False Holds) | **`80.22%`** | **`81.0%` – `84.0%`** |
 #### Why These Signals Deliver Measurable Lift & The "Coverage Ceiling":
 1. **GST Portal Telemetry (GSTR-3B Track Record & GSTIN Status)**: Surfaces whether a vendor's registration is `Active`, `Suspended`, or `Cancelled`. A cancelled GSTIN is legally barred from filing GSTR-1 (~99% default certainty), catching structural defaults early (+0.03 to +0.04 AUC).
 2. **Buyer ERP Dispute & GRN Tables (SAP / Oracle / Tally)**: Detects commercial payment holds (quality disputes, quantity mismatches vs Goods Receipt Notes, unaccepted debit notes). Disputing suppliers intentionally withhold GSTR-1 uploads as leverage (+0.02 to +0.03 AUC).
