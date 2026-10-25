@@ -53,3 +53,12 @@ gst-credit-at-risk-export-*.csv
 backend/data/*.db
 *.pkl
 backend/data/*.pkl
+catboost_info/
+
+# Raw training cohorts & heavy diagnostic reports
+one-*/
+two-*/
+three-*/
+*-20261025T*
+reports/
+
