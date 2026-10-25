@@ -77,6 +77,9 @@ class RoutingEvalRequest(BaseModel):
     recovery_rate: Optional[float] = 0.90
     days_to_cutoff: Optional[float] = 45.0
     discrepancy_type: Optional[str] = "TIMING_LAG"
+    dispute_active: Optional[bool] = False
+    portal_filing_status: Optional[bool] = None
+    vendor_acknowledgment: Optional[bool] = False
 
 # Module B: Hybrid Rule & ML Reason Classifier
 def classify_mismatch_reason(
@@ -251,7 +254,10 @@ def evaluate_routing(req: RoutingEvalRequest):
         days_to_cutoff=req.days_to_cutoff or 45.0,
         on_time_ratio=req.on_time_ratio or 0.85,
         recovery_rate=req.recovery_rate or 0.88,
-        discrepancy_type=req.discrepancy_type or "TIMING_LAG"
+        discrepancy_type=req.discrepancy_type or "TIMING_LAG",
+        dispute_active=bool(req.dispute_active),
+        portal_filing_status=req.portal_filing_status,
+        vendor_acknowledgment=bool(req.vendor_acknowledgment),
     )
 
     # Expected Loss Engine: E[ITC at Risk] = Total_Tax * (1 - P_res)
