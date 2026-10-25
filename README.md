@@ -177,16 +177,6 @@ The table below reflects the performance of the **Scenario 4 Upgraded Model** in
 | **Top-10% Riskiest Capture** | **28.60%** | Riskiest 10% captures nearly 29% of defaults (**Lift: 2.86x**) |
 | **Top-20% Riskiest Capture** | **48.20%** | Riskiest 20% captures nearly half of all defaults (**Lift: 2.41x**) |
 
----
-
-### The 4 Scenario 4 Point-in-Time Causal Signals
-
-The upgraded model natively incorporates four point-in-time features in [`backend/train_forecaster.py`](file:///backend/train_forecaster.py) and [`backend/main.py`](file:///backend/main.py):
-
-1. **`dispute_active`**: Buyer ERP commercial hold / rate discrepancy / unaccepted debit note (with statutory invariant clamp to $P \le 0.10$).
-2. **`portal_filing_status`**: Point-in-time GSTR-1 return filing state scraped via GST portal telemetry.
-3. **`vendor_acknowledgment`**: Automated AP inquiry response confirming scheduled upload vs non-responsive.
-4. **`mismatch_reason_code`**: Discrepancy taxonomy (clerical typo/rounding vs missing filing).
 
 ---
 
