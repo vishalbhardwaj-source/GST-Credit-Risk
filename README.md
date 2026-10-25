@@ -180,15 +180,18 @@ The table below reflects the performance of the **Scenario 4 Upgraded Model** in
 
 ---
 
-### Accuracy Progression Across Real-World Deployment Stages
+### Real-World Accuracy & Business Impact: Current vs. Full Enterprise Sync
 
-| Metric | Implemented Scenario 4 Model | Projected Live Enterprise Data (Full Integration) |
-| :--- | :---: | :---: |
-| **ROC-AUC** | **`0.7701`** | **`0.78` – `0.81`** |
-| **Balanced Accuracy** | **`72.50%`** | **`73.0%` – `76.5%`** |
-| **Plain Accuracy** ($\tau = 0.50$) | **`75.81%`** | **`77.5%` – `80.5%`** |
-| **Default Recall** (Catching Risky Invoices) | **`58.37%`** | **`70.0%` – `74.0%`** |
-| **Resolved Recall** (Preventing False Holds) | **`80.22%`** | **`81.0%` – `84.0%`** |
+The table below explains what each technical metric means in practical Accounts Payable (AP) terms:
+
+| Business Capability | Technical Metric | Current Engine | With Live ERP & Portal Sync | What This Means in Practice |
+| :--- | :---: | :---: | :---: | :--- |
+| **Overall Accuracy** | Plain Accuracy | **75.8%** | **78% – 81%** | Total percentage of invoices correctly classified as safe or risky across all transactions |
+| **Fair Risk Balance** | Balanced Accuracy | **72.5%** | **73% – 77%** | Fair performance evaluated equally on both defaulting vendors and compliant vendors |
+| **Safe Claim Protection** | Resolved Recall | **80.2%** | **81% – 84%** | Correctly clears 80%+ of legitimate invoices, preventing wrongful payment freezes and vendor friction |
+| **Default Risk Catch Rate** | Default Recall | **58.4%** | **70% – 74%** | Successfully flags risky vendors early so AP teams can hold payments before statutory credit is lost |
+| **Risk Separation Power** | ROC-AUC | **0.770** | **0.78 – 0.81** | Statistical ability to rank true default risks above harmless, routine timing delays |
+
 #### Why These Signals Deliver Measurable Lift & The "Coverage Ceiling":
 1. **GST Portal Telemetry (GSTR-3B Track Record & GSTIN Status)**: Surfaces whether a vendor's registration is `Active`, `Suspended`, or `Cancelled`. A cancelled GSTIN is legally barred from filing GSTR-1 (~99% default certainty), catching structural defaults early (+0.03 to +0.04 AUC).
 2. **Buyer ERP Dispute & GRN Tables (SAP / Oracle / Tally)**: Detects commercial payment holds (quality disputes, quantity mismatches vs Goods Receipt Notes, unaccepted debit notes). Disputing suppliers intentionally withhold GSTR-1 uploads as leverage (+0.02 to +0.03 AUC).
