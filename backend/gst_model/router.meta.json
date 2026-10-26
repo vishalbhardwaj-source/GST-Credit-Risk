@@ -1,0 +1,60 @@
+{
+  "model_version": "lightgbm-v1",
+  "features": [
+    "irn_present",
+    "leverage_score",
+    "retention_active",
+    "paid_in_advance_ratio",
+    "outstanding_payable_ratio",
+    "filing_pattern",
+    "current_delay_z",
+    "is_credit_note",
+    "is_format_divergence",
+    "buyer_posted_flag",
+    "value_mismatch_pct",
+    "days_to_16_4",
+    "rupees_at_risk",
+    "compliance_history_band"
+  ],
+  "categorical_features": {
+    "irn_present": [
+      "absent",
+      "active"
+    ],
+    "filing_pattern": [
+      "punctual",
+      "habitual_laggard",
+      "sudden_silence"
+    ],
+    "compliance_history_band": [
+      "good",
+      "poor",
+      "perfect",
+      "mixed"
+    ]
+  },
+  "pooling_enabled": false,
+  "trained_on_sources": [
+    "synth/out/train_corpus.csv",
+    "synth/out_B/train_corpus.csv",
+    "synth/out_B_sweep/train_corpus.csv"
+  ],
+  "training_rows": 1400000,
+  "target": {
+    "name": "self_correct",
+    "semantics": "Synthetic later GSTR-2B appearance only; not legal ITC eligibility or payment recovery."
+  },
+  "internal_synthetic_evaluation": {
+    "split": "deterministic 20% supplier-GSTIN group holdout",
+    "group_column": "vendor_gstin",
+    "random_state": 42,
+    "train_suppliers": 200,
+    "holdout_suppliers": 50,
+    "holdout_rows": 280546,
+    "metrics": {
+      "brier": 0.17575890933169946,
+      "auc": 0.7187561350109799
+    }
+  },
+  "n_estimators": 600
+}

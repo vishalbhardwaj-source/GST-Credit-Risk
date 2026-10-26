@@ -1,0 +1,60 @@
+ap:
+  avg_outstanding:
+  - 5000
+  - 400000
+  leverage_bonus_retention: 0.25
+  leverage_norm_denom: 50000
+  paid_advance_share: 0.18
+  retention_pct: 0.12
+  retention_use_rate: 0.22
+buyer_posted_share: 0.05
+credit_note_share: 0.07
+cycles: 12
+format_divergence_share: 0.04
+heuristic:
+  buyer_posted_base: 0.02
+  credit_note_bump: 0.1
+  irn_absent_base: 0.54
+  irn_active_base: 0.8
+  p_ceil: 0.95
+  p_floor: 0.02
+  sudden_silence_cap: 0.22
+invoices_per_org: 1200
+irn_coverage:
+  big: 0.95
+  msme: 0.55
+  small: 0.8
+label:
+  credit_note_bump: 0.1
+  ghost_base_if_irn_absent: 0.4
+  leverage_gain_when_absent: 0.28
+  sudden_silence_clear_rate: 0.22
+mismatch_rate_raw: 0.33
+n_orgs: 8
+noise_regime: A
+punctual_rate:
+  big: 0.4
+  msme: 0.6
+  small: 0.55
+qrmp_share: 0.28
+regime_B:
+  qrmp_share: 0.4
+  seed: 777
+  sudden_silence_rate: 0.1
+  vendor_mix:
+    big: 0.3
+    msme: 0.4
+    small: 0.3
+seed: 2024
+self_correct_given_irn_active: 0.8
+sudden_silence_rate: 0.05
+tax_rates:
+- 5
+- 12
+- 18
+vendor_mix:
+  big: 0.15
+  msme: 0.55
+  small: 0.3
+vendors_per_org: 250
+window_close_days: 60
