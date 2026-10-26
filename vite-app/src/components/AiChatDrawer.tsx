@@ -195,18 +195,316 @@ const SUGGESTED_PROMPTS = [
     query: 'Summarize my current total ITC at risk, breakdown across action buckets, and identify the top vendors causing exposure.',
   },
   {
-    title: '⚖️ Rule 37A Statutory Deadline',
-    query: 'Explain the legal requirements of Rule 37A, the Nov 30 statutory cutoff, and the 18% p.a. interest liability for missing GSTR-3B filings.',
+    title: '⚖️ Rule 37A Statutory Cutoff & Interest',
+    query: 'Calculate my potential Rule 37A Section 50 interest exposure at 18% p.a. leading to the November 30 cutoff, and explain the Table 4(B)(2) reversal procedure.',
   },
   {
-    title: '✉️ Draft Vendor Notice',
-    query: 'Draft a formal supplier demand notice citing Rule 37A and Section 16(2)(aa) requesting immediate GSTR-1 & GSTR-3B compliance, warning of an Accounts Payable hold.',
+    title: '✉️ Draft Vendor Demand Notice',
+    query: 'Draft a formal supplier demand notice citing Rule 37A and Section 16(2)(aa) for our top delinquent vendor, requesting urgent GSTR-1/3B filing with an Accounts Payable hold warning.',
   },
   {
-    title: '🔍 3-Signal Decision Logic',
-    query: 'How does this platform determine whether an invoice goes to Safe to Hold, Watch, or Chase Now using IRN, AP leverage, and filing patterns?',
+    title: '🚨 Top Exposure Invoices',
+    query: 'List the top individual invoices causing the highest tax risk, with vendor names, amounts, match status, and recommended actions.',
+  },
+  {
+    title: '🛡️ Accounts Payable Hold Strategy',
+    query: 'Provide an Accounts Payable retention strategy: which vendors have pending AP that can be safely held to offset our ITC exposure before Nov 30?',
   },
 ];
+
+const QUICK_CHIPS = [
+  {
+    label: '📊 Audit ITC Risk',
+    query: 'Summarize my current total ITC at risk, breakdown across action buckets, and identify the top vendors causing exposure.',
+  },
+  {
+    label: '⚖️ Rule 37A & Interest',
+    query: 'Calculate my potential Rule 37A Section 50 interest exposure at 18% p.a. leading to the November 30 cutoff, and explain the Table 4(B)(2) reversal procedure.',
+  },
+  {
+    label: '✉️ Draft Vendor Notice',
+    query: 'Draft a formal supplier demand notice citing Rule 37A and Section 16(2)(aa) for our top delinquent vendor, requesting urgent GSTR-1/3B filing with an Accounts Payable hold warning.',
+  },
+  {
+    label: '🚨 Top Risky Invoices',
+    query: 'List the top individual invoices causing the highest tax risk, with vendor names, amounts, match status, and recommended actions.',
+  },
+  {
+    label: '🛡️ Payment Hold Plan',
+    query: 'Provide an Accounts Payable retention strategy: which vendors have pending AP that can be safely held to offset our ITC exposure before Nov 30?',
+  },
+];
+
+function parseInline(text: string, primaryColor: string): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith('**') && token.endsWith('**')) {
+      parts.push(
+        <strong key={match.index} style={{ fontWeight: 700, color: '#ffffff' }}>
+          {token.slice(2, -2)}
+        </strong>
+      );
+    } else if (token.startsWith('`') && token.endsWith('`')) {
+      parts.push(
+        <code
+          key={match.index}
+          style={{
+            background: 'rgba(255, 255, 255, 0.12)',
+            padding: '2px 5px',
+            borderRadius: '4px',
+            fontSize: '11px',
+            color: primaryColor,
+            fontFamily: 'monospace',
+          }}
+        >
+          {token.slice(1, -1)}
+        </code>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+  return parts.length > 0 ? parts : text;
+}
+
+function MarkdownRenderer({ content, primaryColor }: { content: string; primaryColor: string }) {
+  const lines = content.split('\n');
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Markdown Table detection
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+
+      if (tableLines.length >= 2) {
+        const headerCells = tableLines[0].split('|').slice(1, -1).map((c) => c.trim());
+        const rowStartIndex = tableLines[1].includes('---') ? 2 : 1;
+        const rows = tableLines.slice(rowStartIndex).map((r) => r.split('|').slice(1, -1).map((c) => c.trim()));
+
+        elements.push(
+          <div key={`table-${i}`} style={{ overflowX: 'auto', margin: '8px 0', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+              <thead>
+                <tr style={{ background: 'rgba(255, 255, 255, 0.08)', borderBottom: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  {headerCells.map((h, hIdx) => (
+                    <th key={hIdx} style={{ padding: '6px 10px', textAlign: 'left', fontWeight: 600, color: '#e2e8f0' }}>
+                      {parseInline(h, primaryColor)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rIdx) => (
+                  <tr key={rIdx} style={{ background: rIdx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                    {row.map((cell, cIdx) => (
+                      <td key={cIdx} style={{ padding: '6px 10px', color: '#cbd5e1' }}>
+                        {parseInline(cell, primaryColor)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        continue;
+      }
+    }
+
+    // Code block
+    if (line.trim().startsWith('```')) {
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      i++;
+      elements.push(
+        <pre
+          key={`code-${i}`}
+          style={{
+            background: '#090e1a',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            fontSize: '11px',
+            overflowX: 'auto',
+            color: '#e2e8f0',
+            margin: '6px 0',
+          }}
+        >
+          <code>{codeLines.join('\n')}</code>
+        </pre>
+      );
+      continue;
+    }
+
+    // Headers
+    if (line.startsWith('### ')) {
+      elements.push(
+        <h4 key={`h4-${i}`} style={{ fontSize: '13px', fontWeight: 700, margin: '10px 0 4px', color: primaryColor }}>
+          {parseInline(line.slice(4), primaryColor)}
+        </h4>
+      );
+      i++;
+      continue;
+    }
+    if (line.startsWith('## ')) {
+      elements.push(
+        <h3 key={`h3-${i}`} style={{ fontSize: '14px', fontWeight: 700, margin: '12px 0 5px', color: '#ffffff' }}>
+          {parseInline(line.slice(3), primaryColor)}
+        </h3>
+      );
+      i++;
+      continue;
+    }
+    if (line.startsWith('# ')) {
+      elements.push(
+        <h2 key={`h2-${i}`} style={{ fontSize: '15px', fontWeight: 700, margin: '12px 0 6px', color: '#ffffff' }}>
+          {parseInline(line.slice(2), primaryColor)}
+        </h2>
+      );
+      i++;
+      continue;
+    }
+
+    // Bullet points
+    const bulletMatch = line.match(/^(\s*)([-*•]|\d+\.)\s+(.+)$/);
+    if (bulletMatch) {
+      const indent = bulletMatch[1].length;
+      const marker = bulletMatch[2];
+      const text = bulletMatch[3];
+      elements.push(
+        <div key={`li-${i}`} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginLeft: `${indent * 8 + 4}px`, margin: '2px 0', lineHeight: 1.5 }}>
+          <span style={{ color: primaryColor, flexShrink: 0, fontSize: '10px', marginTop: '2px' }}>
+            {marker.includes('.') ? marker : '•'}
+          </span>
+          <span style={{ color: '#f1f5f9' }}>{parseInline(text, primaryColor)}</span>
+        </div>
+      );
+      i++;
+      continue;
+    }
+
+    // Empty line
+    if (!line.trim()) {
+      elements.push(<div key={`sp-${i}`} style={{ height: '6px' }} />);
+      i++;
+      continue;
+    }
+
+    // Normal paragraph
+    elements.push(
+      <p key={`p-${i}`} style={{ margin: '2px 0', lineHeight: 1.55, color: '#f1f5f9' }}>
+        {parseInline(line, primaryColor)}
+      </p>
+    );
+    i++;
+  }
+
+  return <div>{elements}</div>;
+}
+
+const formatFullSystemPrompt = (context: any): string => {
+  const base = `You are the **GST Tax Copilot & Input Tax Credit (ITC) Senior Advisor**, an authoritative tax-intelligence engine for Indian enterprises and CFOs.
+
+### Core Statutory Mandates & Legal Rules:
+1. **Rule 37A (CGST Rules, 2017) - Mandatory Reversal of ITC for Vendor Default**:
+   - Recipient must reverse claimed ITC in **Table 4(B)(2) of GSTR-3B** if the supplier fails to file their GSTR-3B by **November 30** following the end of the financial year.
+   - If reversed on or before November 30: **Zero interest** is payable.
+   - If reversed after November 30: Mandatory interest at **18% p.a.** under **Section 50(1)** accrues from the initial claim date until reversal.
+   - **Re-claim entitlement**: Under the proviso to Rule 37A, the recipient can legally re-claim reversed ITC in Table 4(A)(5) once the vendor files their delinquent GSTR-3B.
+
+2. **Section 16(2)(aa) of CGST Act, 2017 - GSTR-2B Matching**:
+   - ITC is strictly admissible only when invoice details are furnished by the supplier in GSTR-1/IFF and communicated to the recipient in auto-generated **GSTR-2B**.
+   - Invoices not reflected in GSTR-2B cannot be claimed without high audit exposure.
+
+3. **Rule 48(4) - e-Invoicing Compliance**:
+   - Mandatory for all B2B transactions of suppliers exceeding the aggregate turnover threshold (currently ₹5 Crore).
+   - Invoices without a valid 64-character Invoice Reference Number (IRN) and signed QR code are deemed legally non-existent under Rule 48(5); ITC is strictly inadmissible.
+
+4. **3-Signal Action Engine**:
+   - **Bucket 1 (Safe to Hold / High AP Leverage)**: Accounts Payable (AP) held with supplier exceeds the tax exposure. Retain pending vendor payments until GSTR-3B filing is confirmed.
+   - **Bucket 2 (Watch / Moderate Exposure)**: Moderate exposure with upcoming cutoff. Automate weekly compliance chasers.
+   - **Bucket 3 (Chase Now / High Urgency)**: Substantial tax at risk with low AP leverage (supplier already paid). Requires immediate commercial escalation and CFO-level intervention.
+
+### Communication Guidelines:
+- Ground your answers in the live dataset figures provided in the session context.
+- Present financial numbers formatted clearly in Indian Rupees (e.g. ₹1,45,000.00).
+- Structure complex comparisons using markdown tables and clear bullet points.
+- When drafting notices or audit memos, include formal legal headers, GSTIN fields, and statutory citations.`;
+
+  if (!context) return base;
+
+  let summary = `\n\n### Current Session Context & Live Financial Metrics:\n`;
+  summary += `- Total Invoices: ${context.total_invoices || 0}\n`;
+  summary += `- Total ITC Claimed: ₹${(context.total_itc || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}\n`;
+  summary += `- Total ITC at Risk: ₹${(context.at_risk_itc || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}\n`;
+  if (context.matched_invoices !== undefined) {
+    summary += `- Matched in GSTR-2B: ${context.matched_invoices} invoices (₹${(context.matched_itc || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+  }
+  if (context.unmatched_invoices !== undefined) {
+    summary += `- Unmatched in GSTR-2B: ${context.unmatched_invoices} invoices (₹${(context.unmatched_itc || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+  }
+  if (context.missing_irn_count !== undefined) {
+    summary += `- Missing Mandatory IRN (Rule 48(4)): ${context.missing_irn_count} invoices (₹${(context.missing_irn_tax || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+  }
+  summary += `- Rule 37A Cutoff Countdown: ${context.days_to_cutoff || 35} days remaining until statutory deadline (November 30)\n`;
+  if (context.monthly_interest_exposure) {
+    summary += `- Section 50 Interest Liability (18% p.a.): ~₹${context.monthly_interest_exposure.toLocaleString('en-IN', { maximumFractionDigits: 2 })} per month if unreversed past cutoff\n`;
+  }
+
+  if (context.bucket_breakdown) {
+    const bb = context.bucket_breakdown;
+    summary += `- Action Buckets Breakdown:\n`;
+    summary += `  • Bucket 1 (Safe to Hold / High AP Leverage): ${bb.bucket1 || 0} invoices (₹${(bb.bucket1_tax || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+    summary += `  • Bucket 2 (Watch / Moderate Exposure): ${bb.bucket2 || 0} invoices (₹${(bb.bucket2_tax || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+    summary += `  • Bucket 3 (Chase Now / High Urgency): ${bb.bucket3 || 0} invoices (₹${(bb.bucket3_tax || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })})\n`;
+  }
+
+  if (context.top_risky_vendors && context.top_risky_vendors.length > 0) {
+    summary += `\n- Top Exposure Vendors Causing Risk:\n`;
+    context.top_risky_vendors.slice(0, 10).forEach((v: any) => {
+      summary += `  • ${v.vendor_name} (GSTIN: ${v.gstin}) — Action: ${v.risk_level} | Tax at Risk: ₹${(v.at_risk_amount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })} | AP Held: ₹${(v.ap_held || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })} | Filing: ${v.filing_pattern}\n`;
+    });
+  }
+
+  if (context.top_risky_invoices && context.top_risky_invoices.length > 0) {
+    summary += `\n- Highest Individual Invoice Exposures:\n`;
+    context.top_risky_invoices.slice(0, 8).forEach((inv: any) => {
+      summary += `  • Inv #${inv.invoice_number} (${inv.vendor_name}) — Tax: ₹${(inv.tax_amount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })} | 2B: ${inv.match_status} | IRN: ${inv.irn_status} | Bucket: ${inv.bucket}\n`;
+    });
+  }
+
+  if (context.selected_invoice) {
+    const inv = context.selected_invoice;
+    summary += `\n- Currently Inspected / Focused Invoice in UI:\n`;
+    summary += `  • Invoice #${inv.invoiceNumber} from ${inv.vendorName} (GSTIN: ${inv.gstin})\n`;
+    summary += `  • Date: ${inv.invoiceDate || 'N/A'} | Taxable: ₹${(inv.taxableAmount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })} | Tax (ITC): ₹${(inv.taxAmount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}\n`;
+    summary += `  • GSTR-2B Matched: ${inv.matched} | IRN Present: ${inv.irnPresent} | Action Bucket: ${inv.bucket}\n`;
+    summary += `  • Unpaid AP Balance: ₹${(inv.unpaidAmount || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}\n`;
+  }
+
+  return base + summary;
+};
 
 export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -319,42 +617,118 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   const buildCurrentContext = () => {
     if (!includeContext) return undefined;
 
-    const vendorRiskMap = new Map<string, { vendor_name: string; gstin: string; at_risk_amount: number; risk_level: string }>();
-    invoices
-      .filter((i) => !i.matchResult.matched)
-      .forEach((inv) => {
-        const existing = vendorRiskMap.get(inv.gstin) || {
+    let matchedCount = 0;
+    let matchedTax = 0;
+    let unmatchedCount = 0;
+    let unmatchedTax = 0;
+    let missingIrnCount = 0;
+    let missingIrnTax = 0;
+
+    const vendorMap = new Map<
+      string,
+      {
+        vendor_name: string;
+        gstin: string;
+        at_risk_amount: number;
+        risk_level: string;
+        filing_pattern: string;
+        ap_held: number;
+        invoice_count: number;
+      }
+    >();
+
+    invoices.forEach((inv) => {
+      const isMatched = inv.matchResult?.matched;
+      if (isMatched) {
+        matchedCount += 1;
+        matchedTax += inv.taxAmount;
+      } else {
+        unmatchedCount += 1;
+        unmatchedTax += inv.taxAmount;
+      }
+
+      if (inv.irnRecord && !inv.irnRecord.irnPresent && inv.irnRecord.irnState === 'ABSENT_APPLIES') {
+        missingIrnCount += 1;
+        missingIrnTax += inv.taxAmount;
+      }
+
+      if (!isMatched) {
+        const existing = vendorMap.get(inv.gstin) || {
           vendor_name: inv.vendorName,
           gstin: inv.gstin,
           at_risk_amount: 0,
-          risk_level: inv.routingBucket === 'SAFE TO HOLD' ? 'HIGH' : 'MEDIUM',
+          risk_level:
+            inv.routingBucket === 'SAFE TO HOLD'
+              ? 'HOLD'
+              : inv.routingBucket === 'CHASE NOW'
+              ? 'CHASE'
+              : 'WATCH',
+          filing_pattern: inv.vendor?.filingPattern || 'Habitual Laggard',
+          ap_held: inv.apRecord?.unpaidAmount || 0,
+          invoice_count: 0,
         };
         existing.at_risk_amount += inv.taxAmount;
-        vendorRiskMap.set(inv.gstin, existing);
-      });
+        existing.invoice_count += 1;
+        vendorMap.set(inv.gstin, existing);
+      }
+    });
 
-    const topRiskyVendors = Array.from(vendorRiskMap.values())
+    const topRiskyVendors = Array.from(vendorMap.values())
       .sort((a, b) => b.at_risk_amount - a.at_risk_amount)
-      .slice(0, 5);
+      .slice(0, 10);
+
+    const topRiskyInvoices = invoices
+      .filter((i) => !i.matchResult?.matched)
+      .sort((a, b) => b.taxAmount - a.taxAmount)
+      .slice(0, 8)
+      .map((i) => ({
+        invoice_number: i.invoiceNumber,
+        invoice_date: i.invoiceDate,
+        vendor_name: i.vendorName,
+        gstin: i.gstin,
+        tax_amount: i.taxAmount,
+        match_status: i.matchResult?.matched ? 'Matched' : 'Unmatched',
+        irn_status: i.irnRecord?.irnPresent ? 'Present' : 'Absent',
+        bucket: i.routingBucket || 'CHASE NOW',
+      }));
+
+    const totalTaxAtRisk = kpis.totalTaxAtRisk || unmatchedTax;
+    const monthlyInterestExposure = (totalTaxAtRisk * 0.18) / 12;
 
     return {
       total_invoices: invoices.length,
       total_itc: invoices.reduce((s, i) => s + i.taxAmount, 0),
-      at_risk_itc: kpis.totalTaxAtRisk,
+      at_risk_itc: totalTaxAtRisk,
+      matched_invoices: matchedCount,
+      matched_itc: matchedTax,
+      unmatched_invoices: unmatchedCount,
+      unmatched_itc: unmatchedTax,
+      missing_irn_count: missingIrnCount,
+      missing_irn_tax: missingIrnTax,
       days_to_cutoff: 35,
+      monthly_interest_exposure: monthlyInterestExposure,
       bucket_breakdown: {
         bucket1: kpis.safeCount,
+        bucket1_tax: kpis.safeTax,
         bucket2: kpis.watchCount,
+        bucket2_tax: kpis.watchTax,
         bucket3: kpis.chaseCount,
+        bucket3_tax: kpis.chaseTax,
       },
       top_risky_vendors: topRiskyVendors,
+      top_risky_invoices: topRiskyInvoices,
       selected_invoice: selectedInvoice
         ? {
             invoiceNumber: selectedInvoice.invoiceNumber,
+            invoiceDate: selectedInvoice.invoiceDate,
             vendorName: selectedInvoice.vendorName,
+            gstin: selectedInvoice.gstin,
+            taxableAmount: selectedInvoice.taxableAmount,
             taxAmount: selectedInvoice.taxAmount,
-            matched: selectedInvoice.matchResult.matched,
-            irnPresent: selectedInvoice.irnRecord.irnPresent,
+            matched: selectedInvoice.matchResult?.matched,
+            irnPresent: selectedInvoice.irnRecord?.irnPresent,
+            bucket: selectedInvoice.routingBucket,
+            unpaidAmount: selectedInvoice.apRecord?.unpaidAmount || 0,
           }
         : null,
     };
@@ -370,9 +744,11 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
       const candidates = [
         model || 'gemini-2.0-flash',
         'gemini-2.0-flash',
-        'gemini-2.0-flash-exp',
+        'gemini-1.5-flash',
         'gemini-1.5-flash-latest',
+        'gemini-1.5-pro',
         'gemini-1.5-pro-latest',
+        'gemini-2.0-flash-exp',
       ];
       const uniqueCandidates = Array.from(new Set(candidates));
 
@@ -439,6 +815,13 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
           lastErr = e;
           const lower = e.message?.toLowerCase() || '';
           if (
+            lower.includes('internal error') ||
+            lower.includes('internal') ||
+            lower.includes('500') ||
+            lower.includes('502') ||
+            lower.includes('503') ||
+            lower.includes('504') ||
+            lower.includes('server error') ||
             lower.includes('not found') ||
             lower.includes('not supported') ||
             lower.includes('high demand') ||
@@ -447,7 +830,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
             lower.includes('temporarily') ||
             lower.includes('no longer available')
           ) {
-            // Silently try next fallback model
+            // Silently try next fallback model (e.g. gemini-1.5-flash / gemini-1.5-pro)
             continue;
           }
           throw e;
@@ -678,12 +1061,11 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
         }
       } catch (backendError: any) {
         if (activeUserKey) {
-          const simpleSystemPrompt =
-            'You are an expert Indian GST Tax and Input Tax Credit (ITC) Advisor. Provide direct, concise, and structured answers.';
+          const directSystemPrompt = formatFullSystemPrompt(context);
           await streamFromDirectProvider(
             activeUserKey,
             newMessages.map((m) => ({ role: m.role, content: m.content })),
-            simpleSystemPrompt,
+            directSystemPrompt,
             onChunk
           );
         } else {
@@ -1415,10 +1797,14 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                     )}
 
                     {/* Message Body Content */}
-                    <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#f8fafc' }}>
+                    <div style={{ wordBreak: 'break-word', color: '#f8fafc' }}>
                       {msg.content ? (
                         <>
-                          {msg.content}
+                          {msg.role === 'assistant' ? (
+                            <MarkdownRenderer content={msg.content} primaryColor={activeThemeConfig.primary} />
+                          ) : (
+                            <div style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</div>
+                          )}
                           {isLoading && msg.id === messages[messages.length - 1]?.id && (
                             <span
                               style={{
@@ -1460,6 +1846,52 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
               borderTop: `1px solid ${activeThemeConfig.border}`,
             }}
           >
+            {/* Quick Action Chips */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '6px',
+                overflowX: 'auto',
+                paddingBottom: '10px',
+                scrollbarWidth: 'none',
+              }}
+            >
+              {QUICK_CHIPS.map((chip, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => handleSendMessage(chip.query)}
+                  disabled={isLoading}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '11px',
+                    padding: '4px 10px',
+                    borderRadius: '16px',
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.14)',
+                    color: '#e2e8f0',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isLoading) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
+                      e.currentTarget.style.borderColor = activeThemeConfig.primary;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.14)';
+                  }}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
