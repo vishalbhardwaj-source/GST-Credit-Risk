@@ -1,7 +1,8 @@
 import re
 import os
 import joblib
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Query
+from starlette.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -19,6 +20,15 @@ from .ml_engine import ml_engine
 from .module_e_tinyfish import tinyfish_service, Workflow1Result, Workflow2Result, Workflow3Result, Workflow4Result
 from .train_forecaster import GSTResolutionForecaster
 from .dataset_service import generate_server_dataset, run_server_pipeline
+from .model_integration import (
+    create_upload_session,
+    get_demo_page,
+    get_invoice_page,
+    MAX_UPLOAD_BYTES,
+    MAX_TOTAL_UPLOAD_BYTES,
+    receive_upload,
+    run_pipeline as run_model_pipeline,
+)
 
 app = FastAPI(
     title="GST Credit-at-Risk Forecaster API (Hackathon Architecture)",
@@ -190,6 +200,78 @@ def run_pipeline(payload: Optional[Dict[str, Any]] = None):
         "invoices": routed_invoices,
         "kpis": kpis
     }
+
+
+@app.get("/api/model/demo")
+def get_model_demo(
+    offset: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=100),
+):
+    return get_demo_page(offset, limit)
+
+
+@app.post("/api/model/pipeline/run")
+def run_model_routing(payload: Optional[Dict[str, Any]] = None):
+    try:
+        return run_model_pipeline((payload or {}).get("session_id"))
+    except ValueError as exc:
+        raise HTTPException(status_code=410, detail=str(exc)) from exc
+
+
+@app.get("/api/model/invoices")
+def get_model_invoices(
+    session_id: str = Query("demo", min_length=1, max_length=64),
+    offset: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=100),
+    search: str = Query("", max_length=120),
+    bucket: str = Query("", max_length=32),
+    match: str = Query("", max_length=16),
+    irn: str = Query("", max_length=16),
+    ap: str = Query("", max_length=16),
+    pattern: str = Query("", max_length=32),
+    sort: str = Query("taxAmount", max_length=32),
+    direction: str = Query("desc", max_length=4),
+):
+    try:
+        return get_invoice_page(
+            session_id, offset, limit, search, bucket, match, irn, ap, pattern, sort, direction
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=410, detail=str(exc)) from exc
+
+
+@app.post("/api/model/upload")
+async def upload_model_inputs(
+    pr_file: UploadFile = File(...),
+    gstr2b_file: Optional[UploadFile] = File(None),
+    gstr1_file: Optional[UploadFile] = File(None),
+    ap_aging_file: Optional[UploadFile] = File(None),
+    filing_history_file: Optional[UploadFile] = File(None),
+):
+    try:
+        pr = await receive_upload(pr_file, "Purchase Register")
+        if pr is None:
+            raise ValueError("Purchase Register is required.")
+        total_bytes = len(pr[1])
+        optional_files = {}
+        for key, upload, label in (
+            ("gstr2b", gstr2b_file, "GSTR-2B"),
+            ("gstr1", gstr1_file, "GSTR-1"),
+            ("ap_aging", ap_aging_file, "AP aging"),
+            ("filing_history", filing_history_file, "Filing history"),
+        ):
+            optional = await receive_upload(
+                upload,
+                label,
+                min(MAX_UPLOAD_BYTES, MAX_TOTAL_UPLOAD_BYTES - total_bytes),
+            )
+            optional_files[key] = optional
+            if optional:
+                total_bytes += len(optional[1])
+        return await run_in_threadpool(create_upload_session, pr[1], optional_files)
+    except ValueError as exc:
+        status_code = 413 if "MB" in str(exc) else 400
+        raise HTTPException(status_code=status_code, detail=str(exc)) from exc
 
 # Module A: RapidFuzz Match Engine
 @app.post("/api/reconcile", response_model=List[ReconcileResponseItem])
