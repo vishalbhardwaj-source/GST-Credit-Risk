@@ -144,9 +144,11 @@ const PROVIDER_METADATA: Record<
     themeKey: 'cyan',
     consoleUrl: 'https://aistudio.google.com/app/apikey',
     models: [
-      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', tag: 'Fast & Smart (Default)' },
-      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'High Speed' },
-      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', tag: 'Deep Analysis' },
+      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', tag: 'Latest Recommended' },
+      { id: 'gemini-3.8-pro', name: 'Gemini 3.8 Pro', tag: 'Deep Reasoning' },
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Fast Multimodal' },
+      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'High Speed Stable' },
+      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', tag: 'Long Context' },
     ],
   },
   openai: {
@@ -158,6 +160,8 @@ const PROVIDER_METADATA: Record<
     models: [
       { id: 'gpt-4o-mini', name: 'GPT-4o Mini', tag: 'Fast & Cost-Effective' },
       { id: 'gpt-4o', name: 'GPT-4o', tag: 'Flagship Intelligence' },
+      { id: 'o3-mini', name: 'o3-mini', tag: 'Reasoning Model' },
+      { id: 'o1', name: 'o1', tag: 'Complex Reasoning' },
     ],
   },
   claude: {
@@ -167,8 +171,9 @@ const PROVIDER_METADATA: Record<
     themeKey: 'amber',
     consoleUrl: 'https://console.anthropic.com/settings/keys',
     models: [
-      { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', tag: 'Ultra-Fast Reasoning' },
       { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', tag: 'Top Nuance & Accuracy' },
+      { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', tag: 'Ultra-Fast Reasoning' },
+      { id: 'claude-3-7-sonnet', name: 'Claude 3.7 Sonnet', tag: 'Hybrid Reasoning' },
     ],
   },
   groq: {
@@ -179,6 +184,8 @@ const PROVIDER_METADATA: Record<
     consoleUrl: 'https://console.groq.com/keys',
     models: [
       { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B', tag: 'Blazing Fast Inference' },
+      { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B', tag: 'Instant Speed' },
+      { id: 'deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 70B', tag: 'Reasoning' },
     ],
   },
 };
@@ -218,7 +225,12 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
     return (localStorage.getItem('gst_ai_selected_provider') as AiProvider) || 'gemini';
   });
   const [model, setModel] = useState<string>(() => {
-    return localStorage.getItem('gst_ai_selected_model') || PROVIDER_METADATA.gemini.models[0].id;
+    const saved = localStorage.getItem('gst_ai_selected_model');
+    if (!saved || saved === 'gemini-2.5-flash') {
+      localStorage.setItem('gst_ai_selected_model', 'gemini-3.8-flash');
+      return 'gemini-3.8-flash';
+    }
+    return saved;
   });
   const [apiKeys, setApiKeys] = useState<Record<AiProvider, string>>(() => {
     try {
@@ -349,13 +361,15 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
     };
   };
 
-  const callDirectProviderFallback = async (
+  const streamFromDirectProvider = async (
     userKey: string,
     history: { role: string; content: string }[],
-    systemPrompt: string
-  ): Promise<string> => {
+    systemPrompt: string,
+    onChunk: (text: string) => void
+  ): Promise<void> => {
     if (provider === 'gemini') {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userKey}`;
+      const targetModel = model === 'gemini-2.5-flash' ? 'gemini-3.8-flash' : (model || 'gemini-3.8-flash');
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:streamGenerateContent?alt=sse&key=${userKey}`;
       const contents = history.map((m) => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }],
@@ -366,20 +380,45 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
         body: JSON.stringify({
           system_instruction: { parts: [{ text: systemPrompt }] },
           contents,
-          generationConfig: { temperature: 0.2 },
+          generationConfig: { temperature: 0.2, maxOutputTokens: 1500 },
         }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err?.error?.message || `Gemini API HTTP ${res.status}`);
       }
-      const data = await res.json();
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response returned.';
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported.');
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (chunk) onChunk(chunk);
+            } catch {}
+          }
+        }
+      }
+      return;
     }
 
-    if (provider === 'openai') {
+    if (provider === 'openai' || provider === 'groq') {
+      const endpoint =
+        provider === 'groq'
+          ? 'https://api.groq.com/openai/v1/chat/completions'
+          : 'https://api.openai.com/v1/chat/completions';
       const apiMessages = [{ role: 'system', content: systemPrompt }, ...history];
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${userKey}`,
@@ -389,39 +428,39 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
           model,
           messages: apiMessages,
           temperature: 0.2,
+          stream: true,
         }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `OpenAI API HTTP ${res.status}`);
+        throw new Error(err?.error?.message || `${provider.toUpperCase()} API HTTP ${res.status}`);
       }
-      const data = await res.json();
-      return data.choices?.[0]?.message?.content || 'No response returned.';
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported.');
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === '[DONE]') break;
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const chunk = parsed.choices?.[0]?.delta?.content;
+              if (chunk) onChunk(chunk);
+            } catch {}
+          }
+        }
+      }
+      return;
     }
 
-    if (provider === 'groq') {
-      const apiMessages = [{ role: 'system', content: systemPrompt }, ...history];
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${userKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model,
-          messages: apiMessages,
-          temperature: 0.2,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Groq API HTTP ${res.status}`);
-      }
-      const data = await res.json();
-      return data.choices?.[0]?.message?.content || 'No response returned.';
-    }
-
-    throw new Error(`Direct browser calls for ${provider} require the backend proxy.`);
+    throw new Error(`Direct streaming for ${provider} requires backend proxy.`);
   };
 
   const handleSendMessage = async (userPrompt?: string) => {
@@ -453,6 +492,26 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
       return;
     }
 
+    // Immediately create placeholder assistant message for 0ms visual response
+    const assistantId = `msg-${Date.now()}-reply`;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        provider,
+        model,
+      },
+    ]);
+
+    const onChunk = (chunkText: string) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + chunkText } : m))
+      );
+    };
+
     try {
       const context = buildCurrentContext();
       const payload = {
@@ -463,48 +522,57 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
         context,
       };
 
-      let assistantText = '';
-
       try {
-        const res = await fetch(`${getApiBaseUrl()}/api/ai/chat`, {
+        const res = await fetch(`${getApiBaseUrl()}/api/ai/chat/stream`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          assistantText = data.reply;
-        } else {
+        if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
           throw new Error(errData.detail || `Server error ${res.status}`);
+        }
+
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error('Stream reader unavailable');
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.slice(6).trim();
+              if (jsonStr === '[DONE]') break;
+              try {
+                const parsed = JSON.parse(jsonStr);
+                if (parsed.text) onChunk(parsed.text);
+              } catch {}
+            }
+          }
         }
       } catch (backendError: any) {
         if (activeUserKey) {
           const simpleSystemPrompt =
-            'You are an expert Indian GST Tax and Input Tax Credit (ITC) Compliance Advisor. Assist with Rule 37A statutory reversal, Section 16(2)(aa) matching, and supplier risk triage.';
-          assistantText = await callDirectProviderFallback(
+            'You are an expert Indian GST Tax and Input Tax Credit (ITC) Advisor. Provide direct, concise, and structured answers.';
+          await streamFromDirectProvider(
             activeUserKey,
             newMessages.map((m) => ({ role: m.role, content: m.content })),
-            simpleSystemPrompt
+            simpleSystemPrompt,
+            onChunk
           );
         } else {
           throw backendError;
         }
       }
-
-      const assistantMessage: Message = {
-        id: `msg-${Date.now()}-reply`,
-        role: 'assistant',
-        content: assistantText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        provider,
-        model,
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
     } catch (err: any) {
       console.error('AI chat failed:', err);
+      // Remove empty assistant placeholder if failed completely
+      setMessages((prev) => prev.filter((m) => m.id !== assistantId || m.content.length > 0));
       setErrorMessage(err.message || 'Failed to communicate with AI provider. Please verify your API key.');
     } finally {
       setIsLoading(false);
@@ -859,8 +927,14 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                   Model:
                 </label>
                 <select
-                  value={model}
-                  onChange={(e) => handleModelChange(e.target.value)}
+                  value={activeProviderMeta.models.some((m) => m.id === model) ? model : 'custom'}
+                  onChange={(e) => {
+                    if (e.target.value === 'custom') {
+                      handleModelChange('');
+                    } else {
+                      handleModelChange(e.target.value);
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: '8px 10px',
@@ -870,6 +944,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                     color: '#ffffff',
                     fontSize: '12px',
                     outline: 'none',
+                    marginBottom: !activeProviderMeta.models.some((m) => m.id === model) ? '6px' : '0',
                   }}
                 >
                   {activeProviderMeta.models.map((m) => (
@@ -877,7 +952,28 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                       {m.name} — {m.tag}
                     </option>
                   ))}
+                  <option value="custom">Custom Model ID (Manual entry)...</option>
                 </select>
+
+                {!activeProviderMeta.models.some((m) => m.id === model) && (
+                  <input
+                    type="text"
+                    value={model}
+                    onChange={(e) => handleModelChange(e.target.value)}
+                    placeholder="Enter model ID (e.g. gemini-3.8-flash, o3-mini)..."
+                    style={{
+                      width: '100%',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      background: '#111827',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      color: '#ffffff',
+                      fontSize: '12px',
+                      outline: 'none',
+                      marginTop: '4px',
+                    }}
+                  />
+                )}
               </div>
 
               {/* API Key Input */}
@@ -1199,7 +1295,28 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
 
                     {/* Message Body Content */}
                     <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: '#f8fafc' }}>
-                      {msg.content}
+                      {msg.content ? (
+                        <>
+                          {msg.content}
+                          {isLoading && msg.id === messages[messages.length - 1]?.id && (
+                            <span
+                              style={{
+                                display: 'inline-block',
+                                width: '6px',
+                                height: '13px',
+                                background: activeThemeConfig.primary,
+                                marginLeft: '4px',
+                                verticalAlign: '-1px',
+                              }}
+                              className="animate-pulse"
+                            />
+                          )}
+                        </>
+                      ) : (
+                        <span style={{ color: activeThemeConfig.primary, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                          <RefreshCw size={12} className="animate-spin" /> Thinking...
+                        </span>
+                      )}
                     </div>
 
                     {msg.role === 'user' && (
@@ -1210,28 +1327,6 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                   </div>
                 </div>
               ))
-            )}
-
-            {/* Loading Indicator */}
-            {isLoading && (
-              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <div
-                  style={{
-                    background: activeThemeConfig.cardBg,
-                    border: `1px solid ${activeThemeConfig.border}`,
-                    borderRadius: '14px 14px 14px 2px',
-                    padding: '10px 14px',
-                    fontSize: '12px',
-                    color: activeThemeConfig.primary,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                  }}
-                >
-                  <RefreshCw size={14} color={activeThemeConfig.primary} className="animate-spin" />
-                  <span style={{ color: '#e2e8f0' }}>Consulting {activeProviderMeta.name}...</span>
-                </div>
-              </div>
             )}
             <div ref={messagesEndRef} />
           </div>

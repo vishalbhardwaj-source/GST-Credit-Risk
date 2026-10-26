@@ -20,7 +20,8 @@ from .ml_engine import ml_engine
 from .module_e_tinyfish import tinyfish_service, Workflow1Result, Workflow2Result, Workflow3Result, Workflow4Result
 from .train_forecaster import GSTResolutionForecaster
 from .dataset_service import generate_server_dataset, run_server_pipeline
-from .ai_service import execute_chat, get_server_api_keys, ChatRequest
+from fastapi.responses import StreamingResponse
+from .ai_service import execute_chat, stream_chat, get_server_api_keys, ChatRequest
 from .model_integration import (
     create_upload_session,
     get_demo_page,
@@ -150,13 +151,31 @@ def get_ai_config():
         "status": "online",
         "supported_providers": ["gemini", "openai", "claude", "groq"],
         "default_models": {
-            "gemini": "gemini-2.5-flash",
+            "gemini": "gemini-3.8-flash",
             "openai": "gpt-4o-mini",
             "claude": "claude-3-5-haiku-20241022",
             "groq": "llama-3.3-70b-versatile",
         },
         "server_keys": get_server_api_keys()
     }
+
+@app.post("/api/ai/chat/stream")
+async def chat_with_ai_stream(request: ChatRequest):
+    """Streams completion chunks in real-time via Server-Sent Events (SSE)."""
+    try:
+        return StreamingResponse(
+            stream_chat(request),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI streaming failed: {str(e)}")
 
 @app.post("/api/ai/chat")
 async def chat_with_ai(request: ChatRequest):
