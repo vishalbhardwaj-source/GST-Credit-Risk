@@ -135,9 +135,11 @@ export function App() {
           if (!matchNo && !matchVendor && !matchGstin) return false;
         }
 
-        if (matchFilter === 'MATCHED' && !inv.matchResult.matched) return false;
-        if (matchFilter === 'UNMATCHED' && inv.matchResult.matched) return false;
-        if (bucketFilter !== 'ALL' && inv.routingBucket !== bucketFilter) return false;
+        if (isRouted) {
+          if (matchFilter === 'MATCHED' && !inv.matchResult.matched) return false;
+          if (matchFilter === 'UNMATCHED' && inv.matchResult.matched) return false;
+          if (bucketFilter !== 'ALL' && inv.routingBucket !== bucketFilter) return false;
+        }
         if (irnFilter === 'PRESENT' && !inv.irnRecord.irnPresent) return false;
         if (irnFilter === 'ABSENT' && inv.irnRecord.irnPresent) return false;
         if (apFilter !== 'ALL' && inv.leverageTier !== apFilter) return false;
@@ -325,10 +327,12 @@ export function App() {
             setPatternFilter={setPatternFilter}
             displayedCount={displayedInvoices.length}
             totalCount={enrichedInvoices.length}
+            isRouted={isRouted}
           />
 
           <InvoiceTable
             invoices={displayedInvoices}
+            isRouted={isRouted}
             sortField={sortField}
             setSortField={setSortField}
             sortDirection={sortDirection}
@@ -340,6 +344,7 @@ export function App() {
 
       <InvoiceDetailPanel
         invoice={currentSelectedInvoice}
+        isRouted={isRouted}
         onClose={() => setSelectedInvoice(null)}
         tinyFishResult={tinyFish.tinyFishResult}
         tinyFishLoading={tinyFish.tinyFishLoading}

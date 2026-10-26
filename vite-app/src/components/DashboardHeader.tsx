@@ -420,21 +420,21 @@ export function DashboardHeader({
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '14px', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em' }}>
-                  Situation Synopsis — Starting Reconciliation Assessment
+                  {isRouted ? 'Situation Synopsis — Triage & Reconciliation Assessment' : 'Situation Synopsis — Starting Ingestion Assessment'}
                 </span>
                 <span
                   style={{
                     fontSize: '10px',
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    background: isRouted ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                    color: isRouted ? '#34d399' : '#fbbf24',
-                    border: `1px solid ${isRouted ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`,
+                    background: isRouted ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)',
+                    color: isRouted ? '#34d399' : '#818cf8',
+                    border: `1px solid ${isRouted ? 'rgba(16, 185, 129, 0.3)' : 'rgba(99, 102, 241, 0.3)'}`,
                     padding: '1px 8px',
                     borderRadius: '9999px',
                   }}
                 >
-                  {isRouted ? 'Triaged & De-Risked' : 'Pre-Analysis: Raw Mismatch State'}
+                  {isRouted ? 'Triaged & De-Risked' : 'Pre-Pipeline: Ingestion Ready'}
                 </span>
               </div>
               <p style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '2px' }}>
@@ -469,24 +469,32 @@ export function DashboardHeader({
           <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {/* 3 Executive Pillars */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
-              {/* Pillar 1: The Problem */}
+              {/* Pillar 1: Ingestion / Problem */}
               <div
                 style={{
-                  background: 'rgba(239, 68, 68, 0.06)',
-                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                  background: isRouted ? 'rgba(239, 68, 68, 0.06)' : 'rgba(99, 102, 241, 0.06)',
+                  border: `1px solid ${isRouted ? 'rgba(239, 68, 68, 0.2)' : 'rgba(99, 102, 241, 0.2)'}`,
                   borderRadius: '10px',
                   padding: '12px 14px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f87171', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: isRouted ? '#f87171' : '#60a5fa', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>
                   <ShieldAlert size={14} />
-                  <span>1. The Initial Problem</span>
+                  <span>{isRouted ? '1. The Identified Problem' : '1. Ingested Purchase Register'}</span>
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
-                  30 Unmatched Invoices · {formatINR(kpis.totalTaxAtRisk)}
+                  {isRouted ? `${kpis.unmatched} Unmatched Invoices · ${formatINR(kpis.totalTaxAtRisk)}` : `${kpis.total} Purchase Invoices Ingested`}
                 </div>
                 <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.5 }}>
-                  Out of <strong>200 total purchase invoices</strong>, 170 matched seamlessly in auto-generated GSTR-2B (85%). The remaining 30 invoices (15%) are absent, creating nominal tax risk under Section 16(2)(aa).
+                  {isRouted ? (
+                    <>
+                      Out of <strong>{kpis.total} total purchase invoices</strong>, {kpis.matched} matched seamlessly in auto-generated GSTR-2B ({Math.round((kpis.matched / (kpis.total || 1)) * 100)}%). The remaining {kpis.unmatched} invoices are absent, creating nominal tax risk under Section 16(2)(aa).
+                    </>
+                  ) : (
+                    <>
+                      Total of <strong>{kpis.total} purchase invoices</strong> loaded from the internal Purchase Register for Tax Period Sep 2026. Automated GSTR-2B matching and multi-signal triage have not been executed yet.
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -501,13 +509,15 @@ export function DashboardHeader({
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>
                   <AlertTriangle size={14} />
-                  <span>2. The Trap to Avoid</span>
+                  <span>{isRouted ? '2. The Trap to Avoid' : '2. Next Pipeline Step'}</span>
                 </div>
                 <div style={{ fontSize: '15px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
-                  Avoid Blanket Chasing &amp; Blind Vendor Escalation
+                  {isRouted ? 'Avoid Blanket Chasing & Blind Vendor Escalation' : 'Execute Automated 2B Match & Triage'}
                 </div>
                 <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.5 }}>
-                  Without triage, accounts teams waste hundreds of hours manually chasing all 30 suppliers or holding payments unnecessarily, souring vendor trust. Over 80% are simply routine filing lag.
+                  {isRouted
+                    ? `Without triage, accounts teams waste hundreds of hours manually chasing all ${kpis.unmatched} suppliers or holding payments unnecessarily, souring vendor trust. Over 80% are simply routine filing lag.`
+                    : 'Run the end-to-end reconciliation pipeline to compare purchase records against the GST portal 2B snapshot, identify discrepancies, and isolate high-risk suppliers.'}
                 </p>
               </div>
 
@@ -552,13 +562,23 @@ export function DashboardHeader({
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ color: '#fff', fontWeight: 700 }}>Starting Flow:</span>
-                <span>200 PR Invoices</span>
+                <span>{kpis.total} PR Invoices</span>
                 <ArrowRight size={12} color="#60a5fa" />
-                <span>170 Matched GSTR-2B</span>
-                <ArrowRight size={12} color="#60a5fa" />
-                <span style={{ color: '#f87171', fontWeight: 600 }}>30 Mismatch Discrepancies</span>
-                <ArrowRight size={12} color="#60a5fa" />
-                <span style={{ color: '#34d399', fontWeight: 700 }}>Triage Engine</span>
+                {isRouted ? (
+                  <>
+                    <span>{kpis.matched} Matched GSTR-2B</span>
+                    <ArrowRight size={12} color="#60a5fa" />
+                    <span style={{ color: '#f87171', fontWeight: 600 }}>{kpis.unmatched} Mismatch Discrepancies</span>
+                    <ArrowRight size={12} color="#60a5fa" />
+                    <span style={{ color: '#34d399', fontWeight: 700 }}>Triage Engine</span>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ color: 'var(--navy-muted)' }}>Awaiting Pipeline Execution</span>
+                    <ArrowRight size={12} color="#60a5fa" />
+                    <span style={{ color: '#818cf8', fontWeight: 600 }}>Cross-Match &amp; Triage Engine</span>
+                  </>
+                )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span>Statutory Horizon:</span>
@@ -574,7 +594,7 @@ export function DashboardHeader({
         {/* Total Purchase Invoices */}
         <div
           className="kpi-card"
-          onClick={() => setMatchFilter('ALL')}
+          onClick={() => isRouted && setMatchFilter('ALL')}
           style={{
             background: 'var(--navy-card)',
             border: '1px solid var(--navy-border)',
@@ -583,7 +603,7 @@ export function DashboardHeader({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            cursor: 'pointer',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
@@ -600,7 +620,7 @@ export function DashboardHeader({
         {/* Matched in GSTR-2B */}
         <div
           className="kpi-card"
-          onClick={() => setMatchFilter('MATCHED')}
+          onClick={() => isRouted && setMatchFilter('MATCHED')}
           style={{
             background: 'var(--navy-card)',
             border: '1px solid var(--navy-border)',
@@ -609,46 +629,50 @@ export function DashboardHeader({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            cursor: 'pointer',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
             GSTR-2B Matched
           </span>
-          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: '#10b981' }}>
-            {kpis.matched}
+          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: isRouted ? '#10b981' : 'var(--navy-muted)' }}>
+            {isRouted ? kpis.matched : '—'}
           </div>
           <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            85% reconciliation rate
+            {isRouted ? `${Math.round((kpis.matched / (kpis.total || 1)) * 100)}% reconciliation rate` : 'Awaiting pipeline'}
           </div>
         </div>
 
         {/* Unmatched Invoices / Total Tax at Risk */}
         <div
           className="kpi-card"
-          onClick={() => setMatchFilter('UNMATCHED')}
+          onClick={() => isRouted && setMatchFilter('UNMATCHED')}
           style={{
             background: 'var(--navy-card)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            border: isRouted ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid var(--navy-border)',
             borderRadius: '12px',
             padding: '16px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            cursor: 'pointer',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: '#f87171' }}>
+            <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: isRouted ? '#f87171' : 'var(--navy-muted)' }}>
               Unmatched Discrepancies
             </span>
-            <span className="badge badge-chase">{kpis.unmatched} items</span>
+            {isRouted ? (
+              <span className="badge badge-chase">{kpis.unmatched} items</span>
+            ) : (
+              <span className="badge badge-neutral" style={{ opacity: 0.6 }}>Awaiting</span>
+            )}
           </div>
-          <div style={{ marginTop: '8px', fontSize: '22px', fontWeight: 800, color: '#fff' }}>
-            {formatINR(kpis.totalTaxAtRisk)}
+          <div style={{ marginTop: '8px', fontSize: isRouted ? '22px' : '26px', fontWeight: 800, color: isRouted ? '#fff' : 'var(--navy-muted)' }}>
+            {isRouted ? formatINR(kpis.totalTaxAtRisk) : '—'}
           </div>
           <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            GST tax amount at risk
+            {isRouted ? 'GST tax amount at risk' : 'Awaiting pipeline'}
           </div>
         </div>
 
@@ -807,7 +831,7 @@ export function DashboardHeader({
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={14} color="#B794F6" />
             <span style={{ fontWeight: 700, color: '#fff', fontSize: '13px' }}>
-              {isRouted ? 'Pipeline Routing Complete' : 'Pre-Routing — Invoice Reconciliation View'}
+              {isRouted ? 'Pipeline Routing Complete — Reconciled View' : 'Pre-Pipeline — Purchase Register View'}
             </span>
           </div>
 
@@ -825,38 +849,42 @@ export function DashboardHeader({
                 cursor: 'pointer',
               }}
             >
-              All 200
+              All {kpis.total}
             </button>
-            <button
-              onClick={() => setMatchFilter('UNMATCHED')}
-              style={{
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid var(--navy-border)',
-                background: matchFilter === 'UNMATCHED' ? '#ef4444' : 'transparent',
-                color: matchFilter === 'UNMATCHED' ? '#fff' : 'var(--navy-muted)',
-                fontSize: '11px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              Unmatched 30
-            </button>
-            <button
-              onClick={() => setMatchFilter('MATCHED')}
-              style={{
-                padding: '4px 10px',
-                borderRadius: '6px',
-                border: '1px solid var(--navy-border)',
-                background: matchFilter === 'MATCHED' ? '#10b981' : 'transparent',
-                color: matchFilter === 'MATCHED' ? '#fff' : 'var(--navy-muted)',
-                fontSize: '11px',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              Matched 170
-            </button>
+            {isRouted && (
+              <>
+                <button
+                  onClick={() => setMatchFilter('UNMATCHED')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid var(--navy-border)',
+                    background: matchFilter === 'UNMATCHED' ? '#ef4444' : 'transparent',
+                    color: matchFilter === 'UNMATCHED' ? '#fff' : 'var(--navy-muted)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Unmatched {kpis.unmatched}
+                </button>
+                <button
+                  onClick={() => setMatchFilter('MATCHED')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    border: '1px solid var(--navy-border)',
+                    background: matchFilter === 'MATCHED' ? '#10b981' : 'transparent',
+                    color: matchFilter === 'MATCHED' ? '#fff' : 'var(--navy-muted)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Matched {kpis.matched}
+                </button>
+              </>
+            )}
           </div>
         </div>
 
@@ -873,19 +901,23 @@ export function DashboardHeader({
           {/* BEFORE node */}
           <div
             style={{
-              background: 'rgba(239, 68, 68, 0.08)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
+              background: isRouted ? 'rgba(239, 68, 68, 0.08)' : 'rgba(99, 102, 241, 0.08)',
+              border: isRouted ? '1px solid rgba(239, 68, 68, 0.25)' : '1px solid rgba(99, 102, 241, 0.25)',
               borderRadius: '10px',
               padding: '10px 16px',
               minWidth: '110px',
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '10px', color: '#f87171', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Before
+            <div style={{ fontSize: '10px', color: isRouted ? '#f87171' : '#60a5fa', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              {isRouted ? 'Before' : 'Input'}
             </div>
-            <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>30</div>
-            <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Unmatched</div>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+              {isRouted ? kpis.unmatched : kpis.total}
+            </div>
+            <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>
+              {isRouted ? 'Unmatched' : 'PR Invoices'}
+            </div>
           </div>
 
           <div style={{ color: 'var(--navy-muted)', fontSize: '18px', fontWeight: 200 }}>→</div>

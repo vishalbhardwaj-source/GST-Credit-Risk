@@ -14,6 +14,7 @@ export interface FilterBarProps {
   setPatternFilter: (val: 'ALL' | 'HABITUAL LAGGARD' | 'NORMAL/PUNCTUAL' | 'NEW ANOMALY') => void;
   displayedCount: number;
   totalCount: number;
+  isRouted?: boolean;
 }
 
 export function FilterBar({
@@ -29,6 +30,7 @@ export function FilterBar({
   setPatternFilter,
   displayedCount,
   totalCount,
+  isRouted = false,
 }: FilterBarProps) {
   const isFiltered =
     searchQuery !== '' ||
@@ -116,18 +118,22 @@ export function FilterBar({
         {/* Bucket Filter */}
         <select
           value={bucketFilter}
+          disabled={!isRouted}
           onChange={(e) => setBucketFilter(e.target.value as any)}
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
             border: bucketFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
             background: bucketFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: bucketFilter !== 'ALL' ? '#93c5fd' : 'inherit',
+            color: !isRouted ? 'var(--navy-muted)' : bucketFilter !== 'ALL' ? '#93c5fd' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
+            opacity: !isRouted ? 0.6 : 1,
+            cursor: !isRouted ? 'not-allowed' : 'pointer',
           }}
+          title={!isRouted ? 'Run pipeline routing to enable bucket filtering' : 'Filter by triage bucket'}
         >
-          <option value="ALL">All Buckets</option>
+          <option value="ALL">{!isRouted ? 'Buckets (Awaiting Pipeline)' : 'All Buckets'}</option>
           <option value="SAFE TO HOLD">Safe to Hold</option>
           <option value="WATCH">Watch</option>
           <option value="CHASE NOW">Chase Now</option>

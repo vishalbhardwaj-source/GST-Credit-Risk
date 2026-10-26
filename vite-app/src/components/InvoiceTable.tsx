@@ -4,6 +4,7 @@ import { formatINR } from '../utils';
 
 export interface InvoiceTableProps {
   invoices: ReconciledInvoice[];
+  isRouted: boolean;
   sortField: 'taxAmount' | 'score' | 'invoiceDate' | 'vendorName';
   setSortField: (field: 'taxAmount' | 'score' | 'invoiceDate' | 'vendorName') => void;
   sortDirection: 'asc' | 'desc';
@@ -13,6 +14,7 @@ export interface InvoiceTableProps {
 
 export function InvoiceTable({
   invoices,
+  isRouted,
   sortField,
   setSortField,
   sortDirection,
@@ -84,7 +86,7 @@ export function InvoiceTable({
                 style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
-                  GST Amount at Risk {renderSortIcon('taxAmount')}
+                  {isRouted ? 'GST Amount at Risk' : 'GST Tax Amount'} {renderSortIcon('taxAmount')}
                 </div>
               </th>
               <th style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'center' }}>2B Match</th>
@@ -173,7 +175,11 @@ export function InvoiceTable({
 
                     {/* 2B Match */}
                     <td style={{ padding: '12px 16px', textAlign: 'center' }}>
-                      {isMatched ? (
+                      {!isRouted ? (
+                        <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
+                          —
+                        </span>
+                      ) : isMatched ? (
                         <span className="badge badge-safe">✓ Matched</span>
                       ) : (
                         <span className="badge badge-chase">✗ Missing</span>
@@ -245,7 +251,7 @@ export function InvoiceTable({
 
                     {/* Score */}
                     <td style={{ padding: '12px 16px' }}>
-                      {score !== undefined ? (
+                      {isRouted && score !== undefined ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div
                             style={{
@@ -279,7 +285,11 @@ export function InvoiceTable({
 
                     {/* Routing Bucket & LightGBM Inference */}
                     <td style={{ padding: '12px 16px' }}>
-                      {bucket ? (
+                      {!isRouted ? (
+                        <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
+                          Awaiting Pipeline
+                        </span>
+                      ) : bucket ? (
                         <div>
                           <span
                             className={`badge ${
@@ -298,6 +308,10 @@ export function InvoiceTable({
                             </div>
                           )}
                         </div>
+                      ) : isMatched ? (
+                        <span className="badge badge-safe" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                          Avail ITC (Matched)
+                        </span>
                       ) : (
                         <span className="badge badge-neutral">Raw Mismatch</span>
                       )}

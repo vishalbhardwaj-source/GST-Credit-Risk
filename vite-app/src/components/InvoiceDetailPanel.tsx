@@ -16,6 +16,7 @@ import { formatINR } from '../utils';
 
 export interface InvoiceDetailPanelProps {
   invoice: ReconciledInvoice | null;
+  isRouted: boolean;
   onClose: () => void;
   // TinyFish WF2
   tinyFishResult: any;
@@ -38,6 +39,7 @@ export interface InvoiceDetailPanelProps {
 
 export function InvoiceDetailPanel({
   invoice,
+  isRouted,
   onClose,
   tinyFishResult,
   tinyFishLoading,
@@ -86,16 +88,20 @@ export function InvoiceDetailPanel({
           <div>
             <span
               className={`badge ${
-                selectedInvoice.routingBucket === 'SAFE TO HOLD'
+                !isRouted
+                  ? 'badge-neutral'
+                  : selectedInvoice.routingBucket === 'SAFE TO HOLD'
                   ? 'badge-safe'
                   : selectedInvoice.routingBucket === 'WATCH'
                   ? 'badge-watch'
                   : selectedInvoice.routingBucket === 'CHASE NOW'
                   ? 'badge-chase'
-                  : 'badge-neutral'
+                  : 'badge-safe'
               }`}
             >
-              {selectedInvoice.routingBucket ?? 'UNROUTED RECORD'}
+              {!isRouted
+                ? 'AWAITING PIPELINE'
+                : selectedInvoice.routingBucket ?? (selectedInvoice.matchResult.matched ? 'MATCHED IN GSTR-2B' : 'UNROUTED RECORD')}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace', color: '#fff' }}>
@@ -298,7 +304,9 @@ export function InvoiceDetailPanel({
           {/* Invoice Situation Synopsis & Triage Recommendation Banner */}
           <div
             style={{
-              background: selectedInvoice.matchResult.matched
+              background: !isRouted
+                ? 'rgba(99, 102, 241, 0.08)'
+                : selectedInvoice.matchResult.matched
                 ? 'rgba(16, 185, 129, 0.06)'
                 : selectedInvoice.routingBucket === 'SAFE TO HOLD'
                 ? 'rgba(16, 185, 129, 0.08)'
@@ -308,7 +316,9 @@ export function InvoiceDetailPanel({
                 ? 'rgba(239, 68, 68, 0.12)'
                 : 'rgba(183, 148, 246, 0.08)',
               border: `1px solid ${
-                selectedInvoice.matchResult.matched
+                !isRouted
+                  ? 'rgba(99, 102, 241, 0.3)'
+                  : selectedInvoice.matchResult.matched
                   ? 'rgba(16, 185, 129, 0.3)'
                   : selectedInvoice.routingBucket === 'SAFE TO HOLD'
                   ? 'rgba(16, 185, 129, 0.35)'
@@ -330,7 +340,9 @@ export function InvoiceDetailPanel({
                 <FileText
                   size={15}
                   color={
-                    selectedInvoice.matchResult.matched || selectedInvoice.routingBucket === 'SAFE TO HOLD'
+                    !isRouted
+                      ? '#60a5fa'
+                      : selectedInvoice.matchResult.matched || selectedInvoice.routingBucket === 'SAFE TO HOLD'
                       ? '#34d399'
                       : selectedInvoice.routingBucket === 'WATCH'
                       ? '#fbbf24'
@@ -357,7 +369,9 @@ export function InvoiceDetailPanel({
                   fontWeight: 700,
                   padding: '2px 8px',
                   borderRadius: '9999px',
-                  background: selectedInvoice.matchResult.matched
+                  background: !isRouted
+                    ? 'rgba(99, 102, 241, 0.2)'
+                    : selectedInvoice.matchResult.matched
                     ? 'rgba(16, 185, 129, 0.2)'
                     : selectedInvoice.routingBucket === 'SAFE TO HOLD'
                     ? 'rgba(16, 185, 129, 0.2)'
@@ -366,7 +380,9 @@ export function InvoiceDetailPanel({
                     : selectedInvoice.routingBucket === 'CHASE NOW'
                     ? 'rgba(239, 68, 68, 0.2)'
                     : 'rgba(255, 255, 255, 0.1)',
-                  color: selectedInvoice.matchResult.matched
+                  color: !isRouted
+                    ? '#60a5fa'
+                    : selectedInvoice.matchResult.matched
                     ? '#34d399'
                     : selectedInvoice.routingBucket === 'SAFE TO HOLD'
                     ? '#34d399'
@@ -377,14 +393,20 @@ export function InvoiceDetailPanel({
                     : '#94a3b8',
                 }}
               >
-                {selectedInvoice.matchResult.matched
+                {!isRouted
+                  ? 'Awaiting Pipeline'
+                  : selectedInvoice.matchResult.matched
                   ? 'Reconciled & Safe'
                   : selectedInvoice.routingBucket ?? 'Pre-Routing Analysis'}
               </span>
             </div>
 
             <p style={{ fontSize: '12px', color: '#f1f5f9', lineHeight: 1.5 }}>
-              {selectedInvoice.matchResult.matched ? (
+              {!isRouted ? (
+                <>
+                  <strong>Purchase Register Ingestion — Pipeline Pending.</strong> This invoice of {formatINR(selectedInvoice.taxAmount)} has been ingested from the Purchase Register. Execute the pipeline routing to match against GSTR-2B and determine credit eligibility.
+                </>
+              ) : selectedInvoice.matchResult.matched ? (
                 <>
                   <strong>Fully Matched in GSTR-2B.</strong> This invoice of {formatINR(selectedInvoice.taxAmount)} has been reported by {selectedInvoice.vendorName} and auto-populated into GSTR-2B. Section 16(2)(aa) condition is satisfied; full Input Tax Credit can be availed in the GSTR-3B return.
                 </>
@@ -421,7 +443,9 @@ export function InvoiceDetailPanel({
               <span>
                 Action Protocol:{' '}
                 <strong style={{ color: '#fff' }}>
-                  {selectedInvoice.matchResult.matched
+                  {!isRouted
+                    ? 'Execute Pipeline to Reconcile'
+                    : selectedInvoice.matchResult.matched
                     ? 'Avail ITC in GSTR-3B'
                     : selectedInvoice.routingBucket === 'CHASE NOW'
                     ? 'Dispatch Notice & Suspend Future POs'
@@ -433,54 +457,83 @@ export function InvoiceDetailPanel({
                 </strong>
               </span>
               <span>
-                {selectedInvoice.scoreExplanation ? `Score: ${selectedInvoice.scoreExplanation.clampedScore}/100` : 'Unscored'}
+                {isRouted && selectedInvoice.scoreExplanation ? `Score: ${selectedInvoice.scoreExplanation.clampedScore}/100` : 'Unscored'}
               </span>
             </div>
           </div>
 
           {/* Reconciliation Match Status */}
-          <div
-            style={{
-              background: selectedInvoice.matchResult.matched ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
-              border: `1px solid ${selectedInvoice.matchResult.matched ? 'var(--safe-border)' : 'var(--chase-border)'}`,
-              borderRadius: '10px',
-              padding: '14px',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span
-                style={{
-                  fontWeight: 700,
-                  fontSize: '12px',
-                  color: selectedInvoice.matchResult.matched ? '#10b981' : '#f87171',
-                }}
-              >
-                GSTR-2B Reconciliation: {selectedInvoice.matchResult.matched ? 'Match Found' : 'No Match Found'}
-              </span>
-              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--navy-muted)' }}>
-                Confidence: {selectedInvoice.matchResult.confidence}%
-              </span>
-            </div>
-            <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px' }}>
-              {selectedInvoice.matchResult.explanation}
-            </p>
-            {selectedInvoice.matchResult.matchedRecord && (
-              <div
-                style={{
-                  marginTop: '8px',
-                  fontSize: '11px',
-                  fontFamily: 'monospace',
-                  color: '#94a3b8',
-                  background: 'rgba(0,0,0,0.2)',
-                  padding: '6px 8px',
-                  borderRadius: '6px',
-                }}
-              >
-                Matched 2B Record: {selectedInvoice.matchResult.matchedRecord.invoiceNumber} ·{' '}
-                {selectedInvoice.matchResult.matchedRecord.invoiceDate}
+          {!isRouted ? (
+            <div
+              style={{
+                background: 'rgba(99, 102, 241, 0.06)',
+                border: '1px solid rgba(99, 102, 241, 0.25)',
+                borderRadius: '10px',
+                padding: '14px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    color: '#60a5fa',
+                  }}
+                >
+                  GSTR-2B Reconciliation: Awaiting Pipeline Execution
+                </span>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                  Status: Unreconciled
+                </span>
               </div>
-            )}
-          </div>
+              <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px', marginBottom: 0 }}>
+                This invoice has not been reconciled against the GSTR-2B snapshot yet. Run the pipeline routing to determine match status and confidence.
+              </p>
+            </div>
+          ) : (
+            <div
+              style={{
+                background: selectedInvoice.matchResult.matched ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                border: `1px solid ${selectedInvoice.matchResult.matched ? 'var(--safe-border)' : 'var(--chase-border)'}`,
+                borderRadius: '10px',
+                padding: '14px',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    fontSize: '12px',
+                    color: selectedInvoice.matchResult.matched ? '#10b981' : '#f87171',
+                  }}
+                >
+                  GSTR-2B Reconciliation: {selectedInvoice.matchResult.matched ? 'Match Found' : 'No Match Found'}
+                </span>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                  Confidence: {selectedInvoice.matchResult.confidence}%
+                </span>
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px' }}>
+                {selectedInvoice.matchResult.explanation}
+              </p>
+              {selectedInvoice.matchResult.matchedRecord && (
+                <div
+                  style={{
+                    marginTop: '8px',
+                    fontSize: '11px',
+                    fontFamily: 'monospace',
+                    color: '#94a3b8',
+                    background: 'rgba(0,0,0,0.2)',
+                    padding: '6px 8px',
+                    borderRadius: '6px',
+                  }}
+                >
+                  Matched 2B Record: {selectedInvoice.matchResult.matchedRecord.invoiceNumber} ·{' '}
+                  {selectedInvoice.matchResult.matchedRecord.invoiceDate}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Three Explainable Pipelines */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
