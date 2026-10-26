@@ -20,6 +20,7 @@ from .ml_engine import ml_engine
 from .module_e_tinyfish import tinyfish_service, Workflow1Result, Workflow2Result, Workflow3Result, Workflow4Result
 from .train_forecaster import GSTResolutionForecaster
 from .dataset_service import generate_server_dataset, run_server_pipeline
+from .ai_service import execute_chat, get_server_api_keys, ChatRequest
 from .model_integration import (
     create_upload_session,
     get_demo_page,
@@ -141,6 +142,37 @@ def health_check():
         "model_trained": trained_forecaster.model is not None,
         "model_metrics": trained_forecaster.model_metrics
     }
+
+@app.get("/api/ai/config")
+def get_ai_config():
+    """Returns available server-side keys for each supported AI provider."""
+    return {
+        "status": "online",
+        "supported_providers": ["gemini", "openai", "claude", "groq"],
+        "default_models": {
+            "gemini": "gemini-2.5-flash",
+            "openai": "gpt-4o-mini",
+            "claude": "claude-3-5-haiku-20241022",
+            "groq": "llama-3.3-70b-versatile",
+        },
+        "server_keys": get_server_api_keys()
+    }
+
+@app.post("/api/ai/chat")
+async def chat_with_ai(request: ChatRequest):
+    """Executes a completion using the user-specified provider, model, and optional key."""
+    try:
+        reply = await execute_chat(request)
+        return {
+            "status": "success",
+            "provider": request.provider,
+            "model": request.model,
+            "reply": reply
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI request failed: {str(e)}")
 
 @app.get("/api/diagnostics/backtest")
 def get_backtest_diagnostics():

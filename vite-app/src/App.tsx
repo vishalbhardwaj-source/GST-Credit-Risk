@@ -15,6 +15,7 @@ import { ProjectOverview } from './components/ProjectOverview';
 import { UploadDataModal } from './components/UploadDataModal';
 import { TinyFishArbitraryModal } from './components/TinyFishArbitraryModal';
 import { computeInvoiceMlForecast } from './mlForecaster';
+import { AiChatDrawer } from './components/AiChatDrawer';
 
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
@@ -379,6 +380,12 @@ export function App() {
         onResetToDemo={handleResetToDemo}
         isCustomDataActive={isCustomDataActive}
         customDataName={customDataInfo?.name}
+      />
+
+      <AiChatDrawer
+        invoices={enrichedInvoices}
+        kpis={kpis}
+        selectedInvoice={selectedInvoice}
       />
     </div>
   );
