@@ -46,7 +46,7 @@ app.add_middleware(
         "https://gst-credit-forecaster.vercel.app",
         "https://huggingface.co",
     ],
-    allow_origin_regex=r"^https:\/\/.*(\.vercel\.app|\.hf\.space)$",
+    allow_origin_regex=r"^https:\/\/.*(\.vercel\.app|\.hf\.space|\.onrender\.com)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
