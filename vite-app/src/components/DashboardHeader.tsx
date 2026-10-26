@@ -105,7 +105,7 @@ export function DashboardHeader({
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: apiConnected ? '#34d399' : '#94a3b8', fontSize: '11px' }}>
             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: apiConnected ? '#10b981' : '#f59e0b', display: 'inline-block' }} />
-            {apiConnected ? 'Backend Connected' : 'Backend Unavailable'}
+            {apiConnected ? 'Backend Connected' : 'Cloud Demo Mode'}
           </span>
           <span style={{ color: '#94a3b8', fontSize: '11px', whiteSpace: 'nowrap' }}>Synthetic decision support</span>
         </div>

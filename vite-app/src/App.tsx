@@ -3,6 +3,7 @@ import type { Bucket, PipelineSummary, ReconciledInvoice } from './types';
 import { exportInvoicesToCsv } from './utils';
 import { getApiBaseUrl } from './config';
 import { useTinyFish } from './hooks/useTinyFish';
+import { getFallbackDemoData } from './demoFallback';
 import { DashboardHeader } from './components/DashboardHeader';
 import { FilterBar } from './components/FilterBar';
 import { InvoiceTable } from './components/InvoiceTable';
@@ -14,20 +15,6 @@ import { UploadDataModal } from './components/UploadDataModal';
 import { TinyFishArbitraryModal } from './components/TinyFishArbitraryModal';
 
 const PAGE_SIZE = 100;
-const EMPTY_SUMMARY: PipelineSummary = {
-  total: 0,
-  matched: null,
-  unmatched: null,
-  totalTaxAtRisk: null,
-  safeCount: null,
-  safeTax: null,
-  watchCount: null,
-  watchTax: null,
-  chaseCount: null,
-  chaseTax: null,
-  unscoredCount: 0,
-  reconciliationAvailable: false,
-};
 
 interface DatasetResponse {
   session_id: string;
@@ -46,11 +33,25 @@ async function readResponse(response: Response): Promise<DatasetResponse> {
   return body as DatasetResponse;
 }
 
+const initialDemo = getFallbackDemoData(
+  false,
+  0,
+  PAGE_SIZE,
+  '',
+  'ALL',
+  'ALL',
+  'ALL',
+  'ALL',
+  'ALL',
+  'taxAmount',
+  'desc',
+);
+
 export function App() {
-  const [invoices, setInvoices] = useState<ReconciledInvoice[]>([]);
-  const [summary, setSummary] = useState<PipelineSummary>(EMPTY_SUMMARY);
+  const [invoices, setInvoices] = useState<ReconciledInvoice[]>(initialDemo.invoices);
+  const [summary, setSummary] = useState<PipelineSummary>(initialDemo.summary);
   const [sessionId, setSessionId] = useState('demo');
-  const [filteredTotal, setFilteredTotal] = useState(0);
+  const [filteredTotal, setFilteredTotal] = useState(initialDemo.total);
   const [serverError, setServerError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('overview');
@@ -72,6 +73,7 @@ export function App() {
   const [sortField, setSortField] = useState<'taxAmount' | 'score' | 'invoiceDate' | 'vendorName'>('taxAmount');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(0);
+  const [isBackendOnline, setIsBackendOnline] = useState<boolean | null>(null);
   const tinyFish = useTinyFish();
 
   useEffect(() => {
@@ -97,13 +99,35 @@ export function App() {
         setSummary(data.summary);
         setIsRouted(data.scored || data.source === 'user_upload');
         setServerError(null);
+        setIsBackendOnline(true);
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return;
-        setServerError(error instanceof Error ? error.message : 'Could not load invoice data.');
+        setIsBackendOnline(false);
+        if (sessionId === 'demo') {
+          const fallback = getFallbackDemoData(
+            isRouted,
+            page,
+            PAGE_SIZE,
+            searchQuery,
+            bucketFilter,
+            matchFilter,
+            irnFilter,
+            apFilter,
+            patternFilter,
+            sortField,
+            sortDirection,
+          );
+          setInvoices(fallback.invoices);
+          setFilteredTotal(fallback.total);
+          setSummary(fallback.summary);
+          setServerError(null);
+        } else {
+          setServerError(error instanceof Error ? error.message : 'Could not load invoice data.');
+        }
       });
     return () => controller.abort();
-  }, [sessionId, page, searchQuery, bucketFilter, matchFilter, irnFilter, apFilter, patternFilter, sortField, sortDirection]);
+  }, [sessionId, page, searchQuery, bucketFilter, matchFilter, irnFilter, apFilter, patternFilter, sortField, sortDirection, isRouted]);
 
   const enrichedInvoices = useMemo(
     () => invoices.map((invoice) => ({
@@ -137,6 +161,24 @@ export function App() {
     setSelectedInvoice(null);
     resetFilters();
     tinyFish.handleResetAll();
+    if (isBackendOnline === false) {
+      const fallback = getFallbackDemoData(
+        false,
+        0,
+        PAGE_SIZE,
+        '',
+        'ALL',
+        'ALL',
+        'ALL',
+        'ALL',
+        'ALL',
+        'taxAmount',
+        'desc',
+      );
+      setInvoices(fallback.invoices);
+      setFilteredTotal(fallback.total);
+      setSummary(fallback.summary);
+    }
   };
 
   const handleDataLoaded = (data: DatasetResponse, name: string) => {
@@ -169,8 +211,33 @@ export function App() {
       setIsRouted(true);
       setPage(0);
       setMatchFilter('ALL');
+      setIsBackendOnline(true);
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'Pipeline could not run.');
+      if (sessionId === 'demo') {
+        setIsRouted(true);
+        setPage(0);
+        setMatchFilter('ALL');
+        const fallback = getFallbackDemoData(
+          true,
+          0,
+          PAGE_SIZE,
+          searchQuery,
+          bucketFilter,
+          'ALL',
+          irnFilter,
+          apFilter,
+          patternFilter,
+          sortField,
+          sortDirection,
+        );
+        setInvoices(fallback.invoices);
+        setFilteredTotal(fallback.total);
+        setSummary(fallback.summary);
+        setServerError(null);
+        setIsBackendOnline(false);
+      } else {
+        setServerError(error instanceof Error ? error.message : 'Pipeline could not run.');
+      }
     } finally {
       setIsRouting(false);
     }
@@ -189,7 +256,7 @@ export function App() {
   return (
     <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <DashboardHeader
-        apiConnected={!serverError && tinyFish.apiConnected}
+        apiConnected={isBackendOnline ?? (!serverError && tinyFish.apiConnected)}
         isRouted={isRouted}
         isRouting={isRouting}
         onReset={handleResetToDemo}
