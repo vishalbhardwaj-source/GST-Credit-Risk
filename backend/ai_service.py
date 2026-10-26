@@ -173,6 +173,54 @@ async def stream_openai_compatible(url: str, api_key: str, model: str, messages:
                         continue
     yield "data: [DONE]\n\n"
 
+async def stream_anthropic(api_key: str, model: str, messages: List[ChatMessage], system_prompt: str) -> AsyncGenerator[str, None]:
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01",
+        "Content-Type": "application/json",
+    }
+    anthropic_messages = []
+    for m in messages:
+        role = "assistant" if m.role == "assistant" else "user"
+        anthropic_messages.append({"role": role, "content": m.content})
+
+    payload = {
+        "model": model or "claude-3-5-haiku-20241022",
+        "max_tokens": 1500,
+        "system": system_prompt,
+        "messages": anthropic_messages,
+        "temperature": 0.2,
+        "stream": True,
+    }
+
+    async with httpx.AsyncClient(timeout=25.0) as client:
+        async with client.stream("POST", "https://api.anthropic.com/v1/messages", headers=headers, json=payload) as response:
+            if response.status_code != 200:
+                err_text = await response.aread()
+                try:
+                    err_json = json.loads(err_text)
+                    msg = err_json.get("error", {}).get("message", err_text.decode("utf-8", errors="ignore"))
+                except Exception:
+                    msg = err_text.decode("utf-8", errors="ignore")
+                raise ValueError(f"Anthropic API error ({response.status_code}): {msg}")
+
+            async for line in response.aiter_lines():
+                if line.startswith("data: "):
+                    json_str = line[6:].strip()
+                    try:
+                        parsed = json.loads(json_str)
+                        evt_type = parsed.get("type")
+                        if evt_type == "content_block_delta":
+                            delta = parsed.get("delta", {})
+                            text = delta.get("text", "")
+                            if text:
+                                yield f"data: {json.dumps({'text': text})}\n\n"
+                        elif evt_type == "message_stop":
+                            break
+                    except Exception:
+                        continue
+    yield "data: [DONE]\n\n"
+
 async def stream_chat(req: ChatRequest) -> AsyncGenerator[str, None]:
     provider = req.provider.lower().strip()
     api_key = resolve_api_key(provider, req.apiKey)
@@ -184,14 +232,14 @@ async def stream_chat(req: ChatRequest) -> AsyncGenerator[str, None]:
     elif provider in ["openai", "chatgpt"]:
         async for chunk in stream_openai_compatible("https://api.openai.com/v1/chat/completions", api_key, req.model or "gpt-4o-mini", req.messages, system_prompt):
             yield chunk
+    elif provider in ["anthropic", "claude"]:
+        async for chunk in stream_anthropic(api_key, req.model or "claude-3-5-haiku-20241022", req.messages, system_prompt):
+            yield chunk
     elif provider == "groq":
         async for chunk in stream_openai_compatible("https://api.groq.com/openai/v1/chat/completions", api_key, req.model or "llama-3.3-70b-versatile", req.messages, system_prompt):
             yield chunk
     else:
-        # Fallback for Claude non-streaming or providers
-        reply = await execute_chat(req)
-        yield f"data: {json.dumps({'text': reply})}\n\n"
-        yield "data: [DONE]\n\n"
+        raise ValueError(f"Unsupported AI provider: {provider}")
 
 async def execute_chat(req: ChatRequest) -> str:
     chunks = []

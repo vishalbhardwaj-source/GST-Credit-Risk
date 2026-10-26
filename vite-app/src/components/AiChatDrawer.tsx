@@ -460,6 +460,57 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
       return;
     }
 
+    if (provider === 'claude') {
+      const anthropicMessages = history.map((m) => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: m.content,
+      }));
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': userKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: model || 'claude-3-5-haiku-20241022',
+          max_tokens: 1500,
+          system: systemPrompt,
+          messages: anthropicMessages,
+          temperature: 0.2,
+          stream: true,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Claude API HTTP ${res.status}`);
+      }
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported.');
+      const decoder = new TextDecoder();
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6).trim();
+            try {
+              const parsed = JSON.parse(jsonStr);
+              if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+                onChunk(parsed.delta.text);
+              }
+            } catch {}
+          }
+        }
+      }
+      return;
+    }
+
     throw new Error(`Direct streaming for ${provider} requires backend proxy.`);
   };
 
