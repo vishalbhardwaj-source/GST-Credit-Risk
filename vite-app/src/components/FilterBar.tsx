@@ -77,7 +77,7 @@ export function FilterBar({
         />
         <input
           type="text"
-          placeholder="Filter invoice #, supplier name, GSTIN..."
+          placeholder="Filter invoice number or GSTIN..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
