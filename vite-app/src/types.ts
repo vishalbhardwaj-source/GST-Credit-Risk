@@ -4,21 +4,6 @@ export type Bucket = 'SAFE TO HOLD' | 'WATCH' | 'CHASE NOW';
 
 export type ApLeverageTier = 'HIGH' | 'MEDIUM' | 'LOW';
 
-export interface PipelineSummary {
-  total: number;
-  matched: number | null;
-  unmatched: number | null;
-  totalTaxAtRisk: number | null;
-  safeCount: number | null;
-  safeTax: number | null;
-  watchCount: number | null;
-  watchTax: number | null;
-  chaseCount: number | null;
-  chaseTax: number | null;
-  unscoredCount: number;
-  reconciliationAvailable: boolean;
-}
-
 export type FilingPattern = 'HABITUAL LAGGARD' | 'NORMAL/PUNCTUAL' | 'NEW ANOMALY' | 'INSUFFICIENT HISTORY';
 
 export interface FilingCycle {
@@ -67,10 +52,10 @@ export interface Gstr2bRecord {
 
 export interface ApVendorRecord {
   vendorId: string;
-  unpaidAmount: number | null;
-  overdueAmount: number | null;
-  retentionHeldAmount: number | null;
-  isPaid: boolean | null;
+  unpaidAmount: number;
+  overdueAmount: number;
+  retentionHeldAmount: number;
+  isPaid: boolean;
 }
 
 // Four-State IRN Model:
@@ -85,7 +70,6 @@ export interface IrnRecord {
   gstin: string;
   irnPresent: boolean;
   irnRef: string | null;
-  available?: boolean;
   irnState?: IrnState;
 }
 
@@ -108,7 +92,6 @@ export interface VendorIrnLookupResult {
 }
 
 export interface MatchResult {
-  available?: boolean;
   matched: boolean;
   confidence: number; // 0 - 100%
   matchedRecord?: Gstr2bRecord;
@@ -148,23 +131,13 @@ export interface ReconciledInvoice extends PurchaseInvoice {
   irnRecord: IrnRecord;
   apRecord: ApVendorRecord;
   vendor: Vendor;
-  leverageRatio: number | null;
-  leverageTier: ApLeverageTier | null;
+  leverageRatio: number;
+  leverageTier: ApLeverageTier;
   scoreExplanation?: ScoreExplanation;
   routingBucket?: Bucket;
-  modelDecision?: {
-    status: 'scored' | 'not_scored';
-    rawBucket?: string;
-    bucket?: Bucket;
-    probability?: number;
-    source?: 'lightgbm' | 'heuristic' | 'rule';
-    reason: string;
-    drivers: string[];
-  };
-  gstr1Reported?: boolean | null;
-  modelFeatures?: Record<string, string | number> | null;
   irnApplicability?: IrnApplicabilityResult;
   vendorIrnLookup?: VendorIrnLookupResult;
   whyThisLabel?: string;
   mlForecast?: import('./mlForecaster').MlForecastResult;
 }
+

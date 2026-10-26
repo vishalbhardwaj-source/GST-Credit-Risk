@@ -70,7 +70,7 @@ export function InvoiceTable({
                 style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                  Supplier GSTIN {renderSortIcon('vendorName')}
+                  Vendor &amp; GSTIN {renderSortIcon('vendorName')}
                 </div>
               </th>
               <th
@@ -86,7 +86,7 @@ export function InvoiceTable({
                 style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
-                  GST Tax Amount {renderSortIcon('taxAmount')}
+                  {isRouted ? 'GST Amount at Risk' : 'GST Tax Amount'} {renderSortIcon('taxAmount')}
                 </div>
               </th>
               <th style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'center' }}>2B Match</th>
@@ -98,7 +98,7 @@ export function InvoiceTable({
                 style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                  P(later GSTR-2B) {renderSortIcon('score')}
+                  Score {renderSortIcon('score')}
                 </div>
               </th>
               <th style={{ padding: '12px 16px', fontWeight: 700 }}>Routing Bucket</th>
@@ -134,7 +134,7 @@ export function InvoiceTable({
             ) : (
               invoices.map((inv) => {
                 const isMatched = inv.matchResult.matched;
-                const probability = inv.modelDecision?.probability;
+                const score = inv.scoreExplanation?.clampedScore;
                 const bucket = inv.routingBucket;
 
                 return (
@@ -154,7 +154,10 @@ export function InvoiceTable({
 
                     {/* Vendor */}
                     <td style={{ padding: '12px 16px' }}>
-                      <div style={{ fontWeight: 600, color: '#fff', fontFamily: 'JetBrains Mono, monospace' }}>{inv.gstin}</div>
+                      <div style={{ fontWeight: 600, color: '#fff' }}>{inv.vendorName}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--navy-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
+                        {inv.gstin}
+                      </div>
                     </td>
 
                     {/* Date */}
@@ -166,7 +169,7 @@ export function InvoiceTable({
                     <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: '#fff' }}>
                       {formatINR(inv.taxAmount)}
                       <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 400 }}>
-                        {formatINR(inv.taxableAmount)} taxable
+                        18% on {formatINR(inv.taxableAmount)}
                       </div>
                     </td>
 
@@ -176,8 +179,6 @@ export function InvoiceTable({
                         <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
                           —
                         </span>
-                      ) : inv.matchResult.available === false ? (
-                        <span className="badge badge-neutral">-to-be-populated-</span>
                       ) : isMatched ? (
                         <span className="badge badge-safe">✓ Matched</span>
                       ) : (
@@ -187,9 +188,7 @@ export function InvoiceTable({
 
                     {/* IRN Status */}
                     <td style={{ padding: '12px 16px' }}>
-                      {inv.irnRecord.available === false ? (
-                        <span style={{ color: 'var(--navy-muted)', fontSize: '12px' }}>-to-be-populated-</span>
-                      ) : inv.vendorIrnLookup ? (
+                      {inv.vendorIrnLookup ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                           <span
                             style={{
@@ -221,15 +220,15 @@ export function InvoiceTable({
                           </span>
                         </div>
                       ) : inv.irnRecord.irnPresent ? (
-                        <span style={{ color: '#34d399', fontWeight: 600, fontSize: '12px' }}>● Present{inv.modelDecision ? ' (synthetic)' : ''}</span>
+                        <span style={{ color: '#34d399', fontWeight: 600, fontSize: '12px' }}>● Verified (IRP)</span>
                       ) : (
-                        <span style={{ color: '#f87171', fontWeight: 600, fontSize: '12px' }}>○ Absent{inv.modelDecision ? ' (synthetic)' : ''}</span>
+                        <span style={{ color: '#f87171', fontWeight: 600, fontSize: '12px' }}>○ Absent</span>
                       )}
                     </td>
 
                     {/* AP Leverage */}
                     <td style={{ padding: '12px 16px' }}>
-                      {inv.leverageTier && inv.leverageRatio !== null ? <span
+                      <span
                         style={{
                           fontWeight: 600,
                           fontSize: '11px',
@@ -242,7 +241,7 @@ export function InvoiceTable({
                         }}
                       >
                         {inv.leverageTier} ({Math.round(inv.leverageRatio * 100)}%)
-                      </span> : <span style={{ color: 'var(--navy-muted)', fontSize: '11px' }}>-to-be-populated-</span>}
+                      </span>
                     </td>
 
                     {/* Filing Track */}
@@ -252,7 +251,7 @@ export function InvoiceTable({
 
                     {/* Score */}
                     <td style={{ padding: '12px 16px' }}>
-                      {isRouted && probability !== undefined ? (
+                      {isRouted && score !== undefined ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div
                             style={{
@@ -265,19 +264,19 @@ export function InvoiceTable({
                           >
                             <div
                               style={{
-                                width: `${Math.round(probability * 100)}%`,
+                                width: `${score}%`,
                                 height: '100%',
                                 background:
-                                  probability >= 0.7
+                                  score >= 75
                                     ? 'var(--safe-color)'
-                                    : probability >= 0.25
+                                    : score >= 40
                                     ? 'var(--watch-color)'
                                     : 'var(--chase-color)',
                                 borderRadius: '3px',
                               }}
                             />
                           </div>
-                          <span style={{ fontWeight: 800, fontSize: '12px' }}>{Math.round(probability * 100)}%</span>
+                          <span style={{ fontWeight: 800, fontSize: '12px' }}>{score}</span>
                         </div>
                       ) : (
                         <span style={{ color: 'var(--navy-muted)', fontSize: '11px' }}>—</span>
@@ -290,10 +289,6 @@ export function InvoiceTable({
                         <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
                           Awaiting Pipeline
                         </span>
-                      ) : inv.modelDecision?.status === 'not_scored' ? (
-                        <span className="badge badge-neutral" title={inv.modelDecision.reason}>Not scored</span>
-                      ) : isMatched ? (
-                        <span className="badge badge-safe">Matched</span>
                       ) : bucket ? (
                         <div>
                           <span
@@ -307,12 +302,16 @@ export function InvoiceTable({
                           >
                             {bucket}
                           </span>
-                          {inv.modelDecision?.source && (
+                          {inv.mlForecast && (
                             <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '4px', fontFamily: 'monospace' }}>
-                              P(later GSTR-2B): <span style={{ fontWeight: 700 }}>{Math.round((inv.modelDecision.probability ?? 0) * 100)}%</span>
+                              ML P(res): <span style={{ color: inv.mlForecast.pResolutionPct >= 70 ? '#34d399' : inv.mlForecast.pResolutionPct >= 40 ? '#f59e0b' : '#f87171', fontWeight: 700 }}>{inv.mlForecast.pResolutionPct}%</span>
                             </div>
                           )}
                         </div>
+                      ) : isMatched ? (
+                        <span className="badge badge-safe" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                          Avail ITC (Matched)
+                        </span>
                       ) : (
                         <span className="badge badge-neutral">Raw Mismatch</span>
                       )}
