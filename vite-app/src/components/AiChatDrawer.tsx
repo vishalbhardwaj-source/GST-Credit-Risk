@@ -144,10 +144,10 @@ const PROVIDER_METADATA: Record<
     themeKey: 'cyan',
     consoleUrl: 'https://aistudio.google.com/app/apikey',
     models: [
-      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'Fast & High Capacity (Recommended)' },
-      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Fast Multimodal' },
-      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', tag: 'Next-Gen Preview' },
-      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', tag: 'Long Context' },
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Fast Multimodal (Recommended)' },
+      { id: 'gemini-2.0-flash-exp', name: 'Gemini 2.0 Flash Exp', tag: 'Experimental High-Speed' },
+      { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash Latest', tag: 'Stable Production' },
+      { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro Latest', tag: 'Long Context' },
     ],
   },
   openai: {
@@ -225,9 +225,9 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   });
   const [model, setModel] = useState<string>(() => {
     const saved = localStorage.getItem('gst_ai_selected_model');
-    if (!saved || saved === 'gemini-2.5-flash' || saved === 'gemini-3.8-flash') {
-      localStorage.setItem('gst_ai_selected_model', 'gemini-1.5-flash');
-      return 'gemini-1.5-flash';
+    if (!saved || saved.includes('2.5') || saved === 'gemini-1.5-flash' || saved === 'gemini-3.8-flash') {
+      localStorage.setItem('gst_ai_selected_model', 'gemini-2.0-flash');
+      return 'gemini-2.0-flash';
     }
     return saved;
   });
@@ -368,10 +368,11 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   ): Promise<void> => {
     if (provider === 'gemini') {
       const candidates = [
-        model || 'gemini-1.5-flash',
-        'gemini-1.5-flash',
+        model || 'gemini-2.0-flash',
         'gemini-2.0-flash',
-        'gemini-3.8-flash',
+        'gemini-2.0-flash-exp',
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-pro-latest',
       ];
       const uniqueCandidates = Array.from(new Set(candidates));
 
@@ -380,79 +381,103 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
         parts: [{ text: m.content }],
       }));
 
+      const executeStream = async (targetModel: string): Promise<boolean> => {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:streamGenerateContent?alt=sse&key=${userKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents,
+            generationConfig: { temperature: 0.2, maxOutputTokens: 1500 },
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.error?.message || `Gemini API HTTP ${res.status}`;
+          throw new Error(msg);
+        }
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error('Streaming not supported.');
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let receivedAny = false;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.slice(6).trim();
+              if (jsonStr === '[DONE]') continue;
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (chunk) {
+                  receivedAny = true;
+                  onChunk(chunk);
+                }
+              } catch {}
+            }
+          }
+        }
+        return receivedAny;
+      };
+
       let lastErr: Error | null = null;
       for (const candidateModel of uniqueCandidates) {
         try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:streamGenerateContent?alt=sse&key=${userKey}`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: systemPrompt }] },
-              contents,
-              generationConfig: { temperature: 0.2, maxOutputTokens: 1500 },
-            }),
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            const msg = err?.error?.message || `Gemini API HTTP ${res.status}`;
-            lastErr = new Error(msg);
-            const lowerMsg = msg.toLowerCase();
-            if (
-              lowerMsg.includes('high demand') ||
-              lowerMsg.includes('overloaded') ||
-              lowerMsg.includes('quota') ||
-              lowerMsg.includes('temporarily') ||
-              lowerMsg.includes('not available') ||
-              res.status === 503 ||
-              res.status === 429
-            ) {
-              // Silently try next fallback model (gemini-1.5-flash)
-              continue;
-            }
-            throw lastErr;
+          const success = await executeStream(candidateModel);
+          if (success) {
+            setModel(candidateModel);
+            localStorage.setItem('gst_ai_selected_model', candidateModel);
+            return;
           }
-          const reader = res.body?.getReader();
-          if (!reader) throw new Error('Streaming not supported.');
-          const decoder = new TextDecoder();
-          let buffer = '';
-          let receivedAny = false;
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                const jsonStr = line.slice(6).trim();
-                if (jsonStr === '[DONE]') continue;
-                try {
-                  const parsed = JSON.parse(jsonStr);
-                  const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-                  if (chunk) {
-                    receivedAny = true;
-                    onChunk(chunk);
-                  }
-                } catch {}
-              }
-            }
-          }
-          if (receivedAny) return;
         } catch (e: any) {
           lastErr = e;
           const lower = e.message?.toLowerCase() || '';
           if (
+            lower.includes('not found') ||
+            lower.includes('not supported') ||
             lower.includes('high demand') ||
             lower.includes('overloaded') ||
             lower.includes('quota') ||
-            lower.includes('temporarily')
+            lower.includes('temporarily') ||
+            lower.includes('no longer available')
           ) {
+            // Silently try next fallback model
             continue;
           }
           throw e;
         }
       }
+
+      // If static candidates failed, query ModelService.ListModels to find active models!
+      try {
+        const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${userKey}`);
+        if (listRes.ok) {
+          const listData = await listRes.json();
+          const validLiveModels: string[] = (listData.models || [])
+            .filter((m: any) => m.supportedGenerationMethods?.includes('generateContent'))
+            .map((m: any) => m.name.replace('models/', ''));
+          for (const liveModel of validLiveModels) {
+            if (uniqueCandidates.includes(liveModel)) continue;
+            try {
+              const success = await executeStream(liveModel);
+              if (success) {
+                setModel(liveModel);
+                localStorage.setItem('gst_ai_selected_model', liveModel);
+                return;
+              }
+            } catch {
+              continue;
+            }
+          }
+        }
+      } catch {}
+
       if (lastErr) throw lastErr;
       return;
     }

@@ -86,10 +86,29 @@ def resolve_api_key(provider: str, user_key: Optional[str]) -> str:
         )
     return key
 
+async def get_live_gemini_models(api_key: str) -> List[str]:
+    """Queries ModelService.ListModels to discover active supported models for this specific API key."""
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.get(url)
+            if res.status_code == 200:
+                data = res.json()
+                valid = [
+                    m["name"].replace("models/", "")
+                    for m in data.get("models", [])
+                    if "generateContent" in m.get("supportedGenerationMethods", [])
+                ]
+                # Prioritize flash models, then pro models
+                valid.sort(key=lambda x: (0 if "flash" in x else 1, 0 if "pro" in x else 2))
+                return valid
+    except Exception:
+        pass
+    return []
+
 async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], system_prompt: str) -> AsyncGenerator[str, None]:
-    requested = model or "gemini-1.5-flash"
-    candidates = [requested, "gemini-1.5-flash", "gemini-2.0-flash"]
-    # Deduplicate while preserving order
+    requested = model or "gemini-2.0-flash"
+    candidates = [requested, "gemini-2.0-flash", "gemini-1.5-flash", "gemini-3.8-flash"]
     seen = set()
     candidate_models = []
     for c in candidates:
@@ -113,6 +132,7 @@ async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], s
 
     last_error = None
     async with httpx.AsyncClient(timeout=25.0) as client:
+        # First try the requested and standard candidate list
         for candidate_model in candidate_models:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{candidate_model}:streamGenerateContent?alt=sse&key={api_key}"
             try:
@@ -125,8 +145,8 @@ async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], s
                         except Exception:
                             msg = err_text.decode("utf-8", errors="ignore")
                         last_error = ValueError(f"Gemini API error ({response.status_code}): {msg}")
-                        # If candidate is overloaded or not available, seamlessly fall back to next candidate model
-                        if any(term in msg.lower() for term in ["high demand", "overloaded", "quota", "temporarily", "not available", "not found"]):
+                        # If candidate is not found, deprecated, or overloaded, try next
+                        if any(term in msg.lower() for term in ["not found", "not supported", "high demand", "overloaded", "quota", "temporarily", "not available"]):
                             continue
                         raise last_error
 
@@ -153,6 +173,39 @@ async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], s
                         return
             except httpx.HTTPError as he:
                 last_error = he
+                continue
+
+        # If static candidates failed, query ModelService.ListModels dynamically!
+        live_models = await get_live_gemini_models(api_key)
+        for live_model in live_models:
+            if live_model in candidate_models:
+                continue
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{live_model}:streamGenerateContent?alt=sse&key={api_key}"
+            try:
+                async with client.stream("POST", url, json=payload) as response:
+                    if response.status_code == 200:
+                        has_yielded = False
+                        async for line in response.aiter_lines():
+                            if line.startswith("data: "):
+                                json_str = line[6:].strip()
+                                if json_str == "[DONE]":
+                                    break
+                                try:
+                                    parsed = json.loads(json_str)
+                                    candidates_res = parsed.get("candidates", [])
+                                    if candidates_res:
+                                        parts = candidates_res[0].get("content", {}).get("parts", [])
+                                        for part in parts:
+                                            text = part.get("text", "")
+                                            if text:
+                                                has_yielded = True
+                                                yield f"data: {json.dumps({'text': text})}\n\n"
+                                except Exception:
+                                    continue
+                        if has_yielded:
+                            yield "data: [DONE]\n\n"
+                            return
+            except Exception:
                 continue
 
     if last_error:
@@ -250,7 +303,7 @@ async def stream_chat(req: ChatRequest) -> AsyncGenerator[str, None]:
     system_prompt = format_system_prompt_with_context(req.context)
 
     if provider in ["gemini", "google"]:
-        async for chunk in stream_gemini(api_key, req.model or "gemini-3.8-flash", req.messages, system_prompt):
+        async for chunk in stream_gemini(api_key, req.model or "gemini-2.0-flash", req.messages, system_prompt):
             yield chunk
     elif provider in ["openai", "chatgpt"]:
         async for chunk in stream_openai_compatible("https://api.openai.com/v1/chat/completions", api_key, req.model or "gpt-4o-mini", req.messages, system_prompt):
