@@ -144,10 +144,9 @@ const PROVIDER_METADATA: Record<
     themeKey: 'cyan',
     consoleUrl: 'https://aistudio.google.com/app/apikey',
     models: [
-      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', tag: 'Latest Recommended' },
-      { id: 'gemini-3.8-pro', name: 'Gemini 3.8 Pro', tag: 'Deep Reasoning' },
+      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'Fast & High Capacity (Recommended)' },
       { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Fast Multimodal' },
-      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'High Speed Stable' },
+      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash', tag: 'Next-Gen Preview' },
       { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', tag: 'Long Context' },
     ],
   },
@@ -226,9 +225,9 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   });
   const [model, setModel] = useState<string>(() => {
     const saved = localStorage.getItem('gst_ai_selected_model');
-    if (!saved || saved === 'gemini-2.5-flash') {
-      localStorage.setItem('gst_ai_selected_model', 'gemini-3.8-flash');
-      return 'gemini-3.8-flash';
+    if (!saved || saved === 'gemini-2.5-flash' || saved === 'gemini-3.8-flash') {
+      localStorage.setItem('gst_ai_selected_model', 'gemini-1.5-flash');
+      return 'gemini-1.5-flash';
     }
     return saved;
   });
@@ -368,47 +367,93 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
     onChunk: (text: string) => void
   ): Promise<void> => {
     if (provider === 'gemini') {
-      const targetModel = model === 'gemini-2.5-flash' ? 'gemini-3.8-flash' : (model || 'gemini-3.8-flash');
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:streamGenerateContent?alt=sse&key=${userKey}`;
+      const candidates = [
+        model || 'gemini-1.5-flash',
+        'gemini-1.5-flash',
+        'gemini-2.0-flash',
+        'gemini-3.8-flash',
+      ];
+      const uniqueCandidates = Array.from(new Set(candidates));
+
       const contents = history.map((m) => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }],
       }));
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt }] },
-          contents,
-          generationConfig: { temperature: 0.2, maxOutputTokens: 1500 },
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Gemini API HTTP ${res.status}`);
-      }
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error('Streaming not supported.');
-      const decoder = new TextDecoder();
-      let buffer = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const jsonStr = line.slice(6).trim();
-            if (jsonStr === '[DONE]') continue;
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (chunk) onChunk(chunk);
-            } catch {}
+
+      let lastErr: Error | null = null;
+      for (const candidateModel of uniqueCandidates) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${candidateModel}:streamGenerateContent?alt=sse&key=${userKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: systemPrompt }] },
+              contents,
+              generationConfig: { temperature: 0.2, maxOutputTokens: 1500 },
+            }),
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            const msg = err?.error?.message || `Gemini API HTTP ${res.status}`;
+            lastErr = new Error(msg);
+            const lowerMsg = msg.toLowerCase();
+            if (
+              lowerMsg.includes('high demand') ||
+              lowerMsg.includes('overloaded') ||
+              lowerMsg.includes('quota') ||
+              lowerMsg.includes('temporarily') ||
+              lowerMsg.includes('not available') ||
+              res.status === 503 ||
+              res.status === 429
+            ) {
+              // Silently try next fallback model (gemini-1.5-flash)
+              continue;
+            }
+            throw lastErr;
           }
+          const reader = res.body?.getReader();
+          if (!reader) throw new Error('Streaming not supported.');
+          const decoder = new TextDecoder();
+          let buffer = '';
+          let receivedAny = false;
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const jsonStr = line.slice(6).trim();
+                if (jsonStr === '[DONE]') continue;
+                try {
+                  const parsed = JSON.parse(jsonStr);
+                  const chunk = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                  if (chunk) {
+                    receivedAny = true;
+                    onChunk(chunk);
+                  }
+                } catch {}
+              }
+            }
+          }
+          if (receivedAny) return;
+        } catch (e: any) {
+          lastErr = e;
+          const lower = e.message?.toLowerCase() || '';
+          if (
+            lower.includes('high demand') ||
+            lower.includes('overloaded') ||
+            lower.includes('quota') ||
+            lower.includes('temporarily')
+          ) {
+            continue;
+          }
+          throw e;
         }
       }
+      if (lastErr) throw lastErr;
       return;
     }
 

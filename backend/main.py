@@ -151,7 +151,7 @@ def get_ai_config():
         "status": "online",
         "supported_providers": ["gemini", "openai", "claude", "groq"],
         "default_models": {
-            "gemini": "gemini-3.8-flash",
+            "gemini": "gemini-1.5-flash",
             "openai": "gpt-4o-mini",
             "claude": "claude-3-5-haiku-20241022",
             "groq": "llama-3.3-70b-versatile",

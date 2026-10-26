@@ -87,11 +87,15 @@ def resolve_api_key(provider: str, user_key: Optional[str]) -> str:
     return key
 
 async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], system_prompt: str) -> AsyncGenerator[str, None]:
-    gemini_model = model or "gemini-3.8-flash"
-    if gemini_model == "gemini-2.5-flash":
-        gemini_model = "gemini-3.8-flash"
-
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:streamGenerateContent?alt=sse&key={api_key}"
+    requested = model or "gemini-1.5-flash"
+    candidates = [requested, "gemini-1.5-flash", "gemini-2.0-flash"]
+    # Deduplicate while preserving order
+    seen = set()
+    candidate_models = []
+    for c in candidates:
+        if c not in seen:
+            seen.add(c)
+            candidate_models.append(c)
 
     contents = []
     for m in messages:
@@ -107,33 +111,52 @@ async def stream_gemini(api_key: str, model: str, messages: List[ChatMessage], s
         "generationConfig": {"temperature": 0.2, "maxOutputTokens": 1500}
     }
 
+    last_error = None
     async with httpx.AsyncClient(timeout=25.0) as client:
-        async with client.stream("POST", url, json=payload) as response:
-            if response.status_code != 200:
-                err_text = await response.aread()
-                try:
-                    err_json = json.loads(err_text)
-                    msg = err_json.get("error", {}).get("message", err_text.decode("utf-8", errors="ignore"))
-                except Exception:
-                    msg = err_text.decode("utf-8", errors="ignore")
-                raise ValueError(f"Gemini API error ({response.status_code}): {msg}")
+        for candidate_model in candidate_models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{candidate_model}:streamGenerateContent?alt=sse&key={api_key}"
+            try:
+                async with client.stream("POST", url, json=payload) as response:
+                    if response.status_code != 200:
+                        err_text = await response.aread()
+                        try:
+                            err_json = json.loads(err_text)
+                            msg = err_json.get("error", {}).get("message", err_text.decode("utf-8", errors="ignore"))
+                        except Exception:
+                            msg = err_text.decode("utf-8", errors="ignore")
+                        last_error = ValueError(f"Gemini API error ({response.status_code}): {msg}")
+                        # If candidate is overloaded or not available, seamlessly fall back to next candidate model
+                        if any(term in msg.lower() for term in ["high demand", "overloaded", "quota", "temporarily", "not available", "not found"]):
+                            continue
+                        raise last_error
 
-            async for line in response.aiter_lines():
-                if line.startswith("data: "):
-                    json_str = line[6:].strip()
-                    if json_str == "[DONE]":
-                        break
-                    try:
-                        parsed = json.loads(json_str)
-                        candidates = parsed.get("candidates", [])
-                        if candidates:
-                            parts = candidates[0].get("content", {}).get("parts", [])
-                            for part in parts:
-                                text = part.get("text", "")
-                                if text:
-                                    yield f"data: {json.dumps({'text': text})}\n\n"
-                    except Exception:
-                        continue
+                    has_yielded = False
+                    async for line in response.aiter_lines():
+                        if line.startswith("data: "):
+                            json_str = line[6:].strip()
+                            if json_str == "[DONE]":
+                                break
+                            try:
+                                parsed = json.loads(json_str)
+                                candidates_res = parsed.get("candidates", [])
+                                if candidates_res:
+                                    parts = candidates_res[0].get("content", {}).get("parts", [])
+                                    for part in parts:
+                                        text = part.get("text", "")
+                                        if text:
+                                            has_yielded = True
+                                            yield f"data: {json.dumps({'text': text})}\n\n"
+                            except Exception:
+                                continue
+                    if has_yielded:
+                        yield "data: [DONE]\n\n"
+                        return
+            except httpx.HTTPError as he:
+                last_error = he
+                continue
+
+    if last_error:
+        raise last_error
     yield "data: [DONE]\n\n"
 
 async def stream_openai_compatible(url: str, api_key: str, model: str, messages: List[ChatMessage], system_prompt: str) -> AsyncGenerator[str, None]:
