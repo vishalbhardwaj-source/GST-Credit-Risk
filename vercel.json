@@ -1,13 +1,10 @@
 {
-  "buildCommand": "npm --prefix vite-app install && npm --prefix vite-app run build",
+  "buildCommand": "npm --prefix vite-app run build",
+  "installCommand": "npm --prefix vite-app install",
   "outputDirectory": "vite-app/dist",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
-    },
-    {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

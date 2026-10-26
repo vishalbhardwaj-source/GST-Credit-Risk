@@ -11,9 +11,6 @@ export function reconcileDataset(baseData: SyntheticDataset): ReconciledInvoice[
     const vendor = baseData.vendorMap.get(inv.vendorId)!;
     const apRecord = baseData.apRecords.get(vendor.id)!;
     const irnRecord = baseData.irnRegistry.get(inv.invoiceNumber)!;
-    if (apRecord.unpaidAmount === null || apRecord.retentionHeldAmount === null) {
-      throw new Error(`Synthetic demo AP data is incomplete for vendor ${vendor.id}.`);
-    }
 
     const { leverageRatio, leverageTier } = calculateApLeverage(
       apRecord.unpaidAmount,
@@ -93,10 +90,9 @@ export function exportInvoicesToCsv(invoices: ReconciledInvoice[]): void {
     'IRN Status',
     'AP Leverage',
     'Filing Pattern',
-    'Model Probability',
-    'Model Bucket',
-    'Model Source',
-    'Decision Reason',
+    'Signal Score',
+    'Routing Bucket',
+    'Reason',
   ];
 
   const rows = invoices.map((inv) => [
@@ -109,20 +105,16 @@ export function exportInvoicesToCsv(invoices: ReconciledInvoice[]): void {
     inv.taxAmount,
     inv.grossAmount,
     inv.matchResult.matched ? 'Yes' : 'No',
-    inv.irnRecord.available === false ? '-to-be-populated-' : inv.irnRecord.irnPresent ? 'Present' : 'Absent',
-    inv.leverageTier ?? '-to-be-populated-',
+    inv.irnRecord.irnPresent ? 'Present' : 'Absent',
+    inv.leverageTier,
     inv.vendor.filingPattern,
-    inv.modelDecision?.probability === undefined ? 'NOT SCORED' : inv.modelDecision.probability,
-    inv.routingBucket ?? 'NOT SCORED',
-    inv.modelDecision?.source ?? '-to-be-populated-',
-    inv.modelDecision?.reason ?? inv.matchResult.explanation,
+    inv.scoreExplanation ? inv.scoreExplanation.clampedScore : 'N/A',
+    inv.routingBucket ?? 'UNROUTED',
+    inv.scoreExplanation ? inv.scoreExplanation.reason : inv.matchResult.explanation,
   ]);
 
-  const source = invoices[0]?.modelDecision?.source === 'lightgbm'
-    ? 'Synthetic demo predictions are in-sample; not real-world validated.'
-    : 'Uploaded data is not model-scored when required inputs are unavailable.';
   const csvContent =
-    `# GST CREDIT-AT-RISK FORECASTER AUDIT EXPORT\n# ${source} Triage support only; not tax or legal advice.\n` +
+    '# GST CREDIT-AT-RISK FORECASTER AUDIT EXPORT\n# Synthetic demo data. Triage support only-not tax or legal advice.\n' +
     [headers.join(','), ...rows.map((e) => e.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -134,3 +126,4 @@ export function exportInvoicesToCsv(invoices: ReconciledInvoice[]): void {
   link.click();
   document.body.removeChild(link);
 }
+

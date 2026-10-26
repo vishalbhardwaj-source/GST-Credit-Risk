@@ -154,7 +154,6 @@ describe('Synthetic Dataset Benchmark Criteria Tests', () => {
       const vendor = dataset.vendorMap.get(inv.vendorId)!;
       const ap = dataset.apRecords.get(vendor.id)!;
       const irn = dataset.irnRegistry.get(inv.invoiceNumber)!;
-      if (ap.unpaidAmount === null || ap.retentionHeldAmount === null) throw new Error('Test fixture AP data is incomplete.');
 
       const { leverageTier } = calculateApLeverage(
         ap.unpaidAmount,
@@ -247,7 +246,6 @@ describe('4-State IRN Scoring Engine Tests', () => {
       const vendor = dataset.vendorMap.get(inv.vendorId)!;
       const ap = dataset.apRecords.get(vendor.id)!;
       const irn = dataset.irnRegistry.get(inv.invoiceNumber)!;
-      if (ap.unpaidAmount === null || ap.retentionHeldAmount === null) throw new Error('Test fixture AP data is incomplete.');
       const { leverageTier } = calculateApLeverage(ap.unpaidAmount, ap.retentionHeldAmount, inv.grossAmount);
       // No explicitIrnState — fixture routing uses default absent-is-risky logic
       const score = calculateRoutingScore(irn.irnPresent, leverageTier, vendor.filingPattern);

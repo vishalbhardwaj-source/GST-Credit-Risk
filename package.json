@@ -8,6 +8,7 @@
     "dev:frontend": "npm --prefix vite-app run dev",
     "dev:backend": "uvicorn backend.main:app --reload --port 8000",
     "build": "npm --prefix vite-app run build",
+    "postinstall": "npm --prefix vite-app install",
     "test": "npm --prefix vite-app test",
     "test:backend": "python -m pytest tests/",
     "test:all": "npm --prefix vite-app test && npm --prefix vite-app run build && python -m pytest tests/",
