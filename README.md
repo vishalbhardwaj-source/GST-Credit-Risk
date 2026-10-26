@@ -245,36 +245,50 @@ Most pitch decks naively multiply ₹2,499 by all 8 million GST filers to claim 
 ### Prerequisites
 - Node.js LTS (v18+)
 - Python 3.10+ (for FastAPI backend)
+- *(Optional)* [Just command runner](https://github.com/casey/just) (`winget install Casey.Just` or `cargo install just`)
 
-### 1. Frontend Setup (Vite + React + TS)
+### ⚡ Unified Dev Server (Frontend + Backend Concurrently)
+Using `just`:
 ```bash
-# Navigate to frontend
-cd vite-app
-
-# Install dependencies
-npm install
-
-# Run dev server
+just dev
+```
+Or using `npm`:
+```bash
 npm run dev
 ```
-Open **`http://localhost:5173`** in your browser.
+- **Frontend Dashboard:** [http://localhost:5173](http://localhost:5173)
+- **FastAPI API & Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### 2. Backend Setup (FastAPI + TinyFish Agent)
+---
+
+### Separate Component Startup
+
+#### 1. Frontend Setup (Vite + React + TS)
 ```bash
-# Install Python dependencies from root or backend
+npm run dev:frontend
+# or
+npm --prefix vite-app run dev
+```
+
+#### 2. Backend Setup (FastAPI + ML Engine + TinyFish Agent)
+```bash
+# Install Python dependencies
 pip install -r requirements.txt
 
 # Start FastAPI server
+npm run dev:backend
+# or
 uvicorn backend.main:app --reload --port 8000
 ```
-API Documentation will be available at **`http://localhost:8000/docs`**.
 
-### 3. Running Unit Tests
+### 3. Running All Tests (Vitest + Pytest)
 ```bash
-cd vite-app
-npx vitest run
+# Run all tests using just:
+just test
+
+# Or using npm:
+npm run test:all
 ```
-All **18 unit tests** will execute and pass, verifying scoring rules, fuzzy normalisation, 4-state IRN weights, and fixture invariance.
 
 ## Demo Data
 
