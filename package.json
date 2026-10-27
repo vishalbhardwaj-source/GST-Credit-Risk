@@ -4,15 +4,15 @@
   "description": "GST Credit-at-Risk Forecaster & IRN Triage System with 3-Signal Decision Engine and TinyFish Web Agent",
   "private": true,
   "scripts": {
-    "dev": "concurrently -n \"backend,frontend\" -c \"magenta,cyan\" \"uvicorn backend.main:app --reload --port 8000\" \"npm --prefix vite-app run dev\"",
+    "dev": "concurrently -n \"backend,frontend\" -c \"magenta,cyan\" \"python -m uvicorn backend.main:app --reload --port 8000\" \"npm --prefix vite-app run dev\"",
     "dev:frontend": "npm --prefix vite-app run dev",
-    "dev:backend": "uvicorn backend.main:app --reload --port 8000",
+    "dev:backend": "python -m uvicorn backend.main:app --reload --port 8000",
     "build": "npm --prefix vite-app run build",
     "postinstall": "npm --prefix vite-app install",
     "test": "npm --prefix vite-app test",
     "test:backend": "python -m pytest tests/",
     "test:all": "npm --prefix vite-app test && npm --prefix vite-app run build && python -m pytest tests/",
-    "server": "uvicorn backend.main:app --reload --port 8000"
+    "server": "python -m uvicorn backend.main:app --reload --port 8000"
   },
   "keywords": [
     "gst",

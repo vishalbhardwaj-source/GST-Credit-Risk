@@ -1,3 +1,4 @@
+import os
 import httpx
 from datetime import datetime
 from pydantic import BaseModel
@@ -21,10 +22,10 @@ class TinyFishClient:
     and deterministic fallback mock handlers for offline / hackathon reliability.
     """
 
-    def __init__(self, api_key: Optional[str] = None, timeout: float = 8.0):
-        self.api_key = api_key
+    def __init__(self, api_key: Optional[str] = None, timeout: float = 15.0):
+        self.api_key = api_key or os.getenv("TINYFISH_API_KEY")
         self.timeout = timeout
-        self.base_url = "https://api.tinyfish.ai/v1"
+        self.base_url = "https://agent.tinyfish.ai"
 
     async def fetch_supplier_evidence(self, gstin: str, vendor_name: str, has_irn: bool) -> TinyFishEvidence:
         """
@@ -39,15 +40,18 @@ class TinyFishClient:
             try:
                 async with httpx.AsyncClient(timeout=self.timeout) as client:
                     resp = await client.post(
-                        f"{self.base_url}/agent/run",
-                        headers={"Authorization": f"Bearer {self.api_key}"},
+                        f"{self.base_url}/v1/automation/run",
+                        headers={"X-API-Key": self.api_key, "Content-Type": "application/json"},
                         json={
+                            "url": source_url,
                             "goal": f"Verify active taxpayer registration status and filing frequency for GSTIN {gstin}",
-                            "start_url": source_url,
                         }
                     )
                     if resp.status_code == 200:
                         data = resp.json()
+                        result_summary = ""
+                        if isinstance(data, dict):
+                            result_summary = str(data.get("result", {}).get("result", "") or data.get("summary", ""))
                         return TinyFishEvidence(
                             status="VERIFIED",
                             source_url=source_url,
@@ -57,7 +61,7 @@ class TinyFishClient:
                             taxpayer_status="Active Regular Taxpayer",
                             einvoice_mandatory_flag=has_irn,
                             filing_frequency="QRMP / Monthly GSTR-1",
-                            summary_notes="Extracted from public GST portal registry via TinyFish Web Agent.",
+                            summary_notes=result_summary or "Extracted from public GST portal registry via TinyFish Web Agent.",
                             confidence=95.0
                         )
             except Exception:

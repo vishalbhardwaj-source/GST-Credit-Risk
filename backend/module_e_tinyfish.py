@@ -147,10 +147,10 @@ class Workflow4Result(BaseModel):
     why_this_label: str
 
 class TinyFishService:
-    def __init__(self, api_key: Optional[str] = None, timeout: float = 6.0):
+    def __init__(self, api_key: Optional[str] = None, timeout: float = 15.0):
         self.api_key = api_key or os.getenv("TINYFISH_API_KEY")
         self.timeout = timeout
-        self.base_url = "https://api.tinyfish.ai/v1"
+        self.base_url = "https://agent.tinyfish.ai"
 
     async def workflow_1_check_due_date_extension(self, financial_year: str = "2024-25") -> Workflow1Result:
         cache_key = get_cache_key("WF1", financial_year)
@@ -197,21 +197,24 @@ class TinyFishService:
             try:
                 async with httpx.AsyncClient(timeout=self.timeout) as client:
                     resp = await client.post(
-                        f"{self.base_url}/agent/run",
-                        headers={"Authorization": f"Bearer {self.api_key}"},
+                        f"{self.base_url}/v1/automation/run",
+                        headers={"X-API-Key": self.api_key, "Content-Type": "application/json"},
                         json={
+                            "url": source_url,
                             "goal": f"Verify active taxpayer registration status and filing cadence for GSTIN {gstin}",
-                            "start_url": source_url,
                         }
                     )
                     if resp.status_code == 200:
                         data = resp.json()
+                        result_summary = ""
+                        if isinstance(data, dict):
+                            result_summary = str(data.get("result", {}).get("result", "") or data.get("summary", ""))
                         result_data = {
                             "workflow": "WORKFLOW_2_VENDOR_STATUS_SEARCH",
                             "supplier_gstin": gstin,
                             "supplier_name": safe_name or data.get("legal_name", "Verified Entity"),
                             "status_observed": data.get("status", "ACTIVE"),
-                            "public_filing_signals": sanitize_untrusted_text(data.get("summary", "Verified live via TinyFish Web Agent.")),
+                            "public_filing_signals": sanitize_untrusted_text(result_summary or "Verified live via TinyFish Web Agent."),
                             "source_url": source_url,
                             "confidence": float(data.get("confidence", 0.95)),
                             "retrieved_at": now_str,
@@ -432,25 +435,28 @@ class TinyFishService:
             try:
                 async with httpx.AsyncClient(timeout=self.timeout) as client:
                     resp = await client.post(
-                        f"{self.base_url}/agent/run",
-                        headers={"Authorization": f"Bearer {self.api_key}"},
+                        f"{self.base_url}/v1/automation/run",
+                        headers={"X-API-Key": self.api_key, "Content-Type": "application/json"},
                         json={
+                            "url": source_url,
                             "goal": f"Check e-invoice portal enablement status on einvoice1.gst.gov.in for GSTIN {gstin}",
-                            "start_url": source_url,
                         }
                     )
                     if resp.status_code == 200:
                         data = resp.json()
+                        result_summary = ""
+                        if isinstance(data, dict):
+                            result_summary = str(data.get("result", {}).get("result", "") or data.get("snippet", ""))
                         result_data = {
                             "workflow": "WORKFLOW_4_VENDOR_IRN_LOOKUP",
                             "gstin": gstin,
                             "legal_name": sanitize_untrusted_text(vendor_name),
                             "trade_name": sanitize_untrusted_text(vendor_name),
-                            "einvoice_enabled": data.get("einvoice_enabled", True),
-                            "irn_state": "PRESENT" if irn_present else ("ABSENT_APPLIES" if data.get("einvoice_enabled", True) else "ABSENT_NOT_APPLICABLE"),
-                            "score_adjustment": 20 if irn_present else (-15 if data.get("einvoice_enabled", True) else 0),
-                            "status_label": "Present" if irn_present else ("Absent, applies" if data.get("einvoice_enabled", True) else "Absent, not applicable"),
-                            "source_snippet": sanitize_untrusted_text(data.get("snippet", f"TinyFish Agent verified e-invoicing status for GSTIN {gstin}.")),
+                            "einvoice_enabled": data.get("einvoice_enabled", True) if isinstance(data, dict) else True,
+                            "irn_state": "PRESENT" if irn_present else ("ABSENT_APPLIES" if (isinstance(data, dict) and data.get("einvoice_enabled", True)) else "ABSENT_NOT_APPLICABLE"),
+                            "score_adjustment": 20 if irn_present else (-15 if (isinstance(data, dict) and data.get("einvoice_enabled", True)) else 0),
+                            "status_label": "Present" if irn_present else ("Absent, applies" if (isinstance(data, dict) and data.get("einvoice_enabled", True)) else "Absent, not applicable"),
+                            "source_snippet": sanitize_untrusted_text(result_summary or f"TinyFish Agent verified e-invoicing status for GSTIN {gstin}."),
                             "source_url": source_url,
                             "checked_at": now_str,
                             "checked_at_human": human_time,
