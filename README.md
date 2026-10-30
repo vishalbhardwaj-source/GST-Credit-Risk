@@ -1,12 +1,3 @@
----
-title: GST Credit Risk API
-emoji: 📊
-colorFrom: blue
-colorTo: indigo
-sdk: gradio
-app_file: app.py
-pinned: false
----
 
 # GST Credit-at-Risk Forecaster
 
