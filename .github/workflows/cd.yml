@@ -1,0 +1,74 @@
+name: CD — Deployment Health & Verification
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI — Test Suite"]
+    types:
+      - completed
+    branches: ["main"]
+
+concurrency:
+  group: cd-deployment-verification
+  cancel-in-progress: true
+
+jobs:
+  verify-deployments:
+    name: Verify Production Cloud Deployments (Render & Vercel)
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Verify Frontend (Vercel)
+        run: |
+          echo "Checking Vercel Production Frontend..."
+          FRONTEND_URL="https://gst-credit-risk.vercel.app"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$FRONTEND_URL")
+          echo "Vercel HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "::warning ::Vercel production returned HTTP $HTTP_STATUS"
+          else
+            echo "✅ Vercel frontend is online and responding with HTTP 200."
+          fi
+
+      - name: Verify Backend API (Render.com)
+        run: |
+          echo "Checking Render Production API with cold-start tolerance..."
+          RENDER_API="https://gst-credit-risk-api.onrender.com/api/health"
+          MAX_ATTEMPTS=6
+          DELAY=15
+          SUCCESS=0
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Attempt $i/$MAX_ATTEMPTS: Pinging $RENDER_API..."
+            HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" --max-time 20 "$RENDER_API" || echo "000")
+            echo "Response HTTP Status: $HTTP_STATUS"
+
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              cat response.json
+              echo ""
+              echo "✅ Render backend is online and healthy!"
+              SUCCESS=1
+              break
+            else
+              echo "Backend is waking up or initializing. Waiting ${DELAY}s..."
+              sleep $DELAY
+            fi
+          done
+
+          if [ "$SUCCESS" -ne 1 ]; then
+            echo "::warning ::Render backend did not respond with 200 within timeout (Free tier may be spinning up)."
+          fi
+
+      - name: Verify AI Copilot Config Endpoint
+        run: |
+          echo "Checking AI Configuration endpoint..."
+          AI_CONFIG_URL="https://gst-credit-risk-api.onrender.com/api/ai/config"
+          STATUS=$(curl -s -o ai_config.json -w "%{http_code}" --max-time 15 "$AI_CONFIG_URL" || echo "000")
+          if [ "$STATUS" -eq 200 ]; then
+            cat ai_config.json
+            echo ""
+            echo "✅ AI Copilot provider configuration endpoint verified."
+          else
+            echo "::notice ::AI config endpoint returned status $STATUS."
+          fi

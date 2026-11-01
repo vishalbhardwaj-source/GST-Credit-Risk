@@ -14,6 +14,7 @@ def test_ai_config_endpoint():
     assert "openai" in data["supported_providers"]
     assert "claude" in data["supported_providers"]
     assert "groq" in data["supported_providers"]
+    assert "tinyfish" in data["supported_providers"]
     assert "server_keys" in data
 
 def test_ai_chat_missing_key_validation():

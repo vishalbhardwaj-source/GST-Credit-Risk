@@ -1,5 +1,20 @@
 import re
 import os
+# Automatically load local .env if present
+_env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+if os.path.exists(_env_path):
+    try:
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    _k, _v = _k.strip(), _v.strip().strip("'\"")
+                    if _k and _k not in os.environ:
+                        os.environ[_k] = _v
+    except Exception:
+        pass
+
 import joblib
 from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from starlette.concurrency import run_in_threadpool
@@ -149,12 +164,13 @@ def get_ai_config():
     """Returns available server-side keys for each supported AI provider."""
     return {
         "status": "online",
-        "supported_providers": ["gemini", "openai", "claude", "groq"],
+        "supported_providers": ["gemini", "openai", "claude", "groq", "tinyfish"],
         "default_models": {
             "gemini": "gemini-2.0-flash",
             "openai": "gpt-4o-mini",
             "claude": "claude-3-5-haiku-20241022",
             "groq": "llama-3.3-70b-versatile",
+            "tinyfish": "tinyfish-web-agent",
         },
         "server_keys": get_server_api_keys()
     }

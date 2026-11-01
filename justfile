@@ -26,6 +26,10 @@ test:
 test-frontend:
     npm --prefix vite-app test
 
+# Run frontend linter
+lint:
+    npm --prefix vite-app run lint
+
 # Run backend Pytest tests only
 test-backend:
     python -m pytest tests/

@@ -53,7 +53,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}
+            style={{ background: 'transparent', border: 'none', color: '#627D98', cursor: 'pointer', padding: '4px' }}
           >
             <X size={20} />
           </button>
@@ -104,10 +104,10 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
             <div style={{ background: 'rgba(0, 0, 0, 0.25)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-              <strong style={{ color: '#34d399', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <strong style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Layers size={13} /> Tier 1: Deterministic Compliance Engine (Primary)
               </strong>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', marginTop: '4px' }}>
+              <div style={{ fontSize: '10.5px', color: '#627D98', marginTop: '4px' }}>
                 100% legally auditable statutory logic: Governed by Rule 48(4) IRN existence, AP retention cash leverage, and Section 16(4) statutory calendar cutoffs.
               </div>
             </div>
@@ -115,7 +115,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
               <strong style={{ color: '#818cf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <GitBranch size={13} /> Tier 2: LightGBM Worklist Prioritization (Secondary)
               </strong>
-              <div style={{ fontSize: '10.5px', color: '#94a3b8', marginTop: '4px' }}>
+              <div style={{ fontSize: '10.5px', color: '#627D98', marginTop: '4px' }}>
                 Calculates Expected Loss (E[Loss] = Tax &times; (1 &minus; P_res)) strictly to sort human investigation priority within the ambiguous &quot;Watch&quot; bucket.
               </div>
             </div>
@@ -124,25 +124,25 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
 
         {/* Core Validation Metrics Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
+          <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Synthetic Benchmark</span>
             <div style={{ fontSize: '22px', fontWeight: 800, color: '#f59e0b', marginTop: '4px' }}>0.9858 AUC</div>
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>*Parametric Generator Artifact</span>
+            <span style={{ fontSize: '10px', color: '#627D98' }}>*Parametric Generator Artifact</span>
           </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
+          <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Grouped-CV Accuracy</span>
-            <div style={{ fontSize: '22px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>86.2% – 93.3%</div>
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Supplier-Partitioned (Leakage Free)</span>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: '#10B981', marginTop: '4px' }}>86.2% – 93.3%</div>
+            <span style={{ fontSize: '10px', color: '#627D98' }}>Supplier-Partitioned (Leakage Free)</span>
           </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
+          <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Default Catch Rate</span>
             <div style={{ fontSize: '22px', fontWeight: 800, color: '#a78bfa', marginTop: '4px' }}>87.0%</div>
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>40 of 46 defaults detected</span>
+            <span style={{ fontSize: '10px', color: '#627D98' }}>40 of 46 defaults detected</span>
           </div>
-          <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
+          <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Primary Compliance</span>
             <div style={{ fontSize: '22px', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>100% Rules</div>
-            <span style={{ fontSize: '10px', color: '#94a3b8' }}>Deterministic Statutory Audit</span>
+            <span style={{ fontSize: '10px', color: '#627D98' }}>Deterministic Statutory Audit</span>
           </div>
         </div>
 
@@ -162,15 +162,15 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
             </thead>
             <tbody>
               <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <td style={{ padding: '8px', fontWeight: 600, color: '#f87171' }}>Actual: Non-Resolved (46)</td>
-                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>40 (True Neg)</td>
+                <td style={{ padding: '8px', fontWeight: 600, color: '#C0392B' }}>Actual: Non-Resolved (46)</td>
+                <td style={{ padding: '8px', color: '#10B981', fontWeight: 700 }}>40 (True Neg)</td>
                 <td style={{ padding: '8px', color: '#f59e0b' }}>6 (False Pos)</td>
                 <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>87.0%</td>
               </tr>
               <tr>
-                <td style={{ padding: '8px', fontWeight: 600, color: '#34d399' }}>Actual: Resolved (194)</td>
-                <td style={{ padding: '8px', color: '#f87171' }}>6 (False Neg)</td>
-                <td style={{ padding: '8px', color: '#34d399', fontWeight: 700 }}>188 (True Pos)</td>
+                <td style={{ padding: '8px', fontWeight: 600, color: '#10B981' }}>Actual: Resolved (194)</td>
+                <td style={{ padding: '8px', color: '#C0392B' }}>6 (False Neg)</td>
+                <td style={{ padding: '8px', color: '#10B981', fontWeight: 700 }}>188 (True Pos)</td>
                 <td style={{ padding: '8px', color: 'var(--navy-muted)' }}>96.9%</td>
               </tr>
             </tbody>
@@ -196,7 +196,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
             ].map((f) => (
               <div key={f.name}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '2px' }}>
-                  <span style={{ color: '#cbd5e1' }}>{f.name}</span>
+                  <span style={{ color: '#CBD5E1' }}>{f.name}</span>
                   <span style={{ fontFamily: 'monospace', color: '#818cf8', fontWeight: 600 }}>{f.gain} gain</span>
                 </div>
                 <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -211,7 +211,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           <button
             onClick={onClose}
             style={{
-              background: '#9F6FF0',
+              background: 'var(--navy-card)',
               border: 'none',
               borderRadius: '8px',
               color: '#fff',

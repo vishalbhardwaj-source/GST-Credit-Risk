@@ -23,7 +23,7 @@ import {
 import { getApiBaseUrl } from '../config';
 import type { ReconciledInvoice } from '../types';
 
-export type AiProvider = 'gemini' | 'openai' | 'claude' | 'groq';
+export type AiProvider = 'gemini' | 'openai' | 'claude' | 'groq' | 'tinyfish';
 export type ChatThemeKey = 'cyan' | 'emerald' | 'indigo' | 'amber' | 'dynamic';
 
 interface Message {
@@ -187,9 +187,24 @@ const PROVIDER_METADATA: Record<
       { id: 'deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 70B', tag: 'Reasoning' },
     ],
   },
+  tinyfish: {
+    name: 'TinyFish Web Agent',
+    badge: 'TinyFish',
+    color: '#06B6D4',
+    themeKey: 'cyan',
+    consoleUrl: 'https://agent.tinyfish.ai/api-keys',
+    models: [
+      { id: 'tinyfish-web-agent', name: 'TinyFish Web Agent', tag: 'Live Autonomous Web Research' },
+      { id: 'tinyfish-taxpayer-lookup', name: 'GSTIN & IRN Verifier', tag: 'Direct Registry Verification' },
+    ],
+  },
 };
 
 const SUGGESTED_PROMPTS = [
+  {
+    title: '🌐 TinyFish Live Vendor Verification',
+    query: 'Verify filing compliance, GSTIN active status, and e-invoicing mandate for our top at-risk vendor using TinyFish Web Agent.',
+  },
   {
     title: '📊 Audit ITC at Risk',
     query: 'Summarize my current total ITC at risk, breakdown across action buckets, and identify the top vendors causing exposure.',
@@ -314,7 +329,7 @@ function MarkdownRenderer({ content, primaryColor }: { content: string; primaryC
                 {rows.map((row, rIdx) => (
                   <tr key={rIdx} style={{ background: rIdx % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
                     {row.map((cell, cIdx) => (
-                      <td key={cIdx} style={{ padding: '6px 10px', color: '#cbd5e1' }}>
+                      <td key={cIdx} style={{ padding: '6px 10px', color: '#CBD5E1' }}>
                         {parseInline(cell, primaryColor)}
                       </td>
                     ))}
@@ -532,9 +547,9 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   const [apiKeys, setApiKeys] = useState<Record<AiProvider, string>>(() => {
     try {
       const saved = localStorage.getItem('gst_ai_user_keys');
-      return saved ? JSON.parse(saved) : { gemini: '', openai: '', claude: '', groq: '' };
+      return saved ? JSON.parse(saved) : { gemini: '', openai: '', claude: '', groq: '', tinyfish: '' };
     } catch {
-      return { gemini: '', openai: '', claude: '', groq: '' };
+      return { gemini: '', openai: '', claude: '', groq: '', tinyfish: '' };
     }
   });
 
@@ -964,6 +979,29 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
       return;
     }
 
+    if (provider === 'tinyfish') {
+      const lastMsg = history[history.length - 1]?.content || 'Verify GST compliance';
+      const res = await fetch('https://agent.tinyfish.ai/v1/automation/run', {
+        method: 'POST',
+        headers: {
+          'X-API-Key': userKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: 'https://services.gst.gov.in',
+          goal: lastMsg,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error || `TinyFish API HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const summary = data?.result?.result || data?.summary || JSON.stringify(data);
+      onChunk(`### 📋 Live TinyFish Web Agent Results\n\n${summary}\n\n*Steps executed:* ${data?.num_of_steps || 0}`);
+      return;
+    }
+
     throw new Error(`Direct streaming for ${provider} requires backend proxy.`);
   };
 
@@ -1161,7 +1199,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 {activeProviderMeta.badge}
               </span>
             </div>
-            <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+            <span style={{ fontSize: '11px', color: '#627D98' }}>
               Rule 37A &amp; ITC Lookup
             </span>
           </div>
@@ -1244,7 +1282,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                     <Settings2 size={12} color={activeThemeConfig.primary} />
                   </button>
                 </div>
-                <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '1px' }}>
+                <div style={{ fontSize: '11px', color: '#627D98', marginTop: '1px' }}>
                   Rule 37A • GSTR-2B • Vendor Risk
                 </div>
               </div>
@@ -1275,7 +1313,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: '#94a3b8',
+                  color: '#627D98',
                   padding: '6px',
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -1292,7 +1330,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: '#94a3b8',
+                  color: '#627D98',
                   padding: '6px',
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -1321,7 +1359,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Key size={14} color={activeThemeConfig.primary} /> AI Settings &amp; Customization
                 </span>
                 <button
@@ -1341,7 +1379,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
 
               {/* 🎨 Chatbot Color Theme Picker */}
               <div>
-                <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: '#627D98', marginBottom: '6px' }}>
                   <Palette size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-1px' }} />
                   Chatbot Color Theme:
                 </label>
@@ -1391,10 +1429,10 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
 
               {/* Provider Tabs */}
               <div>
-                <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', marginBottom: '6px' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: '#627D98', marginBottom: '6px' }}>
                   Select AI Provider:
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
                   {(Object.keys(PROVIDER_METADATA) as AiProvider[]).map((pKey) => {
                     const meta = PROVIDER_METADATA[pKey];
                     const isSelected = provider === pKey;
@@ -1426,7 +1464,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
 
               {/* Model Select */}
               <div>
-                <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', marginBottom: '4px' }}>
+                <label style={{ display: 'block', fontSize: '11px', color: '#627D98', marginBottom: '4px' }}>
                   Model:
                 </label>
                 <select
@@ -1482,10 +1520,10 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
               {/* API Key Input */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <label style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', color: '#627D98', display: 'flex', alignItems: 'center', gap: '6px' }}>
                     API Key for {activeProviderMeta.name}
                     {serverKeys[provider] && (
-                      <span style={{ fontSize: '10px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      <span style={{ fontSize: '10px', color: '#10B981', display: 'flex', alignItems: 'center', gap: '3px' }}>
                         <ShieldCheck size={12} /> (Server Ready)
                       </span>
                     )}
@@ -1531,7 +1569,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                       transform: 'translateY(-50%)',
                       background: 'transparent',
                       border: 'none',
-                      color: '#94a3b8',
+                      color: '#627D98',
                       cursor: 'pointer',
                       padding: '2px',
                       display: 'flex',
@@ -1562,7 +1600,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                   onChange={(e) => setIncludeContext(e.target.checked)}
                   style={{ cursor: 'pointer', accentColor: activeThemeConfig.primary }}
                 />
-                <label htmlFor="includeContext" style={{ fontSize: '11px', color: '#cbd5e1', cursor: 'pointer' }}>
+                <label htmlFor="includeContext" style={{ fontSize: '11px', color: '#CBD5E1', cursor: 'pointer' }}>
                   Inject current session context (₹{kpis.totalTaxAtRisk.toLocaleString('en-IN')} ITC at risk, top vendors, inspected invoice)
                 </label>
               </div>
@@ -1625,7 +1663,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 gap: '8px',
               }}
             >
-              <AlertCircle size={16} color="#ef4444" style={{ flexShrink: 0 }} />
+              <AlertCircle size={16} color="#C0392B" style={{ flexShrink: 0 }} />
               <div style={{ flex: 1 }}>{errorMessage}</div>
               <button
                 onClick={() => setErrorMessage(null)}
@@ -1683,7 +1721,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff', margin: '0 0 6px 0' }}>
                   How can I assist your GST compliance today?
                 </h4>
-                <p style={{ fontSize: '12px', color: '#94a3b8', maxWidth: '340px', margin: '0 0 20px 0', lineHeight: 1.5 }}>
+                <p style={{ fontSize: '12px', color: '#627D98', maxWidth: '340px', margin: '0 0 20px 0', lineHeight: 1.5 }}>
                   Audit at-risk ITC, explain Rule 37A statutory reversal dates, or draft supplier demand notices.
                 </p>
 
@@ -1696,7 +1734,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                       style={{
                         padding: '12px 14px',
                         borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.03)',
+                        background: 'var(--navy-bg)',
                         border: '1px solid rgba(255, 255, 255, 0.09)',
                         textAlign: 'left',
                         cursor: 'pointer',
@@ -1717,7 +1755,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                       <div
                         style={{
                           fontSize: '11px',
-                          color: '#94a3b8',
+                          color: '#627D98',
                           lineHeight: 1.4,
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
@@ -1769,7 +1807,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                           marginBottom: '8px',
                           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
                           fontSize: '11px',
-                          color: '#94a3b8',
+                          color: '#627D98',
                         }}
                       >
                         <span style={{ fontWeight: 700, color: activeThemeConfig.primary, display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -1783,21 +1821,21 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                             style={{
                               background: 'transparent',
                               border: 'none',
-                              color: '#94a3b8',
+                              color: '#627D98',
                               cursor: 'pointer',
                               padding: '2px',
                               display: 'flex',
                             }}
                             title="Copy response"
                           >
-                            {copiedId === msg.id ? <Check size={13} color="#34d399" /> : <Copy size={13} />}
+                            {copiedId === msg.id ? <Check size={13} color="#10B981" /> : <Copy size={13} />}
                           </button>
                         </div>
                       </div>
                     )}
 
                     {/* Message Body Content */}
-                    <div style={{ wordBreak: 'break-word', color: '#f8fafc' }}>
+                    <div style={{ wordBreak: 'break-word', color: '#FFFFFF' }}>
                       {msg.content ? (
                         <>
                           {msg.role === 'assistant' ? (
@@ -1959,7 +1997,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
                 alignItems: 'center',
                 marginTop: '8px',
                 fontSize: '10px',
-                color: '#94a3b8',
+                color: '#627D98',
                 padding: '0 2px',
               }}
             >

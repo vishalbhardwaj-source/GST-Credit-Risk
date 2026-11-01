@@ -116,14 +116,14 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
               Query any real or test 15-character GSTIN to inspect live statutory e-invoicing enablement under Rule 48(4).
             </p>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#627D98', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
 
         {/* 1-Click Presets for Judges */}
         <div>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: '#627D98', textTransform: 'uppercase' }}>
             Quick 1-Click Presets:
           </span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '6px' }}>
@@ -136,7 +136,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
                   handleRunQuery(p.gstin, p.name);
                 }}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'var(--navy-bg)',
                   border: '1px solid var(--navy-border)',
                   borderRadius: '6px',
                   padding: '4px 10px',
@@ -215,7 +215,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
         </div>
 
         {error && (
-          <div style={{ color: '#f87171', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
+          <div style={{ color: '#C0392B', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
             {error}
           </div>
         )}
@@ -235,7 +235,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={16} color="#34d399" />
+                <ShieldCheck size={16} color="#10B981" />
                 <span style={{ fontWeight: 800, color: '#fff', fontSize: '13px' }}>
                   {result.legal_name} ({result.gstin})
                 </span>
@@ -247,7 +247,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
                   padding: '2px 8px',
                   borderRadius: '4px',
                   background: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? 'rgba(52, 211, 153, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-                  color: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? '#34d399' : '#f43f5e',
+                  color: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? '#10B981' : '#f43f5e',
                   border: `1px solid ${result.irn_state === 'ABSENT_NOT_APPLICABLE' ? 'rgba(52, 211, 153, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
                 }}
               >
@@ -255,7 +255,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
               </span>
             </div>
 
-            <div style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: 1.5, background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px' }}>
+            <div style={{ fontSize: '12px', color: '#CBD5E1', lineHeight: 1.5, background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px' }}>
               <strong>Extracted Signal:</strong> {result.source_snippet}
             </div>
 

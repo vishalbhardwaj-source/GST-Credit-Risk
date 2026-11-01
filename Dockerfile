@@ -11,8 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend files
+# Copy backend and entrypoint files
 COPY backend/ ./backend/
+COPY app.py .
 
 # Hugging Face Spaces runs as user 1000
 RUN useradd -m -u 1000 user && chown -R user:user /app

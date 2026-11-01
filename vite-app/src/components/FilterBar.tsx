@@ -84,11 +84,11 @@ export function FilterBar({
             width: '100%',
             padding: '8px 30px 8px 34px',
             borderRadius: '8px',
-            border: '1px solid var(--navy-border)',
             background: 'var(--navy-bg)',
             fontSize: '12px',
             outline: 'none',
-            color: '#fff',
+            color: 'var(--navy-text)',
+            border: '1px solid var(--navy-border)',
           }}
         />
         {searchQuery && (
@@ -123,9 +123,9 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: bucketFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            border: bucketFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
             background: bucketFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: !isRouted ? 'var(--navy-muted)' : bucketFilter !== 'ALL' ? '#93c5fd' : 'inherit',
+            color: !isRouted ? 'var(--navy-muted)' : bucketFilter !== 'ALL' ? '#B794F6' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
             opacity: !isRouted ? 0.6 : 1,
@@ -146,9 +146,9 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: irnFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            border: irnFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
             background: irnFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: irnFilter !== 'ALL' ? '#93c5fd' : 'inherit',
+            color: irnFilter !== 'ALL' ? '#B794F6' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -165,9 +165,9 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: apFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            border: apFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
             background: apFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: apFilter !== 'ALL' ? '#93c5fd' : 'inherit',
+            color: apFilter !== 'ALL' ? '#B794F6' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -185,9 +185,9 @@ export function FilterBar({
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: patternFilter !== 'ALL' ? '1px solid #B794F6' : '1px solid var(--navy-border)',
+            border: patternFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
             background: patternFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: patternFilter !== 'ALL' ? '#93c5fd' : 'inherit',
+            color: patternFilter !== 'ALL' ? '#B794F6' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -205,9 +205,9 @@ export function FilterBar({
             style={{
               padding: '6px 10px',
               borderRadius: '6px',
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              color: '#f87171',
+              background: 'rgba(192, 57, 43, 0.08)',
+              border: '1px solid rgba(192, 57, 43, 0.25)',
+              color: '#C0392B',
               fontSize: '11px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -233,7 +233,7 @@ export function FilterBar({
             whiteSpace: 'nowrap',
           }}
         >
-          <strong style={{ color: '#fff' }}>{displayedCount}</strong> of {totalCount}
+          <strong style={{ color: '#FFFFFF' }}>{displayedCount}</strong> of {totalCount}
         </div>
       </div>
     </div>

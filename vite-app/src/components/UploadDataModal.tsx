@@ -322,7 +322,7 @@ export function UploadDataModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            background: 'linear-gradient(180deg, rgba(159, 111, 240, 0.08) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -331,7 +331,7 @@ export function UploadDataModal({
                 width: '40px',
                 height: '40px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
+                background: '#1e293b', border: '1px solid rgba(255, 255, 255, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -344,7 +344,7 @@ export function UploadDataModal({
               <h2 style={{ fontSize: '18px', fontWeight: 700, margin: 0, color: '#fff' }}>
                 Upload &amp; Reconcile Invoices
               </h2>
-              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#94a3b8' }}>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#627D98' }}>
                 Ingest your real Purchase Register &amp; GSTR-2B data into the 3-Signal Triage Engine
               </p>
             </div>
@@ -354,7 +354,7 @@ export function UploadDataModal({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#94a3b8',
+              color: '#627D98',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '8px',
@@ -380,7 +380,7 @@ export function UploadDataModal({
               fontSize: '12px',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10B981' }}>
               <FileCheck2 size={16} />
               <span>
                 Active custom dataset: <strong>{customDataName || 'Custom Upload'}</strong>
@@ -394,7 +394,7 @@ export function UploadDataModal({
               style={{
                 background: 'transparent',
                 border: '1px solid rgba(16, 185, 129, 0.4)',
-                color: '#34d399',
+                color: '#10B981',
                 padding: '4px 10px',
                 borderRadius: '6px',
                 fontSize: '11px',
@@ -426,7 +426,7 @@ export function UploadDataModal({
               padding: '12px 16px',
               background: 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'two_files' ? '2px solid #9F6FF0' : '2px solid transparent',
+              borderBottom: activeTab === 'two_files' ? '2px solid #FFFFFF' : '2px solid transparent',
               color: activeTab === 'two_files' ? '#fff' : '#94a3b8',
               fontWeight: 600,
               fontSize: '13px',
@@ -446,7 +446,7 @@ export function UploadDataModal({
               padding: '12px 16px',
               background: 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'single_file' ? '2px solid #9F6FF0' : '2px solid transparent',
+              borderBottom: activeTab === 'single_file' ? '2px solid #FFFFFF' : '2px solid transparent',
               color: activeTab === 'single_file' ? '#fff' : '#94a3b8',
               fontWeight: 600,
               fontSize: '13px',
@@ -466,7 +466,7 @@ export function UploadDataModal({
               padding: '12px 16px',
               background: 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'templates' ? '2px solid #9F6FF0' : '2px solid transparent',
+              borderBottom: activeTab === 'templates' ? '2px solid #FFFFFF' : '2px solid transparent',
               color: activeTab === 'templates' ? '#fff' : '#94a3b8',
               fontWeight: 600,
               fontSize: '13px',
@@ -493,7 +493,7 @@ export function UploadDataModal({
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '10px',
-                color: '#f87171',
+                color: '#C0392B',
                 fontSize: '12px',
               }}
             >
@@ -505,7 +505,7 @@ export function UploadDataModal({
           {/* TAB 1: Two Files */}
           {activeTab === 'two_files' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12px', color: '#627D98', lineHeight: 1.5 }}>
                 Upload your ERP <strong>Purchase Register</strong> and monthly <strong>GSTR-2B</strong> from the GST Portal.
                 The engine normalizes invoice numbers, eliminates cross-vendor false positives, and groups unmatched tax credits into triage buckets.
               </div>
@@ -515,7 +515,7 @@ export function UploadDataModal({
                 {/* File 1: Purchase Register */}
                 <div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#e2e8f0', marginBottom: '6px' }}>
-                    1. Purchase Register CSV <span style={{ color: '#ef4444' }}>*</span>
+                    1. Purchase Register CSV <span style={{ color: '#C0392B' }}>*</span>
                   </div>
                   <input
                     type="file"
@@ -533,7 +533,7 @@ export function UploadDataModal({
                     onDragLeave={() => setDragOverPr(false)}
                     onDrop={handleDropPr}
                     style={{
-                      border: `2px dashed ${dragOverPr ? '#9F6FF0' : prFile ? '#10b981' : 'var(--navy-border, #374151)'}`,
+                      border: `2px dashed ${dragOverPr ? '#FFFFFF' : prFile ? '#10B981' : 'var(--navy-border, #374151)'}`,
                       borderRadius: '12px',
                       padding: '20px 16px',
                       textAlign: 'center',
@@ -544,17 +544,17 @@ export function UploadDataModal({
                   >
                     {prFile ? (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <CheckCircle2 size={28} color="#10b981" />
+                        <CheckCircle2 size={28} color="#10B981" />
                         <span style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{prFile.name}</span>
-                        <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+                        <span style={{ fontSize: '11px', color: '#627D98' }}>
                           {(prFile.size / 1024).toFixed(1)} KB · {prFile.count} invoices detected
                         </span>
-                        <span style={{ fontSize: '11px', color: '#9F6FF0', marginTop: '4px' }}>Click to replace</span>
+                        <span style={{ fontSize: '11px', color: '#FFFFFF', marginTop: '4px' }}>Click to replace</span>
                       </div>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                         <FileSpreadsheet size={28} color="#94a3b8" />
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#cbd5e1' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#CBD5E1' }}>
                           Drop Purchase Register CSV
                         </span>
                         <span style={{ fontSize: '11px', color: '#64748b' }}>or click to browse from device</span>
@@ -566,7 +566,7 @@ export function UploadDataModal({
                 {/* File 2: GSTR-2B */}
                 <div>
                   <div style={{ fontSize: '12px', fontWeight: 700, color: '#e2e8f0', marginBottom: '6px' }}>
-                    2. GSTR-2B CSV <span style={{ color: '#94a3b8', fontWeight: 400 }}>(Optional)</span>
+                    2. GSTR-2B CSV <span style={{ color: '#627D98', fontWeight: 400 }}>(Optional)</span>
                   </div>
                   <input
                     type="file"
@@ -584,7 +584,7 @@ export function UploadDataModal({
                     onDragLeave={() => setDragOver2b(false)}
                     onDrop={handleDrop2b}
                     style={{
-                      border: `2px dashed ${dragOver2b ? '#9F6FF0' : gstr2bFile ? '#10b981' : 'var(--navy-border, #374151)'}`,
+                      border: `2px dashed ${dragOver2b ? '#FFFFFF' : gstr2bFile ? '#10B981' : 'var(--navy-border, #374151)'}`,
                       borderRadius: '12px',
                       padding: '20px 16px',
                       textAlign: 'center',
@@ -595,17 +595,17 @@ export function UploadDataModal({
                   >
                     {gstr2bFile ? (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                        <CheckCircle2 size={28} color="#10b981" />
+                        <CheckCircle2 size={28} color="#10B981" />
                         <span style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{gstr2bFile.name}</span>
-                        <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+                        <span style={{ fontSize: '11px', color: '#627D98' }}>
                           {(gstr2bFile.size / 1024).toFixed(1)} KB · {gstr2bFile.count} 2B records detected
                         </span>
-                        <span style={{ fontSize: '11px', color: '#9F6FF0', marginTop: '4px' }}>Click to replace</span>
+                        <span style={{ fontSize: '11px', color: '#FFFFFF', marginTop: '4px' }}>Click to replace</span>
                       </div>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                         <FileCheck2 size={28} color="#94a3b8" />
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#cbd5e1' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#CBD5E1' }}>
                           Drop GSTR-2B CSV
                         </span>
                         <span style={{ fontSize: '11px', color: '#64748b' }}>If omitted, all invoices evaluated</span>
@@ -618,12 +618,12 @@ export function UploadDataModal({
               {/* Supported Columns Guide */}
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
+                  background: 'var(--navy-bg)',
                   border: '1px solid var(--navy-border, #1f2937)',
                   borderRadius: '10px',
                   padding: '12px 16px',
                   fontSize: '11px',
-                  color: '#94a3b8',
+                  color: '#627D98',
                 }}
               >
                 <div style={{ fontWeight: 600, color: '#e2e8f0', marginBottom: '4px' }}>
@@ -643,7 +643,7 @@ export function UploadDataModal({
           {/* TAB 2: Single File */}
           {activeTab === 'single_file' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12px', color: '#627D98', lineHeight: 1.5 }}>
                 Upload an existing <strong>Audit Register or Previous Export CSV</strong> containing reconciled invoice status,
                 IRN tags, and AP leverage tiers.
               </div>
@@ -664,7 +664,7 @@ export function UploadDataModal({
                 onDragLeave={() => setDragOverSingle(false)}
                 onDrop={handleDropSingle}
                 style={{
-                  border: `2px dashed ${dragOverSingle ? '#9F6FF0' : singleFile ? '#10b981' : 'var(--navy-border, #374151)'}`,
+                  border: `2px dashed ${dragOverSingle ? '#FFFFFF' : singleFile ? '#10B981' : 'var(--navy-border, #374151)'}`,
                   borderRadius: '12px',
                   padding: '30px 20px',
                   textAlign: 'center',
@@ -675,17 +675,17 @@ export function UploadDataModal({
               >
                 {singleFile ? (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                    <CheckCircle2 size={32} color="#10b981" />
+                    <CheckCircle2 size={32} color="#10B981" />
                     <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{singleFile.name}</span>
-                    <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    <span style={{ fontSize: '12px', color: '#627D98' }}>
                       {(singleFile.size / 1024).toFixed(1)} KB · {singleFile.count} invoices detected
                     </span>
-                    <span style={{ fontSize: '11px', color: '#9F6FF0', marginTop: '4px' }}>Click to replace</span>
+                    <span style={{ fontSize: '11px', color: '#FFFFFF', marginTop: '4px' }}>Click to replace</span>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                     <Upload size={32} color="#94a3b8" />
-                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#cbd5e1' }}>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#CBD5E1' }}>
                       Drop Reconciled / Export CSV here
                     </span>
                     <span style={{ fontSize: '12px', color: '#64748b' }}>or click to browse file from device</span>
@@ -698,7 +698,7 @@ export function UploadDataModal({
           {/* TAB 3: Templates & Quick Load */}
           {activeTab === 'templates' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '12px', color: '#627D98', lineHeight: 1.5 }}>
                 Test the upload system immediately using pre-formatted sample datasets or download blank templates for your accounting team.
               </div>
 
@@ -720,14 +720,14 @@ export function UploadDataModal({
                     <Sparkles size={16} color="#B794F6" />
                     Load Sample Retail Dataset (10 Invoices)
                   </div>
-                  <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#94a3b8' }}>
+                  <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#627D98' }}>
                     Pre-populated with 6 GSTR-2B matches and 4 discrepancies (Safe to Hold, Watch, Chase Now) for testing.
                   </p>
                 </div>
                 <button
                   onClick={handleLoadSampleDataset}
                   style={{
-                    background: '#9F6FF0',
+                    background: 'var(--navy-card)',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '8px',
@@ -749,7 +749,7 @@ export function UploadDataModal({
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginTop: '4px' }}>
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
+                    background: 'var(--navy-bg)',
                     border: '1px solid var(--navy-border, #1f2937)',
                     borderRadius: '10px',
                     padding: '14px',
@@ -761,7 +761,7 @@ export function UploadDataModal({
                 >
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>Purchase Register Template</div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: '#627D98', marginTop: '2px' }}>
                       Standard invoice register headers
                     </div>
                   </div>
@@ -771,7 +771,7 @@ export function UploadDataModal({
                       background: 'rgba(255, 255, 255, 0.06)',
                       border: '1px solid var(--navy-border, #374151)',
                       borderRadius: '6px',
-                      color: '#cbd5e1',
+                      color: '#CBD5E1',
                       padding: '6px 10px',
                       fontSize: '11px',
                       fontWeight: 600,
@@ -788,7 +788,7 @@ export function UploadDataModal({
 
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
+                    background: 'var(--navy-bg)',
                     border: '1px solid var(--navy-border, #1f2937)',
                     borderRadius: '10px',
                     padding: '14px',
@@ -800,7 +800,7 @@ export function UploadDataModal({
                 >
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>GSTR-2B Template</div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: '#627D98', marginTop: '2px' }}>
                       Portal return filing format
                     </div>
                   </div>
@@ -810,7 +810,7 @@ export function UploadDataModal({
                       background: 'rgba(255, 255, 255, 0.06)',
                       border: '1px solid var(--navy-border, #374151)',
                       borderRadius: '6px',
-                      color: '#cbd5e1',
+                      color: '#CBD5E1',
                       padding: '6px 10px',
                       fontSize: '11px',
                       fontWeight: 600,
@@ -827,7 +827,7 @@ export function UploadDataModal({
 
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
+                    background: 'var(--navy-bg)',
                     border: '1px solid var(--navy-border, #1f2937)',
                     borderRadius: '10px',
                     padding: '14px',
@@ -839,7 +839,7 @@ export function UploadDataModal({
                 >
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>Reconciled Audit Template</div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: '#627D98', marginTop: '2px' }}>
                       Complete 15-column format
                     </div>
                   </div>
@@ -849,7 +849,7 @@ export function UploadDataModal({
                       background: 'rgba(255, 255, 255, 0.06)',
                       border: '1px solid var(--navy-border, #374151)',
                       borderRadius: '6px',
-                      color: '#cbd5e1',
+                      color: '#CBD5E1',
                       padding: '6px 10px',
                       fontSize: '11px',
                       fontWeight: 600,
@@ -885,7 +885,7 @@ export function UploadDataModal({
             style={{
               background: 'transparent',
               border: '1px solid var(--navy-border, #374151)',
-              color: '#94a3b8',
+              color: '#627D98',
               padding: '8px 16px',
               borderRadius: '8px',
               fontWeight: 600,
@@ -901,7 +901,7 @@ export function UploadDataModal({
               onClick={handleProcessTwoFiles}
               disabled={!prFile || isProcessing}
               style={{
-                background: !prFile || isProcessing ? '#4b5563' : '#9F6FF0',
+                background: !prFile || isProcessing ? '#4b5563' : '#B794F6',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -925,7 +925,7 @@ export function UploadDataModal({
               onClick={handleProcessSingleFile}
               disabled={!singleFile || isProcessing}
               style={{
-                background: !singleFile || isProcessing ? '#4b5563' : '#9F6FF0',
+                background: !singleFile || isProcessing ? '#4b5563' : '#B794F6',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',

@@ -2,13 +2,14 @@ import { describe, it, expect } from 'vitest';
 import type { AiProvider } from './components/AiChatDrawer';
 
 describe('AI Copilot Provider Configurations', () => {
-  const supportedProviders: AiProvider[] = ['gemini', 'openai', 'claude', 'groq'];
+  const supportedProviders: AiProvider[] = ['gemini', 'openai', 'claude', 'groq', 'tinyfish'];
 
   it('contains valid providers with models', () => {
     expect(supportedProviders).toContain('gemini');
     expect(supportedProviders).toContain('openai');
     expect(supportedProviders).toContain('claude');
     expect(supportedProviders).toContain('groq');
+    expect(supportedProviders).toContain('tinyfish');
   });
 
   it('validates provider key storage schema', () => {
@@ -17,6 +18,7 @@ describe('AI Copilot Provider Configurations', () => {
       openai: 'sk-proj-testKey123',
       claude: 'sk-ant-testKey123',
       groq: 'gsk_testKey123',
+      tinyfish: 'sk-tinyfish-testKey123',
     };
 
     const serialized = JSON.stringify(keys);
@@ -26,5 +28,6 @@ describe('AI Copilot Provider Configurations', () => {
     expect(parsed.openai).toBe('sk-proj-testKey123');
     expect(parsed.claude).toBe('sk-ant-testKey123');
     expect(parsed.groq).toBe('gsk_testKey123');
+    expect(parsed.tinyfish).toBe('sk-tinyfish-testKey123');
   });
 });

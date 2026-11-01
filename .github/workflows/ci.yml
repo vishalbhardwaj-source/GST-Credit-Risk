@@ -5,6 +5,14 @@ on:
     branches: ["main", "master"]
   pull_request:
     branches: ["main", "master"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
 
 jobs:
   frontend-tests:
@@ -26,7 +34,11 @@ jobs:
         working-directory: vite-app
         run: npm ci
 
-      - name: Run Vitest unit tests (28 tests)
+      - name: Lint code with Oxlint
+        working-directory: vite-app
+        run: npm run lint
+
+      - name: Run Vitest unit tests (32 tests)
         working-directory: vite-app
         run: npx vitest run --reporter=verbose
 
@@ -46,15 +58,37 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest httpx
+          pip install pytest
           pip install -r requirements.txt
 
       - name: Run Pytest test suite
         run: python -m pytest tests/ -v
 
       - name: Check backend imports are valid
-        run: python -c "import backend.matcher; import backend.ml_engine; import backend.train_forecaster; import backend.main; print('All backend imports OK')"
+        run: python -c "import backend.matcher; import backend.ml_engine; import backend.train_forecaster; import backend.main; import backend.ai_service; import backend.model_integration; import backend.gst_model; import app; print('All backend imports OK')"
+
+  docker-build:
+    name: Docker Container Build Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: gst-credit-risk:ci-test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -54,7 +54,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <TrendingUp size={22} color="#10b981" />
+              <TrendingUp size={22} color="#10B981" />
               <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#fff' }}>
                 Unit Economics, CA Channel Distribution &amp; Market Opportunity
               </h2>
@@ -65,7 +65,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}
+            style={{ background: 'transparent', border: 'none', color: '#627D98', cursor: 'pointer', padding: '4px' }}
           >
             <X size={20} />
           </button>
@@ -83,13 +83,13 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
             alignItems: 'flex-start',
           }}
         >
-          <MessageSquareQuote size={28} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <MessageSquareQuote size={28} color="#10B981" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
             <p style={{ fontSize: '12px', color: '#e2e8f0', lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
               &quot;During the monthly 11th&ndash;20th GSTR-3B filing rush, our article assistants waste days doing Excel VLOOKUPs between purchase registers and portal 2B JSON. If a client&apos;s supplier fails to file, the client loses lakhs in working capital or faces audit notices. Having an automated tool that flags exactly which AP vendor payments to freeze right before the payment run gives immense tangible ROI to our corporate clients.&quot;
             </p>
-            <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px', fontWeight: 600 }}>
-              &mdash; <span style={{ color: '#34d399' }}>CA Rajesh K. Sharma, FCA</span> (Senior Partner, Sharma &amp; Associates &middot; Managing 110+ Corporate Portfolios)
+            <div style={{ fontSize: '11px', color: '#627D98', marginTop: '6px', fontWeight: 600 }}>
+              &mdash; <span style={{ color: '#10B981' }}>CA Rajesh K. Sharma, FCA</span> (Senior Partner, Sharma &amp; Associates &middot; Managing 110+ Corporate Portfolios)
             </div>
           </div>
         </div>
@@ -101,43 +101,43 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginTop: '12px' }}>
             {/* TAM */}
-            <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                 TAM (Bottom-Up)
               </span>
               <div style={{ fontSize: '24px', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>
                 ₹1,140 Cr
               </div>
-              <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '2px' }}>~$137M USD Total Market</div>
-              <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '10px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$137M USD Total Market</div>
+              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>50,000 active CA firms</strong> (@ ₹60k/yr) + <strong>280,000 formal B2B enterprises</strong> with turnover &gt;₹5 Cr (@ ₹30k/yr). Excludes 7M+ zero-tax kirana filers.
               </p>
             </div>
 
             {/* SAM */}
-            <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                 SAM (Serviceable)
               </span>
               <div style={{ fontSize: '24px', fontWeight: 800, color: '#a78bfa', marginTop: '4px' }}>
                 ₹210 Cr
               </div>
-              <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '2px' }}>~$25M USD Immediate Reach</div>
-              <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '10px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$25M USD Immediate Reach</div>
+              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>15,000 multi-client CA firms</strong> and <strong>40,000 high-transaction manufacturing/EPC SMEs</strong> facing frequent Section 16(4) supplier defaults.
               </p>
             </div>
 
             {/* SOM */}
-            <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
+            <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '12px', padding: '16px' }}>
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                 SOM (Year 1 Target)
               </span>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', marginTop: '4px' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#10B981', marginTop: '4px' }}>
                 ₹4.68 Cr ARR
               </div>
-              <div style={{ fontSize: '10px', color: '#94a3b8', marginTop: '2px' }}>~$560K USD Defensible Target</div>
-              <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '10px', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$560K USD Defensible Target</div>
+              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>600 CA firms</strong> (holding ~12,000 downstream SME client entities) + <strong>300 direct enterprise accounts</strong> via CA referral viral loop.
               </p>
             </div>
@@ -168,7 +168,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
                 ₹2,499<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
-              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#cbd5e1', lineHeight: 1.6 }}>
+              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
                 <li>Single GSTIN entity</li>
                 <li>3-Signal Triage Engine</li>
                 <li>Unlimited invoice matching</li>
@@ -181,7 +181,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               onClick={() => setSelectedPlan('ca')}
               style={{
                 background: selectedPlan === 'ca' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                border: selectedPlan === 'ca' ? '2px solid #10b981' : '1px solid var(--navy-border)',
+                border: selectedPlan === 'ca' ? '2px solid #10B981' : '1px solid var(--navy-border)',
                 borderRadius: '12px',
                 padding: '16px',
                 position: 'relative',
@@ -189,16 +189,16 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
                 transition: 'all 0.15s ease',
               }}
             >
-              <div style={{ position: 'absolute', top: '-10px', right: '12px', background: '#10b981', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>
+              <div style={{ position: 'absolute', top: '-10px', right: '12px', background: '#10B981', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>
                 MOST POPULAR
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399', fontSize: '11px', fontWeight: 700 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10B981', fontSize: '11px', fontWeight: 700 }}>
                 <Users size={14} /> CA Firm Multi-Client
               </div>
               <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
                 ₹4,999<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
-              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#cbd5e1', lineHeight: 1.6 }}>
+              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
                 <li><strong>Up to 50 client GSTIN entities</strong></li>
                 <li>Multi-user article assistant seats</li>
                 <li>Batch client audit export</li>
@@ -224,7 +224,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
                 ₹9,999+<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
-              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#cbd5e1', lineHeight: 1.6 }}>
+              <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
                 <li>Unlimited corporate entities</li>
                 <li>Direct SAP / Tally Prime 2-way sync</li>
                 <li>Custom AP automated hold hooks</li>
@@ -249,7 +249,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
           }}
         >
           {pilotSubmitted ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#34d399', fontWeight: 700, fontSize: '13px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#10B981', fontWeight: 700, fontSize: '13px' }}>
               <Check size={18} />
               Sandbox access credentials and CA onboarding pack sent to {pilotEmail}!
             </div>
@@ -270,7 +270,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
                 onChange={(e) => setPilotEmail(e.target.value)}
                 required
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'rgba(255, 255, 255, 0.04)',
                   border: '1px solid var(--navy-border-hover)',
                   borderRadius: '8px',
                   padding: '8px 12px',
@@ -283,7 +283,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <button
                 type="submit"
                 style={{
-                  background: '#10b981',
+                  background: '#10B981',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '8px',

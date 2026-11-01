@@ -11,6 +11,7 @@
     "postinstall": "npm --prefix vite-app install",
     "test": "npm --prefix vite-app test",
     "test:backend": "python -m pytest tests/",
+    "lint": "npm --prefix vite-app run lint",
     "test:all": "npm --prefix vite-app test && npm --prefix vite-app run build && python -m pytest tests/",
     "server": "python -m uvicorn backend.main:app --reload --port 8000"
   },

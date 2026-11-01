@@ -10,7 +10,6 @@ import { FilterBar } from './components/FilterBar';
 import { InvoiceTable } from './components/InvoiceTable';
 import { InvoiceDetailPanel } from './components/InvoiceDetailPanel';
 import { MlBacktestModal } from './components/MlBacktestModal';
-import { WelcomePage } from './components/WelcomePage';
 import { ProjectOverview } from './components/ProjectOverview';
 import { UploadDataModal } from './components/UploadDataModal';
 import { TinyFishArbitraryModal } from './components/TinyFishArbitraryModal';
@@ -20,7 +19,8 @@ import { AiChatDrawer } from './components/AiChatDrawer';
 export function App() {
   const [initialReconciled, setInitialReconciled] = useState<ReconciledInvoice[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [showWelcome, setShowWelcome] = useState(true);
+  // Unified single page architecture: Welcome and Overview merged into single view
+  // const [showWelcome, setShowWelcome] = useState(false);
 
   // View state: 'overview' (Judge pitch landing) or 'dashboard' (Interactive triage console)
   const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('overview');
@@ -274,9 +274,6 @@ export function App() {
     return enrichedInvoices.find((i) => i.id === selectedInvoice.id) || selectedInvoice;
   }, [selectedInvoice, enrichedInvoices]);
 
-  if (showWelcome) {
-    return <WelcomePage onExplore={() => setShowWelcome(false)} />;
-  }
 
   return (
     <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>

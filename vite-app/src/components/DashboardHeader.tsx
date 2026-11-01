@@ -79,8 +79,8 @@ export function DashboardHeader({
       {/* Legal & Trust Persistent Banner */}
       <div
         style={{
-          background: 'rgba(183, 148, 246, 0.08)',
-          border: '1px solid rgba(183, 148, 246, 0.25)',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--navy-border)',
           borderRadius: '10px',
           padding: '10px 16px',
           display: 'flex',
@@ -89,12 +89,13 @@ export function DashboardHeader({
           justifyContent: 'space-between',
           gap: '12px',
           fontSize: '12px',
+          color: 'var(--navy-muted)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Info size={16} color="#B794F6" />
           <span>
-            <strong style={{ color: '#fff' }}>Synthetic demo data.</strong> Triage support only—not tax or legal advice. Does not access government systems or determine legal ITC eligibility.
+            <strong style={{ color: '#FFFFFF' }}>Synthetic demo data.</strong> Triage support only—not tax or legal advice. Does not access government systems or determine legal ITC eligibility.
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -164,20 +165,21 @@ export function DashboardHeader({
               style={{
                 width: '36px',
                 height: '36px',
-                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
+                background: 'linear-gradient(135deg, #B794F6 0%, #9F6FF0 100%)',
+                border: 'none',
                 borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: '18px',
-                color: '#fff',
+                color: '#FFFFFF',
               }}
             >
               ₹
             </div>
             <div>
-              <h1 style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#fff' }}>
+              <h1 style={{ fontSize: '20px', fontWeight: 800, letterSpacing: '-0.02em', color: '#FFFFFF' }}>
                 GST Credit-at-Risk Forecaster
               </h1>
               <p style={{ color: 'var(--navy-muted)', fontSize: '12px', marginTop: '2px' }}>
@@ -191,7 +193,7 @@ export function DashboardHeader({
         <div
           style={{
             display: 'inline-flex',
-            background: 'rgba(0, 0, 0, 0.4)',
+            background: 'rgba(255, 255, 255, 0.05)',
             padding: '3px',
             borderRadius: '9px',
             border: '1px solid var(--navy-border)',
@@ -206,15 +208,16 @@ export function DashboardHeader({
               padding: '6px 12px',
               borderRadius: '7px',
               border: 'none',
-              background: activeView === 'overview' ? '#9F6FF0' : 'transparent',
-              color: activeView === 'overview' ? '#fff' : 'var(--navy-muted)',
+              background: activeView === 'overview' ? '#23172F' : 'transparent',
+              color: activeView === 'overview' ? '#FFFFFF' : 'var(--navy-muted)',
+              boxShadow: activeView === 'overview' ? '0 2px 8px rgba(0,0,0,0.4)' : 'none',
               fontWeight: 700,
               fontSize: '12px',
               cursor: 'pointer',
             }}
           >
             <FileText size={13} />
-            Executive Pitch
+            Executive Pitch &amp; Overview
           </button>
           <button
             onClick={() => onViewChange?.('dashboard')}
@@ -225,8 +228,9 @@ export function DashboardHeader({
               padding: '6px 12px',
               borderRadius: '7px',
               border: 'none',
-              background: activeView === 'dashboard' ? '#9F6FF0' : 'transparent',
-              color: activeView === 'dashboard' ? '#fff' : 'var(--navy-muted)',
+              background: activeView === 'dashboard' ? '#23172F' : 'transparent',
+              color: activeView === 'dashboard' ? '#FFFFFF' : 'var(--navy-muted)',
+              boxShadow: activeView === 'dashboard' ? '0 2px 8px rgba(0,0,0,0.4)' : 'none',
               fontWeight: 700,
               fontSize: '12px',
               cursor: 'pointer',
@@ -235,6 +239,7 @@ export function DashboardHeader({
             <Activity size={13} />
             Live Triage Console
           </button>
+
         </div>
 
         {/* Global Action Buttons */}
@@ -272,9 +277,11 @@ export function DashboardHeader({
                   borderRadius: '8px',
                   background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid var(--navy-border)',
+                  color: '#F8FAFC',
                   fontWeight: 600,
                   fontSize: '12px',
                   cursor: 'pointer',
+                  boxShadow: '0 1px 3px rgba(16, 42, 67, 0.05)',
                 }}
               >
                 <RotateCcw size={14} />
@@ -312,9 +319,9 @@ export function DashboardHeader({
               gap: '6px',
               padding: '8px 14px',
               borderRadius: '8px',
-              background: 'rgba(159, 111, 240, 0.15)',
-              border: '1px solid rgba(159, 111, 240, 0.4)',
-              color: '#d8b4fe',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#F8FAFC',
               fontWeight: 600,
               fontSize: '12px',
               cursor: 'pointer',
@@ -333,9 +340,9 @@ export function DashboardHeader({
               gap: '6px',
               padding: '8px 14px',
               borderRadius: '8px',
-              background: 'rgba(183, 148, 246, 0.15)',
-              border: '1px solid rgba(183, 148, 246, 0.35)',
-              color: '#a5b4fc',
+              background: 'rgba(159, 115, 244, 0.12)',
+              border: '1px solid rgba(159, 115, 244, 0.3)',
+              color: '#c0beea',
               fontWeight: 600,
               fontSize: '12px',
               cursor: 'pointer',
@@ -357,6 +364,7 @@ export function DashboardHeader({
               border: '1px solid var(--navy-border)',
               fontWeight: 600,
               fontSize: '12px',
+              color: '#F8FAFC',
               cursor: 'pointer',
             }}
           >
@@ -372,16 +380,16 @@ export function DashboardHeader({
               gap: '6px',
               padding: '9px 18px',
               borderRadius: '8px',
-              background: isRouted ? '#10b981' : '#9F6FF0',
-              color: '#fff',
+              background: isRouted ? '#10B981' : 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              color: '#FFFFFF',
               border: 'none',
               fontWeight: 700,
               fontSize: '13px',
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(159, 111, 240, 0.3)',
+              boxShadow: isRouted ? '0 2px 10px rgba(16, 185, 129, 0.25)' : '0 2px 10px rgba(255, 255, 255, 0.15)',
             }}
           >
-            <Play size={14} fill="#fff" />
+            <Play size={14} fill="#FFFFFF" />
             {isRouted ? 'Re-run Routing' : 'Run Pipeline Routing'}
           </button>
         </div>
@@ -392,8 +400,8 @@ export function DashboardHeader({
           {/* Starting Situation Synopsis / Executive Briefing Card */}
       <div
         style={{
-          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
-          border: '1px solid rgba(183, 148, 246, 0.3)',
+          background: 'var(--navy-surface)',
+          border: '1px solid var(--navy-border)',
           borderRadius: '14px',
           padding: '16px 20px',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
@@ -407,8 +415,8 @@ export function DashboardHeader({
                 width: '28px',
                 height: '28px',
                 borderRadius: '8px',
-                background: 'rgba(183, 148, 246, 0.15)',
-                border: '1px solid rgba(183, 148, 246, 0.35)',
+                background: 'rgba(159, 115, 244, 0.12)',
+                border: '1px solid rgba(159, 115, 244, 0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -419,7 +427,7 @@ export function DashboardHeader({
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em' }}>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
                   {isRouted ? 'Situation Synopsis — Triage & Reconciliation Assessment' : 'Situation Synopsis — Starting Ingestion Assessment'}
                 </span>
                 <span
@@ -478,14 +486,14 @@ export function DashboardHeader({
                   padding: '12px 14px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: isRouted ? '#f87171' : '#60a5fa', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: isRouted ? '#F87171' : '#60A5FA', fontWeight: 700, fontSize: '11px', textTransform: 'uppercase' }}>
                   <ShieldAlert size={14} />
                   <span>{isRouted ? '1. The Identified Problem' : '1. Ingested Purchase Register'}</span>
                 </div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginTop: '6px' }}>
                   {isRouted ? `${kpis.unmatched} Unmatched Invoices · ${formatINR(kpis.totalTaxAtRisk)}` : `${kpis.total} Purchase Invoices Ingested`}
                 </div>
-                <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.5 }}>
+                <p style={{ fontSize: '11px', color: '#F8FAFC', marginTop: '4px', lineHeight: 1.5 }}>
                   {isRouted ? (
                     <>
                       Out of <strong>{kpis.total} total purchase invoices</strong>, {kpis.matched} matched seamlessly in auto-generated GSTR-2B ({Math.round((kpis.matched / (kpis.total || 1)) * 100)}%). The remaining {kpis.unmatched} invoices are absent, creating nominal tax risk under Section 16(2)(aa).
@@ -511,10 +519,10 @@ export function DashboardHeader({
                   <AlertTriangle size={14} />
                   <span>{isRouted ? '2. The Trap to Avoid' : '2. Next Pipeline Step'}</span>
                 </div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginTop: '6px' }}>
                   {isRouted ? 'Avoid Blanket Chasing & Blind Vendor Escalation' : 'Execute Automated 2B Match & Triage'}
                 </div>
-                <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.5 }}>
+                <p style={{ fontSize: '11px', color: '#F8FAFC', marginTop: '4px', lineHeight: 1.5 }}>
                   {isRouted
                     ? `Without triage, accounts teams waste hundreds of hours manually chasing all ${kpis.unmatched} suppliers or holding payments unnecessarily, souring vendor trust. Over 80% are simply routine filing lag.`
                     : 'Run the end-to-end reconciliation pipeline to compare purchase records against the GST portal 2B snapshot, identify discrepancies, and isolate high-risk suppliers.'}
@@ -534,10 +542,10 @@ export function DashboardHeader({
                   <ShieldCheck size={14} />
                   <span>3. The Forecaster's Objective</span>
                 </div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+                <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', marginTop: '6px' }}>
                   {isRouted ? '25 Hold · 4 Watch · 1 Chase' : 'Route into 3 Transparent Action Buckets'}
                 </div>
-                <p style={{ fontSize: '11px', color: '#cbd5e1', marginTop: '4px', lineHeight: 1.5 }}>
+                <p style={{ fontSize: '11px', color: '#F8FAFC', marginTop: '4px', lineHeight: 1.5 }}>
                   {isRouted
                     ? '94% of nominal risk is safely absorbed by AP retention leverage and verified IRN footprint. True legal chase urgency is isolated to 1 critical supplier.'
                     : 'Click "Run Pipeline Routing" below to fuse IRN footprint, AP leverage, and 6-month filing periodicity into transparent risk-calibrated recommendations.'}
@@ -545,10 +553,11 @@ export function DashboardHeader({
               </div>
             </div>
 
-            {/* Quick Flow Narrative Footer */}
+                        {/* Quick Flow Narrative Footer */}
             <div
               style={{
                 background: 'rgba(0, 0, 0, 0.25)',
+                border: '1px solid var(--navy-border)',
                 borderRadius: '8px',
                 padding: '8px 14px',
                 display: 'flex',
@@ -557,32 +566,32 @@ export function DashboardHeader({
                 justifyContent: 'space-between',
                 gap: '8px',
                 fontSize: '11px',
-                color: 'var(--navy-muted)',
+                color: '#F8FAFC',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ color: '#fff', fontWeight: 700 }}>Starting Flow:</span>
-                <span>{kpis.total} PR Invoices</span>
-                <ArrowRight size={12} color="#60a5fa" />
+                <span style={{ color: '#FFFFFF', fontWeight: 700 }}>Starting Flow:</span>
+                <span style={{ color: '#F8FAFC', fontWeight: 600 }}>{kpis.total} PR Invoices</span>
+                <ArrowRight size={12} color="#B794F6" />
                 {isRouted ? (
                   <>
-                    <span>{kpis.matched} Matched GSTR-2B</span>
-                    <ArrowRight size={12} color="#60a5fa" />
+                    <span style={{ color: 'var(--navy-muted)', fontWeight: 600 }}>{kpis.matched} Matched GSTR-2B</span>
+                    <ArrowRight size={12} color="#B794F6" />
                     <span style={{ color: '#f87171', fontWeight: 600 }}>{kpis.unmatched} Mismatch Discrepancies</span>
-                    <ArrowRight size={12} color="#60a5fa" />
-                    <span style={{ color: '#34d399', fontWeight: 700 }}>Triage Engine</span>
+                    <ArrowRight size={12} color="#B794F6" />
+                    <span style={{ color: '#FFFFFF', fontWeight: 700 }}>Triage Engine</span>
                   </>
                 ) : (
                   <>
                     <span style={{ color: 'var(--navy-muted)' }}>Awaiting Pipeline Execution</span>
-                    <ArrowRight size={12} color="#60a5fa" />
-                    <span style={{ color: '#818cf8', fontWeight: 600 }}>Cross-Match &amp; Triage Engine</span>
+                    <ArrowRight size={12} color="#B794F6" />
+                    <span style={{ color: '#FFFFFF', fontWeight: 600 }}>Cross-Match & Triage Engine</span>
                   </>
                 )}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span>Statutory Horizon:</span>
-                <strong style={{ color: '#fff' }}>Section 16(4) Cutoff 30 Nov 2026</strong>
+                <span style={{ color: 'var(--navy-muted)' }}>Statutory Horizon:</span>
+                <strong style={{ color: '#FFFFFF', fontWeight: 700 }}>Section 16(4) Cutoff 30 Nov 2026</strong>
               </div>
             </div>
           </div>
@@ -606,13 +615,13 @@ export function DashboardHeader({
             cursor: isRouted ? 'pointer' : 'default',
           }}
         >
-          <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
             Total Register Invoices
           </span>
-          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: '#FFFFFF' }}>
             {kpis.total}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             Imported purchase lines
           </div>
         </div>
@@ -632,13 +641,13 @@ export function DashboardHeader({
             cursor: isRouted ? 'pointer' : 'default',
           }}
         >
-          <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--navy-muted)' }}>
             GSTR-2B Matched
           </span>
-          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: isRouted ? '#10b981' : 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '8px', fontSize: '26px', fontWeight: 800, color: isRouted ? '#34d399' : 'var(--navy-muted)' }}>
             {isRouted ? kpis.matched : '—'}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             {isRouted ? `${Math.round((kpis.matched / (kpis.total || 1)) * 100)}% reconciliation rate` : 'Awaiting pipeline'}
           </div>
         </div>
@@ -659,7 +668,7 @@ export function DashboardHeader({
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', color: isRouted ? '#f87171' : 'var(--navy-muted)' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', color: isRouted ? '#f87171' : 'var(--navy-muted)' }}>
               Unmatched Discrepancies
             </span>
             {isRouted ? (
@@ -668,10 +677,10 @@ export function DashboardHeader({
               <span className="badge badge-neutral" style={{ opacity: 0.6 }}>Awaiting</span>
             )}
           </div>
-          <div style={{ marginTop: '8px', fontSize: isRouted ? '22px' : '26px', fontWeight: 800, color: isRouted ? '#fff' : 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '8px', fontSize: isRouted ? '22px' : '26px', fontWeight: 800, color: isRouted ? '#FFFFFF' : 'var(--navy-muted)' }}>
             {isRouted ? formatINR(kpis.totalTaxAtRisk) : '—'}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             {isRouted ? 'GST tax amount at risk' : 'Awaiting pipeline'}
           </div>
         </div>
@@ -703,18 +712,18 @@ export function DashboardHeader({
               </div>
             ) : (
               <>
-                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#FFFFFF' }}>
                   {isRouted ? kpis.safeCount : '—'}
                 </span>
                 {isRouted && (
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-muted)' }}>
                     {formatINR(kpis.safeTax)}
                   </span>
                 )}
               </>
             )}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             {isRouting ? '' : isRouted ? 'Likely timing difference' : 'Awaiting routing'}
           </div>
         </div>
@@ -746,18 +755,18 @@ export function DashboardHeader({
               </div>
             ) : (
               <>
-                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#FFFFFF' }}>
                   {isRouted ? kpis.watchCount : '—'}
                 </span>
                 {isRouted && (
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-muted)' }}>
                     {formatINR(kpis.watchTax)}
                   </span>
                 )}
               </>
             )}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             {isRouting ? '' : isRouted ? 'Mixed signals; review again' : 'Awaiting routing'}
           </div>
         </div>
@@ -789,18 +798,18 @@ export function DashboardHeader({
               </div>
             ) : (
               <>
-                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff' }}>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#FFFFFF' }}>
                   {isRouted ? kpis.chaseCount : '—'}
                 </span>
                 {isRouted && (
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--navy-muted)' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#C0392B' }}>
                     {formatINR(kpis.chaseTax)}
                   </span>
                 )}
               </>
             )}
           </div>
-          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)' }}>
+          <div style={{ marginTop: '4px', fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500 }}>
             {isRouting ? '' : isRouted ? 'High urgency follow-up' : 'Awaiting routing'}
           </div>
         </div>
@@ -830,7 +839,7 @@ export function DashboardHeader({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles size={14} color="#B794F6" />
-            <span style={{ fontWeight: 700, color: '#fff', fontSize: '13px' }}>
+            <span style={{ fontWeight: 700, color: '#FFFFFF', fontSize: '13px' }}>
               {isRouted ? 'Pipeline Routing Complete — Reconciled View' : 'Pre-Pipeline — Purchase Register View'}
             </span>
           </div>
@@ -841,9 +850,9 @@ export function DashboardHeader({
               style={{
                 padding: '4px 10px',
                 borderRadius: '6px',
+                background: matchFilter === 'ALL' ? '#B794F6' : 'rgba(255,255,255,0.05)',
+                color: matchFilter === 'ALL' ? '#170D24' : 'var(--navy-muted)',
                 border: '1px solid var(--navy-border)',
-                background: matchFilter === 'ALL' ? '#B794F6' : 'transparent',
-                color: matchFilter === 'ALL' ? '#fff' : 'var(--navy-muted)',
                 fontSize: '11px',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -858,9 +867,9 @@ export function DashboardHeader({
                   style={{
                     padding: '4px 10px',
                     borderRadius: '6px',
-                    border: '1px solid var(--navy-border)',
-                    background: matchFilter === 'UNMATCHED' ? '#ef4444' : 'transparent',
+                    background: matchFilter === 'UNMATCHED' ? '#ef4444' : 'rgba(255,255,255,0.05)',
                     color: matchFilter === 'UNMATCHED' ? '#fff' : 'var(--navy-muted)',
+                    border: '1px solid var(--navy-border)',
                     fontSize: '11px',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -873,9 +882,9 @@ export function DashboardHeader({
                   style={{
                     padding: '4px 10px',
                     borderRadius: '6px',
-                    border: '1px solid var(--navy-border)',
-                    background: matchFilter === 'MATCHED' ? '#10b981' : 'transparent',
+                    background: matchFilter === 'MATCHED' ? '#10b981' : 'rgba(255,255,255,0.05)',
                     color: matchFilter === 'MATCHED' ? '#fff' : 'var(--navy-muted)',
+                    border: '1px solid var(--navy-border)',
                     fontSize: '11px',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -909,38 +918,38 @@ export function DashboardHeader({
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '10px', color: isRouted ? '#f87171' : '#60a5fa', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '10px', color: isRouted ? '#F87171' : '#60A5FA', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {isRouted ? 'Before' : 'Input'}
             </div>
-            <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px' }}>
               {isRouted ? kpis.unmatched : kpis.total}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 600 }}>
               {isRouted ? 'Unmatched' : 'PR Invoices'}
             </div>
           </div>
 
-          <div style={{ color: 'var(--navy-muted)', fontSize: '18px', fontWeight: 200 }}>→</div>
+          <div style={{ color: '#2A9D8F', fontSize: '18px', fontWeight: 700 }}>→</div>
 
           {/* Pipeline box */}
           <div
             style={{
               background: 'rgba(159, 111, 240, 0.08)',
-              border: '1px solid rgba(183, 148, 246, 0.25)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
               borderRadius: '10px',
               padding: '10px 16px',
               textAlign: 'center',
               minWidth: '130px',
             }}
           >
-            <div style={{ fontSize: '10px', color: '#60a5fa', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '10px', color: '#FFFFFF', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               3-Signal Pipeline
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '4px' }}>IRN · AP Leverage</div>
-            <div style={{ fontSize: '11px', color: 'var(--navy-muted)' }}>Filing Periodicity</div>
+            <div style={{ fontSize: '11px', color: '#F8FAFC', marginTop: '4px', fontWeight: 600 }}>IRN • AP Leverage</div>
+            <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 600 }}>Filing Periodicity</div>
           </div>
 
-          <div style={{ color: 'var(--navy-muted)', fontSize: '18px', fontWeight: 200 }}>→</div>
+          <div style={{ color: '#2A9D8F', fontSize: '18px', fontWeight: 700 }}>→</div>
 
           {/* AFTER buckets */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -959,10 +968,10 @@ export function DashboardHeader({
               <div style={{ fontSize: '10px', color: 'var(--safe-color)', fontWeight: 700, textTransform: 'uppercase' }}>
                 Safe Hold
               </div>
-              <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px' }}>
                 {isRouted ? kpis.safeCount : '?'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Monitor only</div>
+              <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 600 }}>Monitor only</div>
             </div>
             <div
               style={{
@@ -979,10 +988,10 @@ export function DashboardHeader({
               <div style={{ fontSize: '10px', color: 'var(--watch-color)', fontWeight: 700, textTransform: 'uppercase' }}>
                 Watch
               </div>
-              <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px' }}>
                 {isRouted ? kpis.watchCount : '?'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Review before cutoff</div>
+              <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 600 }}>Review before cutoff</div>
             </div>
             <div
               style={{
@@ -999,10 +1008,10 @@ export function DashboardHeader({
               <div style={{ fontSize: '10px', color: 'var(--chase-color)', fontWeight: 700, textTransform: 'uppercase' }}>
                 Chase Now
               </div>
-              <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginTop: '2px' }}>
+              <div style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px' }}>
                 {isRouted ? kpis.chaseCount : '?'}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Immediate action</div>
+              <div style={{ fontSize: '10px', color: '#C0392B', fontWeight: 600 }}>Immediate action</div>
             </div>
           </div>
 
@@ -1015,17 +1024,17 @@ export function DashboardHeader({
                 gap: '6px',
                 padding: '10px 18px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #9F6FF0, #7C3AED)',
-                color: '#fff',
+                background: '#102A43',
+                color: '#FFFFFF',
                 border: 'none',
                 fontWeight: 700,
                 fontSize: '13px',
                 cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(159, 111, 240, 0.35)',
+                boxShadow: '0 2px 10px rgba(255, 255, 255, 0.15)',
                 marginLeft: 'auto',
               }}
             >
-              <Play size={14} fill="#fff" />
+              <Play size={14} fill="#FFFFFF" />
               Run Pipeline Routing
             </button>
           )}
