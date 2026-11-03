@@ -1,7 +1,7 @@
 
 # GST Credit-at-Risk Forecaster
 
-**Live Demo:** [View Deployed Project](https://gst-credit-risk.vercel.app) | **API Docs:** [FastAPI Swagger UI](https://gst-credit-risk.onrender.com/docs) | **Hugging Face Space:** [Gradio API Space](https://huggingface.co/spaces)
+**Live Demo:** [View Deployed Project](https://gst-credit-risk.vercel.app) | **API Docs:** [FastAPI Swagger UI](https://gst-credit-risk.onrender.com/docs) 
 
 > **Autonomous 3-Signal Action Triage Engine with Multi-Provider AI Tax Copilot, 4-State IRN Modeling, and Calibrated LightGBM Forecaster for Indian B2B Invoices**
 
