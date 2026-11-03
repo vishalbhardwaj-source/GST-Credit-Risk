@@ -170,7 +170,7 @@ export function ProjectOverview({
               style={{
                 background: 'rgba(183, 148, 246, 0.15)',
                 border: '1px solid rgba(183, 148, 246, 0.3)',
-                color: '#B794F6',
+                color: 'var(--accent-primary)',
                 fontSize: '10px',
                 fontWeight: 800,
                 textTransform: 'uppercase',
@@ -181,19 +181,19 @@ export function ProjectOverview({
             >
               Decision Support System
             </span>
-            <span style={{ fontSize: '12px', color: '#CBD5E1' }}>
+            <span style={{ fontSize: '12px', color: 'var(--navy-muted)' }}>
               Section 16(2)(aa) &amp; Rule 37A Input Tax Credit Triage Engine
             </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px', fontSize: '11px', color: 'var(--navy-muted)' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#10B981' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--safe-color)' }}>
               <CheckCircle2 size={13} /> 30 Unit Tests Passing
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#B794F6' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--accent-primary)' }}>
               <Globe size={13} /> TinyFish Web Agent Active
             </span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#FFFFFF' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--navy-heading)' }}>
               <Cpu size={13} /> LightGBM ML Diagnostics
             </span>
           </div>
@@ -244,7 +244,7 @@ export function ProjectOverview({
                 </span>
                 <span
                   style={{
-                    color: '#D9822B',
+                    color: 'var(--watch-color)',
                     fontSize: '11px',
                     fontWeight: 700,
                     letterSpacing: '0.04em',
@@ -267,7 +267,7 @@ export function ProjectOverview({
                     fontWeight: 700,
                     textTransform: 'uppercase',
                     letterSpacing: '0.12em',
-                    color: '#627D98',
+                    color: 'var(--navy-dim)',
                     marginBottom: '8px',
                   }}
                 >
@@ -279,7 +279,7 @@ export function ProjectOverview({
                     fontWeight: 900,
                     lineHeight: 1.12,
                     letterSpacing: '-0.035em',
-                    color: '#FFFFFF',
+                    color: 'var(--navy-heading)',
                     margin: 0,
                   }}
                 >
@@ -293,7 +293,7 @@ export function ProjectOverview({
                 style={{
                   fontSize: '15px',
                   lineHeight: 1.75,
-                  color: '#CBD5E1',
+                  color: 'var(--navy-muted)',
                   fontWeight: 400,
                   margin: 0,
                 }}
@@ -320,11 +320,11 @@ export function ProjectOverview({
                   }}
                   className="kpi-card"
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FFFFFF' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--navy-heading)' }}>
                     <ShieldCheck size={22} />
-                    <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>Detect</strong>
+                    <strong style={{ fontSize: '14px', color: 'var(--navy-heading)' }}>Detect</strong>
                   </div>
-                  <p style={{ color: '#CBD5E1', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
+                  <p style={{ color: 'var(--navy-muted)', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
                     Missing invoices &amp; GSTR-2B mismatches
                   </p>
                 </div>
@@ -339,11 +339,11 @@ export function ProjectOverview({
                   }}
                   className="kpi-card"
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#D9822B' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--watch-color)' }}>
                     <Target size={22} />
-                    <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>Prioritise</strong>
+                    <strong style={{ fontSize: '14px', color: 'var(--navy-heading)' }}>Prioritise</strong>
                   </div>
-                  <p style={{ color: '#CBD5E1', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
+                  <p style={{ color: 'var(--navy-muted)', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
                     High-risk invoices &amp; anomalous vendors
                   </p>
                 </div>
@@ -358,11 +358,11 @@ export function ProjectOverview({
                   }}
                   className="kpi-card"
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10B981' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--safe-color)' }}>
                     <TrendingUp size={22} />
-                    <strong style={{ fontSize: '14px', color: '#FFFFFF' }}>Forecast</strong>
+                    <strong style={{ fontSize: '14px', color: 'var(--navy-heading)' }}>Forecast</strong>
                   </div>
-                  <p style={{ color: '#CBD5E1', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
+                  <p style={{ color: 'var(--navy-muted)', fontSize: '11px', margin: '8px 0 0', lineHeight: 1.45 }}>
                     Potential ITC exposure &amp; 18% penalty
                   </p>
                 </div>
@@ -383,7 +383,7 @@ export function ProjectOverview({
                   onClick={onOpenBacktestModal}
                   className="gnani-btn-secondary"
                 >
-                  <Activity size={16} color="#fe914b" />
+                  <Activity size={16} color="var(--watch-color)" />
                   ML Diagnostics &amp; Leakage Defense
                 </button>
 
@@ -391,12 +391,12 @@ export function ProjectOverview({
                   onClick={() => setIsCommercialModalOpen(true)}
                   className="gnani-btn-secondary"
                 >
-                  <TrendingUp size={16} color="#9f73f4" />
+                  <TrendingUp size={16} color="var(--accent-primary)" />
                   CA Economics &amp; Pricing
                 </button>
               </div>
 
-              <p style={{ color: '#627D98', fontSize: '12px', margin: '4px 0 0', fontStyle: 'italic' }}>
+              <p style={{ color: 'var(--navy-dim)', fontSize: '12px', margin: '4px 0 0', fontStyle: 'italic' }}>
                 Better data. Stronger compliance. Synthetic demo data · Decision support, not tax or legal advice.
               </p>
             </div>
@@ -418,7 +418,7 @@ export function ProjectOverview({
                 <div>
                   <p
                     style={{
-                      color: '#D9822B',
+                      color: 'var(--watch-color)',
                       fontSize: '11px',
                       fontWeight: 800,
                       letterSpacing: '0.08em',
@@ -428,7 +428,7 @@ export function ProjectOverview({
                   >
                     PLATFORM OVERVIEW
                   </p>
-                  <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#FFFFFF' }}>
+                  <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)' }}>
                     From Data to Decisions
                   </h3>
                 </div>
@@ -441,7 +441,7 @@ export function ProjectOverview({
                     display: 'flex',
                   }}
                 >
-                  <ChartNoAxesCombined size={26} color="#9f73f4" />
+                  <ChartNoAxesCombined size={26} color="var(--accent-primary)" />
                 </div>
               </div>
 
@@ -466,7 +466,7 @@ export function ProjectOverview({
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#D9822B',
+                        color: 'var(--watch-color)',
                         fontWeight: 800,
                         fontSize: '15px',
                       }}
@@ -474,14 +474,14 @@ export function ProjectOverview({
                       ₹
                     </div>
                     <div>
-                      <strong style={{ fontSize: '13px', color: '#FFFFFF' }}>GST Reconciliation Status</strong>
-                      <p style={{ color: '#CBD5E1', margin: '2px 0 0', fontSize: '11px' }}>
+                      <strong style={{ fontSize: '13px', color: 'var(--navy-heading)' }}>GST Reconciliation Status</strong>
+                      <p style={{ color: 'var(--navy-muted)', margin: '2px 0 0', fontSize: '11px' }}>
                         Purchase Register vs. GSTR-2B
                       </p>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#10B981' }}>
+                    <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--safe-color)' }}>
                       {matchPercentage}% Matched
                     </span>
                     <p style={{ color: '#C0392B', fontSize: '11px', margin: '2px 0 0' }}>
@@ -516,12 +516,12 @@ export function ProjectOverview({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 {[
                   {
-                    icon: <FileSearch size={19} color="#9f73f4" />,
+                    icon: <FileSearch size={19} color="var(--accent-primary)" />,
                     title: 'Review Discrepancies',
                     description: 'Inspect missing and unmatched invoices in one unified view',
                   },
                   {
-                    icon: <ClipboardCheck size={19} color="#fe914b" />,
+                    icon: <ClipboardCheck size={19} color="var(--watch-color)" />,
                     title: 'Prioritise Action Buckets',
                     description: 'Route cases into Safe to Hold, Watch, and Chase Now buckets',
                   },
@@ -553,8 +553,8 @@ export function ProjectOverview({
                       {item.icon}
                     </div>
                     <div>
-                      <strong style={{ fontSize: '13px', color: '#FFFFFF' }}>{item.title}</strong>
-                      <p style={{ margin: '2px 0 0', color: '#CBD5E1', fontSize: '11px', lineHeight: 1.45 }}>
+                      <strong style={{ fontSize: '13px', color: 'var(--navy-heading)' }}>{item.title}</strong>
+                      <p style={{ margin: '2px 0 0', color: 'var(--navy-muted)', fontSize: '11px', lineHeight: 1.45 }}>
                         {item.description}
                       </p>
                     </div>
@@ -598,10 +598,10 @@ export function ProjectOverview({
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Ingested Invoices
               </span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#FFFFFF', marginTop: '4px' }}>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '4px' }}>
                 {kpis.total} Total
               </div>
-              <span style={{ fontSize: '11px', color: '#10B981' }}>{kpis.matched} matched in GSTR-2B</span>
+              <span style={{ fontSize: '11px', color: 'var(--safe-color)' }}>{kpis.matched} matched in GSTR-2B</span>
             </div>
 
             <div>
@@ -618,7 +618,7 @@ export function ProjectOverview({
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Safe to Hold (Absorbed)
               </span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#10B981', marginTop: '4px' }}>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--safe-color)', marginTop: '4px' }}>
                 {kpis.safeCount} Invoices
               </div>
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)' }}>94% tax risk protected</span>
@@ -628,7 +628,7 @@ export function ProjectOverview({
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
                 True Escalation
               </span>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#D9822B', marginTop: '4px' }}>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: 'var(--watch-color)', marginTop: '4px' }}>
                 {kpis.chaseCount} Vendor
               </div>
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)' }}>Isolated chase priority</span>
@@ -659,21 +659,21 @@ export function ProjectOverview({
                 The Broken Status Quo
               </h3>
             </div>
-            <p style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '13px', color: 'var(--navy-muted)', lineHeight: 1.6 }}>
               Traditional reconciliation engines stop at binary comparison: <em>"Invoice 123 is missing from GSTR-2B"</em>. This dumps 30 unresolved discrepancies on the CFO desk.
             </p>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px', color: 'var(--navy-muted)' }}>
               <li style={{ display: 'flex', gap: '8px' }}>
                 <span style={{ color: '#C0392B', fontWeight: 800 }}>✕</span>
-                <span><strong style={{ color: '#FFFFFF' }}>Indiscriminate Supplier Chasing:</strong> Damaging commercial goodwill by calling vendors who always file 20 days late but never default.</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>Indiscriminate Supplier Chasing:</strong> Damaging commercial goodwill by calling vendors who always file 20 days late but never default.</span>
               </li>
               <li style={{ display: 'flex', gap: '8px' }}>
                 <span style={{ color: '#C0392B', fontWeight: 800 }}>✕</span>
-                <span><strong style={{ color: '#FFFFFF' }}>Zero Payment Leverage Awareness:</strong> Forgetting that Accounts Payable already holds ₹50,000 in retention for that exact supplier.</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>Zero Payment Leverage Awareness:</strong> Forgetting that Accounts Payable already holds ₹50,000 in retention for that exact supplier.</span>
               </li>
               <li style={{ display: 'flex', gap: '8px' }}>
                 <span style={{ color: '#C0392B', fontWeight: 800 }}>✕</span>
-                <span><strong style={{ color: '#FFFFFF' }}>Misreading Absent IRNs:</strong> Penalizing suppliers under the ₹5 Cr turnover threshold who are legally exempt from e-invoicing.</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>Misreading Absent IRNs:</strong> Penalizing suppliers under the ₹5 Cr turnover threshold who are legally exempt from e-invoicing.</span>
               </li>
             </ul>
           </div>
@@ -693,27 +693,27 @@ export function ProjectOverview({
               height: '100%',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10B981' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--safe-color)' }}>
               <CheckCircle2 size={20} />
               <h3 style={{ fontSize: '15px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 The Forecaster's Autonomous Triage
               </h3>
             </div>
-            <p style={{ fontSize: '13px', color: '#CBD5E1', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '13px', color: 'var(--navy-muted)', lineHeight: 1.6 }}>
               Our 3-signal architecture automatically cross-references commercial enterprise context with live government portal intelligence to eliminate noise.
             </p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px', color: '#CBD5E1' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px', color: 'var(--navy-muted)' }}>
               <li style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ color: '#10B981', fontWeight: 800 }}>✓</span>
-                <span><strong style={{ color: '#FFFFFF' }}>25 Safe to Hold:</strong> Verified on IRP + protected by unpaid AP retention. Recommendation: Wait for normal auto-resolution.</span>
+                <span style={{ color: 'var(--safe-color)', fontWeight: 800 }}>✓</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>25 Safe to Hold:</strong> Verified on IRP + protected by unpaid AP retention. Recommendation: Wait for normal auto-resolution.</span>
               </li>
               <li style={{ display: 'flex', gap: '8px' }}>
-                <span style={{ color: '#D9822B', fontWeight: 800 }}>✓</span>
-                <span><strong style={{ color: '#FFFFFF' }}>4 Watch:</strong> Medium leverage or ambiguous signals. Slated for automated check in next cycle.</span>
+                <span style={{ color: 'var(--watch-color)', fontWeight: 800 }}>✓</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>4 Watch:</strong> Medium leverage or ambiguous signals. Slated for automated check in next cycle.</span>
               </li>
               <li style={{ display: 'flex', gap: '8px' }}>
                 <span style={{ color: '#C0392B', fontWeight: 800 }}>✓</span>
-                <span><strong style={{ color: '#FFFFFF' }}>1 Chase Now:</strong> No IRN, 0 payment leverage, and sudden filing anomaly. Escalation letter drafted instantly.</span>
+                <span><strong style={{ color: 'var(--navy-heading)' }}>1 Chase Now:</strong> No IRN, 0 payment leverage, and sudden filing anomaly. Escalation letter drafted instantly.</span>
               </li>
             </ul>
           </div>
@@ -724,7 +724,7 @@ export function ProjectOverview({
       <ScrollReveal direction="up" delay={100}>
         <div>
           <div style={{ marginBottom: '18px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--navy-heading)' }}>
               The 3-Signal Decision Architecture
             </h2>
             <p style={{ fontSize: '13px', color: 'var(--navy-muted)', marginTop: '4px' }}>
@@ -747,16 +747,16 @@ export function ProjectOverview({
               className="kpi-card"
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#B794F6', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary)', textTransform: 'uppercase' }}>
                   Pipeline 1
                 </span>
                 <FileCheck size={18} color="#0082f3" />
               </div>
-              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#FFFFFF' }}>
+              <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--navy-heading)' }}>
                 IRN Registry &amp; TinyFish Web Agent
               </h4>
               <p style={{ fontSize: '12px', color: 'var(--navy-muted)', lineHeight: 1.6 }}>
-                Checks e-invoice registration on the IRP. Uses TinyFish to explore <strong style={{ color: '#CBD5E1' }}>einvoice1.gst.gov.in</strong> and CBIC Notification 10/2023. If vendor turnover is &lt;₹5 Cr, an absent IRN is recognized as exempt rather than penalized.
+                Checks e-invoice registration on the IRP. Uses TinyFish to explore <strong style={{ color: 'var(--navy-muted)' }}>einvoice1.gst.gov.in</strong> and CBIC Notification 10/2023. If vendor turnover is &lt;₹5 Cr, an absent IRN is recognized as exempt rather than penalized.
               </p>
               <div style={{ marginTop: 'auto', paddingTop: '14px', borderTop: '1px solid var(--navy-border)', fontSize: '11px', color: '#93c5fd' }}>
                 Weight: +20 (Present) / -15 (Absent Applies) / 0 (Exempt)
@@ -777,12 +777,12 @@ export function ProjectOverview({
               className="kpi-card"
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10B981', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--safe-color)', textTransform: 'uppercase' }}>
                   Pipeline 2
                 </span>
                 <Scale size={18} color="#17b26a" />
               </div>
-              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#FFFFFF' }}>
+              <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--navy-heading)' }}>
                 AP Commercial Payment Leverage
               </h4>
               <p style={{ fontSize: '12px', color: 'var(--navy-muted)', lineHeight: 1.6 }}>
@@ -807,12 +807,12 @@ export function ProjectOverview({
               className="kpi-card"
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#D9822B', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--watch-color)', textTransform: 'uppercase' }}>
                   Pipeline 3
                 </span>
-                <TrendingUp size={18} color="#fe914b" />
+                <TrendingUp size={18} color="var(--watch-color)" />
               </div>
-              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#FFFFFF' }}>
+              <h4 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--navy-heading)' }}>
                 6-Month Filing Track Record
               </h4>
               <p style={{ fontSize: '12px', color: 'var(--navy-muted)', lineHeight: 1.6 }}>
@@ -838,7 +838,7 @@ export function ProjectOverview({
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '22px', flexWrap: 'wrap', gap: '14px' }}>
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--navy-heading)' }}>
                 Suggested 3-Minute Demo Walkthrough for Judges
               </h3>
               <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '2px' }}>
@@ -871,10 +871,10 @@ export function ProjectOverview({
                 <PauseCircle size={16} />
                 <span>1. Inspect "Safe to Hold" (Score: 100)</span>
               </div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#FFFFFF', marginTop: '8px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '8px' }}>
                 Shree Ganesh Packaging (`SGP/26-27/0412`)
               </div>
-              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '6px', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '6px', lineHeight: 1.55 }}>
                 IRN verified (+20), ₹18,400 AP leverage (+15), habitual laggard (+15). Recommendation: Hold; vendor files reliably every quarter.
               </p>
               <span style={{ fontSize: '11px', color: '#34d399', fontWeight: 700, marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
@@ -898,10 +898,10 @@ export function ProjectOverview({
                 <AlertTriangle size={16} />
                 <span>2. Inspect "Chase Now" (Score: 0)</span>
               </div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#FFFFFF', marginTop: '8px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '8px' }}>
                 Pioneer Courier (`PCS/26-27/5561`)
               </div>
-              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '6px', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '6px', lineHeight: 1.55 }}>
                 Absent IRN (-15), ₹0 leverage (-10), sudden anomaly (-25). Tax at risk: ₹2,400. Immediate escalation required before reversal.
               </p>
               <span style={{ fontSize: '11px', color: '#C0392B', fontWeight: 700, marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
@@ -921,17 +921,17 @@ export function ProjectOverview({
               }}
               className="kpi-card"
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#FFFFFF', fontWeight: 700, fontSize: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--navy-heading)', fontWeight: 700, fontSize: '12px' }}>
                 <Globe size={16} />
                 <span>3. Test TinyFish Live Web Agent</span>
               </div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#FFFFFF', marginTop: '8px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '8px' }}>
                 Live Government Portal Exploration
               </div>
-              <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '6px', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '6px', lineHeight: 1.55 }}>
                 Click "Check current IRN rules" or query IRP portal for enablement. Toggle simulated timeout to observe Zero-Penalty Defense.
               </p>
-              <span style={{ fontSize: '11px', color: '#FFFFFF', fontWeight: 700, marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '11px', color: 'var(--navy-heading)', fontWeight: 700, marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 Test Web Agent →
               </span>
             </div>
@@ -955,10 +955,10 @@ export function ProjectOverview({
           }}
         >
           <div style={{ maxWidth: '640px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#D9822B', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--watch-color)', letterSpacing: '0.05em' }}>
               Commercial Viability &amp; SaaS Economics
             </span>
-            <h4 style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF', marginTop: '6px' }}>
+            <h4 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '6px' }}>
               TAM: ₹1,140 Cr · SAM: ₹210 Cr · SOM: ₹4.68 Cr ARR
             </h4>
             <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '4px', lineHeight: 1.6 }}>
@@ -971,7 +971,7 @@ export function ProjectOverview({
               onClick={() => setIsCommercialModalOpen(true)}
               className="gnani-btn-secondary"
             >
-              <TrendingUp size={15} color="#fe914b" />
+              <TrendingUp size={15} color="var(--watch-color)" />
               CA Economics &amp; Pricing
             </button>
 
@@ -1001,7 +1001,7 @@ export function ProjectOverview({
         }}
       >
         <div>
-          <strong style={{ color: '#CBD5E1' }}>GST Credit-at-Risk Forecaster</strong> — Smarter reconciliation, explainable ITC risk defense.
+          <strong style={{ color: 'var(--navy-muted)' }}>GST Credit-at-Risk Forecaster</strong> — Smarter reconciliation, explainable ITC risk defense.
         </div>
         <div>
           Decision support only — does not determine statutory tax eligibility.

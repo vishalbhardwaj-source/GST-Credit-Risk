@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T11:16:00.000Z",
+  "title": "Design System: GST Credit-at-Risk Forecaster",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Electric Lavender",
+        "canonical": "oklch(76% 0.16 295)",
+        "tonalRamp": ["#25173B", "#422867", "#643C9B", "#8C56D4", "#B794F6", "#CFB7F9", "#E5D7FC", "#F5F0FE"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Midnight Violet",
+        "canonical": "oklch(18% 0.04 300)",
+        "tonalRamp": ["#0C0614", "#170D24", "#23172F", "#3B2A4A", "#5A4070", "#7A6B90", "#A89BC2", "#F8FAFC"]
+      },
+      "safe": {
+        "role": "semantic-success",
+        "displayName": "Sovereign Emerald",
+        "canonical": "oklch(70% 0.17 155)",
+        "tonalRamp": ["#064E3B", "#047857", "#059669", "#10B981", "#34D399", "#6EE7B7", "#A7F3D0", "#D1FAE5"]
+      },
+      "watch": {
+        "role": "semantic-warning",
+        "displayName": "Caution Amber",
+        "canonical": "oklch(75% 0.18 75)",
+        "tonalRamp": ["#78350F", "#92400E", "#D97706", "#F59E0B", "#FBBF24", "#FCD34D", "#FDE68A", "#FEF3C7"]
+      },
+      "chase": {
+        "role": "semantic-error",
+        "displayName": "Breach Crimson",
+        "canonical": "oklch(62% 0.22 25)",
+        "tonalRamp": ["#7F1D1D", "#991B1B", "#DC2626", "#EF4444", "#F87171", "#FCA5A5", "#FECACA", "#FEE2E2"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Hero", "purpose": "App titles and key dashboard metrics" },
+      "headline": { "displayName": "Headline", "purpose": "KPI aggregates and drawer headers" },
+      "title": { "displayName": "Title", "purpose": "Card headers and section labels" },
+      "body": { "displayName": "Body", "purpose": "Tabular records and conversational copilot content" },
+      "label": { "displayName": "Label / Monospace", "purpose": "GSTIN, IRN hashes, and status badges" }
+    },
+    "shadows": [
+      { "name": "kpi-rest", "value": "0 4px 16px rgba(0, 0, 0, 0.2)", "purpose": "Subtle elevation for KPI cards over dark violet canvas" },
+      { "name": "kpi-hover", "value": "0 8px 24px rgba(0, 0, 0, 0.35)", "purpose": "Hover lift on interactive metric cards" },
+      { "name": "btn-glow", "value": "0 4px 16px rgba(183, 148, 246, 0.25)", "purpose": "Electric lavender halo for primary action button" },
+      { "name": "drawer-shadow", "value": "-16px 0 40px rgba(0, 0, 0, 0.6)", "purpose": "Structural separation for the right-hand slide-in inspector" }
+    ],
+    "motion": [
+      { "name": "ease-out-smooth", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Standard tactile easing for button clicks and slide-in drawers" },
+      { "name": "duration-fast", "value": "0.18s", "purpose": "Instant button transform and hover transitions" },
+      { "name": "duration-drawer", "value": "0.25s", "purpose": "Smooth right drawer slide-in animation" }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1600px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action trigger with vibrant lavender gradient and micro-lift hover state.",
+      "html": "<button class=\"ds-btn-primary\">Execute 3-Signal Triage</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 22px; border-radius: 8px; background: linear-gradient(135deg, #B794F6 0%, #9F6FF0 100%); color: #170D24; font-weight: 700; font-size: 13px; font-family: Inter, sans-serif; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(183, 148, 246, 0.25); transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(183, 148, 246, 0.4); } .ds-btn-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Subdued secondary control button for exports, filters, and modal dismissal.",
+      "html": "<button class=\"ds-btn-secondary\">Export Summary CSV</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; border-radius: 8px; background: #23172F; color: #F8FAFC; border: 1px solid #3B2A4A; font-weight: 600; font-size: 13px; font-family: Inter, sans-serif; cursor: pointer; transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-secondary:hover { background: #2C1D3A; border-color: #5A4070; color: #FFFFFF; transform: translateY(-1px); } .ds-btn-secondary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Safe to Hold Badge",
+      "kind": "chip",
+      "refersTo": "chip-safe",
+      "description": "Green status indicator for invoices hedged by AP retention leverage and verified IRN.",
+      "html": "<span class=\"ds-badge ds-badge-safe\">SAFE TO HOLD</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2.5px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; white-space: nowrap; } .ds-badge-safe { color: #34D399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 10px rgba(16, 185, 129, 0.08); }"
+    },
+    {
+      "name": "Watch Badge",
+      "kind": "chip",
+      "refersTo": "chip-watch",
+      "description": "Amber status indicator for moderate-risk invoices with upcoming statutory deadlines.",
+      "html": "<span class=\"ds-badge ds-badge-watch\">WATCH</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2.5px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; white-space: nowrap; } .ds-badge-watch { color: #FBBF24; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); box-shadow: 0 0 10px rgba(245, 158, 11, 0.08); }"
+    },
+    {
+      "name": "Chase Now Badge",
+      "kind": "chip",
+      "refersTo": "chip-chase",
+      "description": "High-urgency crimson status badge for unhedged invoices requiring immediate escalation.",
+      "html": "<span class=\"ds-badge ds-badge-chase\">CHASE NOW</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2.5px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; white-space: nowrap; } .ds-badge-chase { color: #F87171; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239, 68, 68, 0.08); }"
+    },
+    {
+      "name": "KPI Metric Card",
+      "kind": "card",
+      "refersTo": "card-kpi",
+      "description": "Financial telemetry container displaying totals, risk exposure, and triage breakdowns.",
+      "html": "<div class=\"ds-kpi-card\"><div class=\"ds-kpi-title\">TAX AT RISK</div><div class=\"ds-kpi-value\">₹ 1,74,400</div><div class=\"ds-kpi-sub\">30 Unmatched Invoices</div></div>",
+      "css": ".ds-kpi-card { background: #23172F; border: 1px solid #3B2A4A; border-radius: 8px; padding: 16px 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); font-family: Inter, sans-serif; } .ds-kpi-card:hover { transform: translateY(-2px); border-color: rgba(183, 148, 246, 0.4); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); } .ds-kpi-title { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; color: #A89BC2; margin-bottom: 6px; } .ds-kpi-value { font-size: 22px; font-weight: 700; color: #FFFFFF; font-family: 'JetBrains Mono', monospace; } .ds-kpi-sub { font-size: 12px; color: #7A6B90; margin-top: 4px; }"
+    },
+    {
+      "name": "Search & Filter Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Tabular filter search box with violet border and glowing lavender active focus state.",
+      "html": "<input type=\"text\" class=\"ds-input-text\" placeholder=\"Filter by vendor, GSTIN, or invoice...\" />",
+      "css": ".ds-input-text { background-color: #23172F; color: #F8FAFC; border: 1px solid #3B2A4A; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: Inter, sans-serif; outline: none; transition: all 0.18s ease; width: 100%; box-sizing: border-box; } .ds-input-text:focus { border-color: rgba(183, 148, 246, 0.6); box-shadow: 0 0 0 3px rgba(183, 148, 246, 0.18); } .ds-input-text::placeholder { color: #7A6B90; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The High-Frequency Compliance Cockpit",
+    "overview": "The GST Credit-at-Risk Forecaster is a mission-critical, instrument-dense operational terminal for Indian enterprise finance teams. The interface delivers tactical clarity over millions of rupees in statutory tax exposure through an electric dark-canvas palette. It replaces the anxiety of month-end AP reconciliation with calm, surgical precision, presenting dense financial telemetry through a layered hierarchy of deep violets, obsidian card containers, and glowing lavender telemetry signals.\n\nEvery visual element exists to serve rapid, error-free operational decisions. Data density is balanced with purposeful luminance: background surfaces recede into deep nocturnal violets (#170D24), while actionable risk indicators (Safe, Watch, Chase) cut through the darkness with crisp semantic luminescence. Anti-reference: Bland, light-mode generic enterprise accounting tables with unstyled borders, and noisy, toy-like pastel dashboards lacking compliance gravitas.",
+    "keyCharacteristics": [
+      "Deep Nocturnal Violet Foundation: Multi-layered dark theme anchored by Midnight Violet and Obsidian Plum, reducing fatigue during intensive reconciliation marathons.",
+      "Electric Lavender Command Accent: Radiant lavender-purple gradient accents signifying AI-driven autonomy, predictive triage, and executive controls.",
+      "Tri-Signal Semantic Luminescence: Uncompromised status illumination using Emerald, Amber, and Crimson glows that map directly to the 3-signal operational buckets.",
+      "Surgical Identifier Precision: High-contrast tabular layout with monospace rendering for statutory keys (GSTIN, IRN, HSN)."
+    ],
+    "rules": [
+      {
+        "name": "The Signal Dominance Rule",
+        "body": "Semantic status colors (Emerald, Amber, Crimson) are strictly reserved for statutory compliance and risk classifications. They must never be repurposed for generic UI decoration or arbitrary button styles.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lavender Restraint Rule",
+        "body": "Electric Lavender is the primary brand accent and is confined to ≤10% of any given viewport surface to preserve its high-priority visual punch.",
+        "section": "colors"
+      },
+      {
+        "name": "The Monospace Identifier Rule",
+        "body": "Any statutory tax identifier—GSTIN, 64-character IRN hash, HSN code, or invoice reference number—must always render in JetBrains Mono to prevent optical character confusion (such as 0 vs O or 1 vs I).",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces rest flat with crisp 1px borders (#3B2A4A); drop shadows and radial glows appear strictly in response to interaction (hover, active focus) or critical risk states.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do format all GSTINs, IRN hashes, and monetary sums using JetBrains Mono with explicit spacing and thousands separators (₹).",
+      "Do maintain the 3-tier status hierarchy: Safe to Hold (Emerald), Watch (Amber), and Chase Now (Crimson).",
+      "Do apply scale(0.98) active states and cubic-bezier(0.16, 1, 0.3, 1) transitions on all interactive buttons.",
+      "Do preserve the deep nocturnal violet canvas (#170D24) with subtle radial gradients for depth.",
+      "Do accompany status colors with iconography and explicit text badges to meet WCAG AA accessibility standards."
+    ],
+    "donts": [
+      "Don't introduce generic light-mode backgrounds or pure black (#000000) surfaces that disrupt the purple/navy tonal depth.",
+      "Don't use saturated red, green, or amber for non-compliance decorations or general navigational elements.",
+      "Don't use sharp 0px corners on interactive controls; adhere to the 8px component radius and 9999px badge pills.",
+      "Don't obscure the primary data table behind blocking modal dialogues when an inspector drawer preserves operational context.",
+      "Don't display uncalibrated or raw machine learning probability scores without the human-readable 0–100 calibrated routing score and corresponding operational action."
+    ]
+  }
+}

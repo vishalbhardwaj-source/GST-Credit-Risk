@@ -57,6 +57,7 @@ export function computeKpis(enrichedInvoices: ReconciledInvoice[]) {
 
 // Format INR currency
 export function formatINR(val: number): string {
+  if (val === null || val === undefined || isNaN(val)) return '₹0';
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',

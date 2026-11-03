@@ -3,48 +3,109 @@ html {
 }
 
 :root {
-  /* Electric Lavender Dark Theme */
-  --primary-navy: #170D24;
-  --secondary-green: #10B981;
-  --accent-teal: #B794F6;
-  --bg-soft-gray: #170D24;
-  --surface-white: #23172F;
-  --text-charcoal: #F8FAFC;
-  --text-slate: #A89BC2;
-  --border-pale-gray: #3B2A4A;
-  --warning-amber: #F59E0B;
-  --error-red: #EF4444;
+  /* UI/UX Pro Max: Modern Dark SaaS Design System Tokens */
 
-  /* Theme variables matching requested specification */
-  --navy-bg: #170D24;
-  --navy-surface: #1E1230;
-  --navy-card: #23172F;
-  --navy-card-hover: #2C1D3A;
-  --navy-border: #3B2A4A;
-  --navy-border-hover: #5A4070;
-  --navy-text: #F8FAFC;
-  --navy-heading: #FFFFFF;
-  --navy-muted: #A89BC2;
-  --navy-dim: #7A6B90;
+  /* Surfaces & Canvas (Dark OLED / Midnight Palette) */
+  --surface-bg: #0e0817;
+  --surface-canvas: #0e0817;
+  --surface-panel: #170d24;
+  --surface-surface: #1e1230;
+  --surface-card: #23172f;
+  --surface-card-hover: #2c1d3a;
+  --surface-card-subtle: rgba(255, 255, 255, 0.03);
 
-  --safe-color: #10B981;
-  --safe-light: #34D399;
-  --safe-bg: rgba(16, 185, 129, 0.12);
-  --safe-border: rgba(16, 185, 129, 0.3);
+  /* Legacy Navy surface aliases for backward compatibility */
+  --navy-bg: #0e0817;
+  --navy-surface: #170d24;
+  --navy-card: #23172f;
+  --navy-card-hover: #2c1d3a;
+  --primary-navy: #170d24;
+  --bg-soft-gray: #0e0817;
+  --surface-white: #23172f;
 
-  --watch-color: #F59E0B;
-  --watch-light: #FBBF24;
-  --watch-bg: rgba(245, 158, 11, 0.12);
-  --watch-border: rgba(245, 158, 11, 0.3);
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: #3b2a4a;
+  --border-hover: #5a4070;
+  --border-focused: #b794f6;
+  --navy-border: #3b2a4a;
+  --navy-border-hover: #5a4070;
+  --border-pale-gray: #3b2a4a;
 
-  --chase-color: #EF4444;
-  --chase-light: #F87171;
-  --chase-bg: rgba(239, 68, 68, 0.12);
-  --chase-border: rgba(239, 68, 68, 0.3);
+  /* Typography & Foreground Contrast (WCAG AA / AAA calibrated) */
+  --text-primary: #ffffff;
+  --text-secondary: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+  --navy-text: #f8fafc;
+  --navy-heading: #ffffff;
+  --navy-muted: #cbd5e1;
+  --navy-dim: #94a3b8;
+  --text-charcoal: #f8fafc;
+  --text-slate: #cbd5e1;
 
-  --accent-blue: #B794F6;
-  --accent-blue-hover: #9F6FF0;
-  --accent-indigo: #B794F6;
+  /* Semantic Status Accents */
+  --safe-color: #10b981;
+  --safe-light: #34d399;
+  --safe-bg: rgba(16, 185, 129, 0.14);
+  --safe-border: rgba(16, 185, 129, 0.35);
+
+  --watch-color: #f59e0b;
+  --watch-light: #fbbf24;
+  --watch-bg: rgba(245, 158, 11, 0.14);
+  --watch-border: rgba(245, 158, 11, 0.35);
+
+  --chase-color: #ef4444;
+  --chase-light: #f87171;
+  --chase-bg: rgba(239, 68, 68, 0.14);
+  --chase-border: rgba(239, 68, 68, 0.35);
+
+  --warning-amber: #f59e0b;
+  --error-red: #ef4444;
+  --secondary-green: #10b981;
+
+  /* Brand Electric Lavender & Telemetry Cyan */
+  --accent-primary: #b794f6;
+  --accent-primary-hover: #9f6ff0;
+  --accent-primary-glow: rgba(183, 148, 246, 0.28);
+  --accent-blue: #b794f6;
+  --accent-blue-hover: #9f6ff0;
+  --accent-indigo: #b794f6;
+  --accent-teal: #b794f6;
+
+  --accent-cyan: #38bdf8;
+  --accent-cyan-light: #7dd3fc;
+  --accent-cyan-bg: rgba(56, 189, 248, 0.12);
+  --accent-cyan-border: rgba(56, 189, 248, 0.3);
+
+  /* Spacing Scale (8px modular grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Elevation & Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.45);
+  --shadow-xl: 0 20px 35px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 16px rgba(183, 148, 246, 0.25);
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Motion Grammar */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 150ms var(--ease-spring);
+  --transition-normal: 220ms var(--ease-spring);
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   color-scheme: dark;
@@ -71,6 +132,17 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--navy-heading);
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: rgba(183, 148, 246, 0.35);
+  color: #FFFFFF;
 }
 
 code, kbd, samp, pre {
@@ -89,6 +161,19 @@ button {
 
 button:active {
   transform: scale(0.98);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 2px;
+}
+
+.invoice-table-row:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: -2px;
+  background-color: rgba(183, 148, 246, 0.12) !important;
 }
 
 a {
@@ -160,9 +245,8 @@ a:hover {
 
 /* Brand Utility Classes */
 .gnani-gradient-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #B794F6 50%, #9F6FF0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #FFFFFF;
+  font-weight: 800;
 }
 
 .gnani-white-gradient-text {
@@ -342,11 +426,7 @@ select option {
 }
 
 .invoice-table-row:hover {
-  background-color: rgba(255, 255, 255, 0.035) !important;
-}
-
-.invoice-table-row:hover td:first-child {
-  border-left: 3px solid #B794F6;
+  background-color: rgba(183, 148, 246, 0.08) !important;
 }
 
 th {
@@ -369,4 +449,55 @@ th {
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 6px;
+}
+
+
+/* Intentional Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.05s !important;
+    transform: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* Responsive Adaptation: Mobile & Tablet */
+@media (max-width: 1024px) {
+  .modal-content {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 13.5px;
+  }
+
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 640px) {
+  .kpi-card {
+    padding: 12px 14px !important;
+  }
+}
+
+/* Touch Input Adaptation (Coarse Pointer) */
+@media (pointer: coarse) {
+  button, select, input[type="text"] {
+    min-height: 44px;
+  }
+
+  .badge {
+    padding: 4px 10px;
+  }
 }

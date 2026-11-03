@@ -35,9 +35,9 @@ export function InvoiceTable({
       return <ArrowUpDown size={12} style={{ opacity: 0.35, marginLeft: '4px' }} />;
     }
     return sortDirection === 'asc' ? (
-      <ArrowUp size={12} style={{ color: '#60a5fa', marginLeft: '4px' }} />
+      <ArrowUp size={12} style={{ color: 'var(--accent-cyan)', marginLeft: '4px' }} />
     ) : (
-      <ArrowDown size={12} style={{ color: '#60a5fa', marginLeft: '4px' }} />
+      <ArrowDown size={12} style={{ color: 'var(--accent-cyan)', marginLeft: '4px' }} />
     );
   };
 
@@ -67,6 +67,10 @@ export function InvoiceTable({
               <th style={{ padding: '12px 16px', fontWeight: 700 }}>Invoice Details</th>
               <th
                 onClick={() => handleSort('vendorName')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('vendorName'); } }}
+                tabIndex={0}
+                role="columnheader"
+                aria-sort={sortField === 'vendorName' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                 style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -75,6 +79,10 @@ export function InvoiceTable({
               </th>
               <th
                 onClick={() => handleSort('invoiceDate')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('invoiceDate'); } }}
+                tabIndex={0}
+                role="columnheader"
+                aria-sort={sortField === 'invoiceDate' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                 style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -83,6 +91,10 @@ export function InvoiceTable({
               </th>
               <th
                 onClick={() => handleSort('taxAmount')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('taxAmount'); } }}
+                tabIndex={0}
+                role="columnheader"
+                aria-sort={sortField === 'taxAmount' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                 style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
@@ -95,6 +107,10 @@ export function InvoiceTable({
               <th style={{ padding: '12px 16px', fontWeight: 700 }}>Filing Track</th>
               <th
                 onClick={() => handleSort('score')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('score'); } }}
+                tabIndex={0}
+                role="columnheader"
+                aria-sort={sortField === 'score' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                 style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -124,7 +140,7 @@ export function InvoiceTable({
                     >
                       <FileSearch size={22} />
                     </div>
-                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#FFFFFF' }}>No matching invoices found</div>
+                    <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--navy-heading)' }}>No matching invoices found</div>
                     <div style={{ fontSize: '12px', maxWidth: '340px' }}>
                       Try adjusting your search query, bucket filter, or reset filters to view all records.
                     </div>
@@ -141,20 +157,40 @@ export function InvoiceTable({
                   <tr
                     key={inv.id}
                     onClick={() => onSelect(inv)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onSelect(inv);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Select invoice ${inv.invoiceNumber} from ${inv.vendorName}`}
                     className="invoice-table-row"
                     style={{
-                      borderBottom: '1px solid #3B2A4A',
+                      borderBottom: '1px solid var(--navy-border)',
                       cursor: 'pointer',
                     }}
                   >
                     {/* Invoice Details */}
-                    <td style={{ padding: '12px 16px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700, color: '#60a5fa' }}>
+                    <td style={{ padding: '12px 16px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700, color: 'var(--accent-blue)' }}>
                       {inv.invoiceNumber}
                     </td>
 
                     {/* Vendor */}
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ fontWeight: 600, color: '#FFFFFF' }}>{inv.vendorName}</div>
+                    <td style={{ padding: '12px 16px', maxWidth: '220px' }}>
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          color: 'var(--navy-heading)',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                        title={inv.vendorName}
+                      >
+                        {inv.vendorName}
+                      </div>
                       <div style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 500, fontFamily: 'JetBrains Mono, monospace' }}>
                         {inv.gstin}
                       </div>
@@ -166,7 +202,7 @@ export function InvoiceTable({
                     </td>
 
                     {/* GST Tax Amount */}
-                    <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: '#FFFFFF' }}>
+                    <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: 'var(--navy-heading)' }}>
                       {formatINR(inv.taxAmount)}
                       <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 600 }}>
                         18% on {formatINR(inv.taxableAmount)}
@@ -197,10 +233,10 @@ export function InvoiceTable({
                               color:
                                 inv.vendorIrnLookup.irn_state === 'PRESENT' ||
                                 inv.vendorIrnLookup.irn_state === 'ABSENT_NOT_APPLICABLE'
-                                  ? '#34d399'
+                                  ? 'var(--safe-light)'
                                   : inv.vendorIrnLookup.irn_state === 'ABSENT_UNKNOWN'
                                   ? '#fbbf24'
-                                  : '#f87171',
+                                  : 'var(--chase-light)',
                             }}
                           >
                             {inv.vendorIrnLookup.status_label}
@@ -208,7 +244,7 @@ export function InvoiceTable({
                           <span
                             style={{
                               fontSize: '9px',
-                              color: '#60a5fa',
+                              color: 'var(--accent-cyan)',
                               fontWeight: 700,
                               background: 'rgba(183, 148, 246, 0.15)',
                               padding: '1px 5px',
@@ -220,9 +256,9 @@ export function InvoiceTable({
                           </span>
                         </div>
                       ) : inv.irnRecord.irnPresent ? (
-                        <span style={{ color: '#168A5B', fontWeight: 600, fontSize: '12px' }}>● Verified (IRP)</span>
+                        <span style={{ color: 'var(--safe-light)', fontWeight: 600, fontSize: '12px' }}>● Verified (IRP)</span>
                       ) : (
-                        <span style={{ color: '#C0392B', fontWeight: 600, fontSize: '12px' }}>○ Absent</span>
+                        <span style={{ color: 'var(--chase-light)', fontWeight: 600, fontSize: '12px' }}>○ Absent</span>
                       )}
                     </td>
 
@@ -232,7 +268,7 @@ export function InvoiceTable({
                         style={{
                           fontSize: '11px',
                           color:
-                            inv.leverageTier === 'HIGH' ? '#60a5fa' : inv.leverageTier === 'MEDIUM' ? '#fbbf24' : '#94a3b8',
+                            inv.leverageTier === 'HIGH' ? 'var(--accent-cyan)' : inv.leverageTier === 'MEDIUM' ? 'var(--watch-light)' : 'var(--navy-muted)',
                           fontWeight: 700,
                         }}
                       >
@@ -278,7 +314,7 @@ export function InvoiceTable({
                               }}
                             />
                           </div>
-                          <span style={{ fontWeight: 800, fontSize: '12px', color: '#FFFFFF' }}>{score}</span>
+                          <span style={{ fontWeight: 800, fontSize: '12px', color: 'var(--navy-heading)' }}>{score}</span>
                         </div>
                       ) : (
                         <span style={{ color: 'var(--navy-muted)', fontSize: '11px' }}>—</span>
@@ -306,12 +342,12 @@ export function InvoiceTable({
                           </span>
                           {inv.mlForecast && (
                             <div style={{ fontSize: '10px', color: 'var(--navy-muted)', marginTop: '4px', fontFamily: 'monospace', fontWeight: 600 }}>
-                              ML P(res): <span style={{ color: inv.mlForecast.pResolutionPct >= 70 ? '#34d399' : inv.mlForecast.pResolutionPct >= 40 ? '#fbbf24' : '#f87171', fontWeight: 800 }}>{inv.mlForecast.pResolutionPct}%</span>
+                              ML P(res): <span style={{ color: inv.mlForecast.pResolutionPct >= 70 ? 'var(--safe-light)' : inv.mlForecast.pResolutionPct >= 40 ? '#fbbf24' : 'var(--chase-light)', fontWeight: 800 }}>{inv.mlForecast.pResolutionPct}%</span>
                             </div>
                           )}
                         </div>
                       ) : isMatched ? (
-                        <span className="badge badge-safe" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#168A5B', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                        <span className="badge badge-safe" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--safe-light)', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
                           Avail ITC (Matched)
                         </span>
                       ) : (
@@ -345,7 +381,7 @@ export function InvoiceTable({
         }}
       >
         <span>
-          Showing <strong style={{ color: '#FFFFFF' }}>{invoices.length}</strong> invoices
+          Showing <strong style={{ color: 'var(--navy-heading)' }}>{invoices.length}</strong> invoices
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
           💡 Tip: Click any row to inspect deep diagnostic audit signals &amp; run TinyFish verifications

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Check,
   Copy,
@@ -64,13 +64,23 @@ export function InvoiceDetailPanel({
     setTimeout(() => setCopiedField(null), 1800);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!invoice) return null;
   const selectedInvoice = invoice;
   const mlForecast = selectedInvoice.mlForecast || computeInvoiceMlForecast(selectedInvoice);
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="invoice-panel-title" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div
           style={{
@@ -104,7 +114,7 @@ export function InvoiceDetailPanel({
                 : selectedInvoice.routingBucket ?? (selectedInvoice.matchResult.matched ? 'MATCHED IN GSTR-2B' : 'UNROUTED RECORD')}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace', color: '#FFFFFF' }}>
+              <h3 id="invoice-panel-title" style={{ fontSize: '18px', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace', color: 'var(--navy-heading)' }}>
                 {selectedInvoice.invoiceNumber}
               </h3>
               <button
@@ -114,7 +124,7 @@ export function InvoiceDetailPanel({
                   border: '1px solid var(--navy-border)',
                   borderRadius: '4px',
                   padding: '2px 5px',
-                  color: copiedField === 'inv' ? '#10B981' : 'var(--navy-muted)',
+                  color: copiedField === 'inv' ? 'var(--safe-color)' : 'var(--navy-muted)',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -136,7 +146,7 @@ export function InvoiceDetailPanel({
                 style={{
                   background: 'transparent',
                   border: 'none',
-                  color: copiedField === 'gstin' ? '#10B981' : 'var(--navy-dim)',
+                  color: copiedField === 'gstin' ? 'var(--safe-color)' : 'var(--navy-dim)',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -162,7 +172,7 @@ export function InvoiceDetailPanel({
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            title="Close Panel (Esc)"
+            title="Close Panel (Esc)" aria-label="Close Panel (Escape)"
           >
             <X size={18} />
           </button>
@@ -187,7 +197,7 @@ export function InvoiceDetailPanel({
               <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--navy-muted)', fontWeight: 700 }}>
                 Tax Amount at Risk
               </span>
-              <div style={{ fontSize: '18px', fontWeight: 800, color: '#C0392B', marginTop: '2px' }}>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--chase-color)', marginTop: '2px' }}>
                 {formatINR(selectedInvoice.taxAmount)}
               </div>
               <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Rupees-at-risk</span>
@@ -197,7 +207,7 @@ export function InvoiceDetailPanel({
               <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--navy-muted)', fontWeight: 700 }}>
                 Taxable Value
               </span>
-              <div style={{ fontSize: '16px', fontWeight: 700, color: '#FFFFFF', marginTop: '2px' }}>
+              <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '2px' }}>
                 {formatINR(selectedInvoice.taxableAmount)}
               </div>
               <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>GST Rate: {selectedInvoice.gstRate}%</span>
@@ -207,7 +217,7 @@ export function InvoiceDetailPanel({
               <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--navy-muted)', fontWeight: 700 }}>
                 Gross Total
               </span>
-              <div style={{ fontSize: '16px', fontWeight: 700, color: '#FFFFFF', marginTop: '2px' }}>
+              <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '2px' }}>
                 {formatINR(selectedInvoice.grossAmount)}
               </div>
               <span style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Dated {selectedInvoice.invoiceDate}</span>
@@ -238,7 +248,7 @@ export function InvoiceDetailPanel({
               <span
                 style={{
                   fontSize: '10px',
-                  color: '#B794F6',
+                  color: 'var(--accent-primary)',
                   background: 'rgba(42, 157, 143, 0.08)',
                   padding: '2px 8px',
                   borderRadius: '4px',
@@ -252,19 +262,19 @@ export function InvoiceDetailPanel({
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '12px' }}>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Invoice Number</div>
-                <div style={{ fontFamily: 'monospace', fontWeight: 700, color: '#FFFFFF', marginTop: '2px' }}>
+                <div style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--navy-heading)', marginTop: '2px' }}>
                   {selectedInvoice.invoiceNumber}
                 </div>
               </div>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Invoice Date</div>
-                <div style={{ fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>
+                <div style={{ fontWeight: 600, color: 'var(--navy-heading)', marginTop: '2px' }}>
                   {selectedInvoice.invoiceDate}
                 </div>
               </div>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Supplier / Legal Entity</div>
-                <div style={{ fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>
+                <div style={{ fontWeight: 600, color: 'var(--navy-heading)', marginTop: '2px' }}>
                   {selectedInvoice.vendorName}
                 </div>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)', marginTop: '1px' }}>
@@ -273,7 +283,7 @@ export function InvoiceDetailPanel({
               </div>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Supplier GSTIN &amp; State Code</div>
-                <div style={{ fontFamily: 'monospace', fontWeight: 700, color: '#B794F6', marginTop: '2px' }}>
+                <div style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-primary)', marginTop: '2px' }}>
                   {selectedInvoice.gstin}
                 </div>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)', marginTop: '1px' }}>
@@ -282,7 +292,7 @@ export function InvoiceDetailPanel({
               </div>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Tax Breakdown (CGST + SGST / IGST)</div>
-                <div style={{ fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>
+                <div style={{ fontWeight: 600, color: 'var(--navy-heading)', marginTop: '2px' }}>
                   {formatINR(selectedInvoice.taxAmount / 2)} + {formatINR(selectedInvoice.taxAmount / 2)}
                 </div>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)', marginTop: '1px' }}>
@@ -291,7 +301,7 @@ export function InvoiceDetailPanel({
               </div>
               <div style={{ background: 'var(--navy-bg)', padding: '8px 10px', borderRadius: '6px' }}>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)' }}>Reconciliation Window</div>
-                <div style={{ fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>
+                <div style={{ fontWeight: 600, color: 'var(--navy-heading)', marginTop: '2px' }}>
                   Period: Sep 2026 Return
                 </div>
                 <div style={{ fontSize: '10px', color: 'var(--navy-muted)', marginTop: '1px' }}>
@@ -326,7 +336,7 @@ export function InvoiceDetailPanel({
                   ? 'rgba(245, 158, 11, 0.35)'
                   : selectedInvoice.routingBucket === 'CHASE NOW'
                   ? 'rgba(239, 68, 68, 0.45)'
-                  : '#3B2A4A'
+                  : 'var(--navy-border)'
               }`,
               borderRadius: '12px',
               padding: '16px',
@@ -341,14 +351,14 @@ export function InvoiceDetailPanel({
                   size={15}
                   color={
                     !isRouted
-                      ? '#B794F6'
+                      ? 'var(--accent-primary)'
                       : selectedInvoice.matchResult.matched || selectedInvoice.routingBucket === 'SAFE TO HOLD'
-                      ? '#10B981'
+                      ? 'var(--safe-color)'
                       : selectedInvoice.routingBucket === 'WATCH'
-                      ? '#D9822B'
+                      ? 'var(--watch-color)'
                       : selectedInvoice.routingBucket === 'CHASE NOW'
-                      ? '#C0392B'
-                      : '#B794F6'
+                      ? 'var(--chase-color)'
+                      : 'var(--accent-primary)'
                   }
                 />
                 <span
@@ -357,7 +367,7 @@ export function InvoiceDetailPanel({
                     fontWeight: 800,
                     textTransform: 'uppercase',
                     letterSpacing: '0.03em',
-                    color: '#FFFFFF',
+                    color: 'var(--navy-heading)',
                   }}
                 >
                   Invoice Situation Synopsis
@@ -381,15 +391,15 @@ export function InvoiceDetailPanel({
                     ? 'rgba(239, 68, 68, 0.2)'
                     : 'rgba(255, 255, 255, 0.1)',
                   color: !isRouted
-                    ? '#B794F6'
+                    ? 'var(--accent-primary)'
                     : selectedInvoice.matchResult.matched
-                    ? '#10B981'
+                    ? 'var(--safe-color)'
                     : selectedInvoice.routingBucket === 'SAFE TO HOLD'
-                    ? '#10B981'
+                    ? 'var(--safe-color)'
                     : selectedInvoice.routingBucket === 'WATCH'
-                    ? '#D9822B'
+                    ? 'var(--watch-color)'
                     : selectedInvoice.routingBucket === 'CHASE NOW'
-                    ? '#C0392B'
+                    ? 'var(--chase-color)'
                     : '#94a3b8',
                 }}
               >
@@ -442,7 +452,7 @@ export function InvoiceDetailPanel({
             >
               <span>
                 Action Protocol:{' '}
-                <strong style={{ color: '#FFFFFF' }}>
+                <strong style={{ color: 'var(--navy-heading)' }}>
                   {!isRouted
                     ? 'Execute Pipeline to Reconcile'
                     : selectedInvoice.matchResult.matched
@@ -477,7 +487,7 @@ export function InvoiceDetailPanel({
                   style={{
                     fontWeight: 700,
                     fontSize: '12px',
-                    color: '#B794F6',
+                    color: 'var(--accent-primary)',
                   }}
                 >
                   GSTR-2B Reconciliation: Awaiting Pipeline Execution
@@ -504,7 +514,7 @@ export function InvoiceDetailPanel({
                   style={{
                     fontWeight: 700,
                     fontSize: '12px',
-                    color: selectedInvoice.matchResult.matched ? '#10B981' : '#C0392B',
+                    color: selectedInvoice.matchResult.matched ? 'var(--safe-color)' : 'var(--chase-color)',
                   }}
                 >
                   GSTR-2B Reconciliation: {selectedInvoice.matchResult.matched ? 'Match Found' : 'No Match Found'}
@@ -563,7 +573,7 @@ export function InvoiceDetailPanel({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontWeight: 700, fontSize: '12px', color: '#FFFFFF' }}>1. IRN / e-Invoice Footprint</span>
+                  <span style={{ fontWeight: 700, fontSize: '12px', color: 'var(--navy-heading)' }}>1. IRN / e-Invoice Footprint</span>
                   {selectedInvoice.irnApplicability && (
                     <span
                       style={{
@@ -571,7 +581,7 @@ export function InvoiceDetailPanel({
                         padding: '1px 6px',
                         borderRadius: '4px',
                         background: 'rgba(42, 157, 143, 0.1)',
-                        color: '#B794F6',
+                        color: 'var(--accent-primary)',
                         fontWeight: 700,
                         border: '1px solid #3B2A4A',
                       }}
@@ -646,7 +656,7 @@ export function InvoiceDetailPanel({
               </p>
 
               {selectedInvoice.irnRecord.irnRef && (
-                <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#B794F6' }}>
+                <div style={{ fontSize: '11px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>
                   {selectedInvoice.irnRecord.irnRef}
                 </div>
               )}
@@ -668,7 +678,7 @@ export function InvoiceDetailPanel({
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Sparkles size={13} color="#B794F6" />
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#B794F6' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary)' }}>
                         TinyFish IRN Rule Applicability Checker
                       </span>
                     </div>
@@ -704,7 +714,7 @@ export function InvoiceDetailPanel({
                           border: '1px solid var(--navy-border)',
                           background: 'var(--navy-bg)',
                           fontSize: '11px',
-                          color: '#FFFFFF',
+                          color: 'var(--navy-heading)',
                         }}
                       >
                         <option value="UNKNOWN">Turnover Unknown / Ambiguous</option>
@@ -726,7 +736,7 @@ export function InvoiceDetailPanel({
                           border: '1px solid var(--navy-border)',
                           background: 'var(--navy-bg)',
                           fontSize: '11px',
-                          color: '#FFFFFF',
+                          color: 'var(--navy-heading)',
                         }}
                       >
                         <option value="B2B_SUPPLY">Standard B2B Supply</option>
@@ -745,7 +755,7 @@ export function InvoiceDetailPanel({
                         background: 'var(--navy-card)',
                         border: 'none',
                         borderRadius: '6px',
-                        color: '#FFFFFF',
+                        color: 'var(--navy-heading)',
                         fontSize: '11px',
                         fontWeight: 700,
                         padding: '6px 12px',
@@ -788,10 +798,10 @@ export function InvoiceDetailPanel({
                             fontSize: '11px',
                             color:
                               selectedInvoice.irnApplicability.status === 'LIKELY_NOT_APPLICABLE'
-                                ? '#10B981'
+                                ? 'var(--safe-color)'
                                 : selectedInvoice.irnApplicability.status === 'APPLICABILITY_UNCLEAR'
-                                ? '#D9822B'
-                                : '#C0392B',
+                                ? 'var(--watch-color)'
+                                : 'var(--chase-color)',
                           }}
                         >
                           Status:{' '}
@@ -806,7 +816,7 @@ export function InvoiceDetailPanel({
                         </span>
                       </div>
 
-                      <p style={{ fontSize: '11px', color: '#FFFFFF', marginTop: '6px', lineHeight: 1.45 }}>
+                      <p style={{ fontSize: '11px', color: 'var(--navy-heading)', marginTop: '6px', lineHeight: 1.45 }}>
                         {selectedInvoice.irnApplicability.summary}
                       </p>
 
@@ -823,7 +833,7 @@ export function InvoiceDetailPanel({
                               rel="noreferrer"
                               style={{
                                 fontSize: '10px',
-                                color: '#B794F6',
+                                color: 'var(--accent-primary)',
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '3px',
@@ -861,7 +871,7 @@ export function InvoiceDetailPanel({
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <Cpu size={13} color="#B794F6" />
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: '#B794F6' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary)' }}>
                         TinyFish Vendor Portal Lookup (WF4)
                       </span>
                       <span
@@ -869,7 +879,7 @@ export function InvoiceDetailPanel({
                           fontSize: '9px',
                           fontWeight: 700,
                           background: 'rgba(42, 157, 143, 0.1)',
-                          color: '#B794F6',
+                          color: 'var(--accent-primary)',
                           border: '1px solid #3B2A4A',
                           padding: '1px 5px',
                           borderRadius: '4px',
@@ -904,7 +914,7 @@ export function InvoiceDetailPanel({
                       alignItems: 'center',
                       gap: '8px',
                       fontSize: '10px',
-                      color: simFailureMode ? '#C0392B' : 'var(--navy-muted)',
+                      color: simFailureMode ? 'var(--chase-color)' : 'var(--navy-muted)',
                       cursor: 'pointer',
                       userSelect: 'none',
                     }}
@@ -913,7 +923,7 @@ export function InvoiceDetailPanel({
                       type="checkbox"
                       checked={simFailureMode}
                       onChange={(e) => setSimFailureMode(e.target.checked)}
-                      style={{ accentColor: '#C0392B', width: '12px', height: '12px' }}
+                      style={{ accentColor: 'var(--chase-color)', width: '12px', height: '12px' }}
                     />
                     {simFailureMode
                       ? '⚡ Simulate: Portal Captcha / HTTP 429 Timeout (tests failure-state defense)'
@@ -929,7 +939,7 @@ export function InvoiceDetailPanel({
                         background: 'var(--navy-card)',
                         border: 'none',
                         borderRadius: '6px',
-                        color: '#FFFFFF',
+                        color: 'var(--navy-heading)',
                         fontSize: '11px',
                         fontWeight: 700,
                         padding: '6px 12px',
@@ -961,12 +971,12 @@ export function InvoiceDetailPanel({
                     const vl = selectedInvoice.vendorIrnLookup!;
                     const stateColor =
                       vl.irn_state === 'PRESENT'
-                        ? '#10B981'
+                        ? 'var(--safe-color)'
                         : vl.irn_state === 'ABSENT_NOT_APPLICABLE'
-                        ? '#10B981'
+                        ? 'var(--safe-color)'
                         : vl.irn_state === 'ABSENT_UNKNOWN'
-                        ? '#D9822B'
-                        : '#C0392B';
+                        ? 'var(--watch-color)'
+                        : 'var(--chase-color)';
                     const stateBorder =
                       vl.irn_state === 'PRESENT'
                         ? 'rgba(16, 185, 129, 0.4)'
@@ -1008,7 +1018,7 @@ export function InvoiceDetailPanel({
                                 style={{
                                   fontSize: '9px',
                                   fontWeight: 700,
-                                  color: '#C0392B',
+                                  color: 'var(--chase-color)',
                                   background: 'rgba(239, 68, 68, 0.15)',
                                   border: '1px solid rgba(239, 68, 68, 0.35)',
                                   padding: '1px 5px',
@@ -1029,7 +1039,7 @@ export function InvoiceDetailPanel({
                             <span
                               style={{
                                 fontSize: '9px',
-                                color: vl.cache_status?.includes('CACHE_HIT') ? '#D9822B' : '#B794F6',
+                                color: vl.cache_status?.includes('CACHE_HIT') ? 'var(--watch-color)' : 'var(--accent-primary)',
                                 fontWeight: 700,
                                 background: vl.cache_status?.includes('CACHE_HIT')
                                   ? 'rgba(245, 158, 11, 0.1)'
@@ -1045,13 +1055,13 @@ export function InvoiceDetailPanel({
 
                         {/* Timestamp */}
                         <div style={{ fontSize: '10px', color: '#627D98' }}>
-                          Checked at: <strong style={{ color: '#FFFFFF' }}>{vl.checked_at_human}</strong>
+                          Checked at: <strong style={{ color: 'var(--navy-heading)' }}>{vl.checked_at_human}</strong>
                           {' · '}
                           <a
                             href={vl.source_url}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ color: '#B794F6', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                            style={{ color: 'var(--accent-primary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
                           >
                             einvoice1.gst.gov.in <ExternalLink size={9} />
                           </a>
@@ -1066,7 +1076,7 @@ export function InvoiceDetailPanel({
                             borderRadius: '4px',
                             padding: '6px 8px',
                             fontFamily: 'monospace',
-                            borderLeft: `3px solid ${stateColor}55`,
+                            borderLeft: `1px solid ${stateColor}88`,
                             lineHeight: 1.5,
                           }}
                         >
@@ -1084,7 +1094,7 @@ export function InvoiceDetailPanel({
                               paddingTop: '6px',
                             }}
                           >
-                            <span style={{ color: '#B794F6', fontWeight: 700 }}>Why this label: </span>
+                            <span style={{ color: 'var(--accent-primary)', fontWeight: 700 }}>Why this label: </span>
                             {vl.why_this_label}
                           </div>
                         )}
@@ -1111,7 +1121,7 @@ export function InvoiceDetailPanel({
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '12px', color: '#FFFFFF' }}>2. AP Commercial Leverage</span>
+                <span style={{ fontWeight: 700, fontSize: '12px', color: 'var(--navy-heading)' }}>2. AP Commercial Leverage</span>
                 <span className="badge badge-neutral">
                   {selectedInvoice.leverageTier === 'HIGH'
                     ? '+15 HIGH'
@@ -1142,7 +1152,7 @@ export function InvoiceDetailPanel({
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '12px', color: '#FFFFFF' }}>3. Supplier Filing History</span>
+                <span style={{ fontWeight: 700, fontSize: '12px', color: 'var(--navy-heading)' }}>3. Supplier Filing History</span>
                 <span
                   className={`badge ${
                     selectedInvoice.vendor.filingPattern === 'HABITUAL LAGGARD'
@@ -1179,7 +1189,7 @@ export function InvoiceDetailPanel({
                         : c.delayDays > 10
                         ? 'rgba(245, 158, 11, 0.2)'
                         : 'rgba(16, 185, 129, 0.2)',
-                      border: `1px solid ${c.missed ? '#C0392B' : c.delayDays > 10 ? '#D9822B' : '#10B981'}`,
+                      border: `1px solid ${c.missed ? 'var(--chase-color)' : c.delayDays > 10 ? 'var(--watch-color)' : 'var(--safe-color)'}`,
                     }}
                   >
                     <div style={{ fontWeight: 700 }}>{c.period.slice(0, 3)}</div>
@@ -1203,8 +1213,8 @@ export function InvoiceDetailPanel({
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#FFFFFF' }}>Deterministic Routing Score</span>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: '#B794F6' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-heading)' }}>Deterministic Routing Score</span>
+                <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--accent-primary)' }}>
                   {selectedInvoice.scoreExplanation.clampedScore} / 100
                 </span>
               </div>
@@ -1226,7 +1236,7 @@ export function InvoiceDetailPanel({
                 {selectedInvoice.scoreExplanation.clampedScore})
               </div>
 
-              <p style={{ fontSize: '12px', color: '#FFFFFF', marginTop: '10px', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '12px', color: 'var(--navy-heading)', marginTop: '10px', lineHeight: 1.5 }}>
                 {selectedInvoice.scoreExplanation.reason}
               </p>
             </div>
@@ -1252,7 +1262,7 @@ export function InvoiceDetailPanel({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Cpu size={15} color="#10B981" />
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#10B981' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--safe-color)' }}>
                     Module C: LightGBM Booster (120 Trees Evaluated)
                   </span>
                 </div>
@@ -1260,7 +1270,7 @@ export function InvoiceDetailPanel({
                   style={{
                     fontSize: '10px',
                     background: 'rgba(16, 185, 129, 0.15)',
-                    color: '#10B981',
+                    color: 'var(--safe-color)',
                     padding: '2px 8px',
                     borderRadius: '4px',
                     fontWeight: 700,
@@ -1275,7 +1285,7 @@ export function InvoiceDetailPanel({
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                 <div style={{ background: 'var(--navy-bg)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <div style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase' }}>Nominal Tax</div>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#FFFFFF', marginTop: '2px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '2px' }}>
                     {formatINR(selectedInvoice.taxAmount)}
                   </div>
                 </div>
@@ -1287,10 +1297,10 @@ export function InvoiceDetailPanel({
                       fontWeight: 800,
                       color:
                         mlForecast.pResolutionPct >= 70
-                          ? '#10B981'
+                          ? 'var(--safe-color)'
                           : mlForecast.pResolutionPct >= 40
-                          ? '#D9822B'
-                          : '#C0392B',
+                          ? 'var(--watch-color)'
+                          : 'var(--chase-color)',
                       marginTop: '2px',
                     }}
                   >
@@ -1299,7 +1309,7 @@ export function InvoiceDetailPanel({
                 </div>
                 <div style={{ background: 'var(--navy-bg)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <div style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase' }}>Expected Loss</div>
-                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#C0392B', marginTop: '2px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--chase-color)', marginTop: '2px' }}>
                     {formatINR(mlForecast.expectedLoss)}
                   </div>
                 </div>
@@ -1312,7 +1322,7 @@ export function InvoiceDetailPanel({
 
               {/* TreeSHAP Localized Feature Attribution */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: '#FFFFFF', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--navy-heading)', marginBottom: '8px' }}>
                   <span>TreeSHAP Feature Attributions</span>
                   <span style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 400 }}>
                     {mlForecast.primaryDriver}
@@ -1327,7 +1337,7 @@ export function InvoiceDetailPanel({
                           style={{
                             fontWeight: 700,
                             fontFamily: 'monospace',
-                            color: attr.direction === 'RECOVERY_SUPPORTING' ? '#10B981' : '#C0392B',
+                            color: attr.direction === 'RECOVERY_SUPPORTING' ? 'var(--safe-color)' : 'var(--chase-color)',
                           }}
                         >
                           {attr.direction === 'RECOVERY_SUPPORTING' ? '+' : '-'}{attr.importancePct}%
@@ -1338,7 +1348,7 @@ export function InvoiceDetailPanel({
                           style={{
                             width: `${Math.min(100, attr.importancePct * 1.5)}%`,
                             height: '100%',
-                            background: attr.direction === 'RECOVERY_SUPPORTING' ? '#10B981' : '#C0392B',
+                            background: attr.direction === 'RECOVERY_SUPPORTING' ? 'var(--safe-color)' : 'var(--chase-color)',
                             borderRadius: '2px',
                           }}
                         />
@@ -1364,8 +1374,8 @@ export function InvoiceDetailPanel({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#B794F6', display: 'inline-block' }} />
-                <span style={{ fontWeight: 700, fontSize: '12px', color: '#FFFFFF' }}>TinyFish Web Agent Evidence</span>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-primary)', display: 'inline-block' }} />
+                <span style={{ fontWeight: 700, fontSize: '12px', color: 'var(--navy-heading)' }}>TinyFish Web Agent Evidence</span>
               </div>
               <button
                 onClick={() => handleVerifyVendor(selectedInvoice)}
@@ -1374,7 +1384,7 @@ export function InvoiceDetailPanel({
                   background: 'rgba(42, 157, 143, 0.1)',
                   border: '1px solid #B794F6',
                   borderRadius: '6px',
-                  color: '#B794F6',
+                  color: 'var(--accent-primary)',
                   fontSize: '11px',
                   fontWeight: 600,
                   padding: '4px 10px',
@@ -1390,7 +1400,7 @@ export function InvoiceDetailPanel({
             </div>
 
             <div style={{ background: 'var(--navy-bg)', borderRadius: '8px', padding: '12px', fontSize: '11px', lineHeight: 1.5 }}>
-              <div style={{ color: '#10B981', fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ color: 'var(--safe-color)', fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
                 <span>✓ Public Portal Verification</span>
                 <span style={{ color: '#627D98', fontWeight: 400 }}>services.gst.gov.in</span>
               </div>
@@ -1415,7 +1425,7 @@ export function InvoiceDetailPanel({
               >
                 <span>
                   Cache:{' '}
-                  <strong style={{ color: '#B794F6' }}>
+                  <strong style={{ color: 'var(--accent-primary)' }}>
                     {tinyFishResult && tinyFishResult.gstin === selectedInvoice.gstin
                       ? tinyFishResult.cache_status
                       : '200 CACHE_HIT (TTL 24h)'}
@@ -1425,7 +1435,7 @@ export function InvoiceDetailPanel({
                   href="https://services.gst.gov.in/services/searchtpbypan"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: '#B794F6', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
+                  style={{ color: 'var(--accent-primary)', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
                 >
                   Audit Citation <ExternalLink size={10} />
                 </a>

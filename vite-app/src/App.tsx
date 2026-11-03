@@ -41,7 +41,7 @@ export function App() {
   const [selectedInvoice, setSelectedInvoice] = useState<ReconciledInvoice | null>(null);
   const [isBacktestModalOpen, setIsBacktestModalOpen] = useState(false);
   const [isTinyFishModalOpen, setIsTinyFishModalOpen] = useState(false);
-  const [showSynopsis, setShowSynopsis] = useState(true);
+  const [showSynopsis, setShowSynopsis] = useState(false);
 
   // Filter & Search states
   const [searchQuery, setSearchQuery] = useState('');

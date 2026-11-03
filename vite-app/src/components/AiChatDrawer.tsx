@@ -68,6 +68,20 @@ interface ThemeConfig {
 }
 
 const THEME_PRESETS: Record<string, ThemeConfig> = {
+  lavender: {
+    name: 'Electric Lavender',
+    primary: '#B794F6',
+    primaryHover: '#9F6FF0',
+    primaryText: '#170D24',
+    glow: 'rgba(183, 148, 246, 0.2)',
+    border: 'rgba(183, 148, 246, 0.3)',
+    cardBg: '#23172F',
+    surfaceBg: '#170D24',
+    userBubble: 'linear-gradient(135deg, #9F6FF0 0%, #B794F6 100%)',
+    accentBg: 'rgba(183, 148, 246, 0.12)',
+    badgeBg: 'rgba(183, 148, 246, 0.18)',
+    badgeText: '#D8B4FE',
+  },
   cyan: {
     name: 'Electric Cyan',
     primary: '#0EA5E9',
@@ -141,7 +155,7 @@ const PROVIDER_METADATA: Record<
     name: 'Google Gemini',
     badge: 'Gemini',
     color: '#0EA5E9',
-    themeKey: 'cyan',
+    themeKey: 'lavender',
     consoleUrl: 'https://aistudio.google.com/app/apikey',
     models: [
       { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Fast Multimodal (Recommended)' },
@@ -154,7 +168,7 @@ const PROVIDER_METADATA: Record<
     name: 'OpenAI (ChatGPT)',
     badge: 'ChatGPT',
     color: '#10B981',
-    themeKey: 'emerald',
+    themeKey: 'lavender',
     consoleUrl: 'https://platform.openai.com/api-keys',
     models: [
       { id: 'gpt-4o-mini', name: 'GPT-4o Mini', tag: 'Fast & Cost-Effective' },
@@ -167,7 +181,7 @@ const PROVIDER_METADATA: Record<
     name: 'Anthropic Claude',
     badge: 'Claude',
     color: '#F59E0B',
-    themeKey: 'amber',
+    themeKey: 'lavender',
     consoleUrl: 'https://console.anthropic.com/settings/keys',
     models: [
       { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', tag: 'Top Nuance & Accuracy' },
@@ -179,7 +193,7 @@ const PROVIDER_METADATA: Record<
     name: 'Groq (Open Llama)',
     badge: 'Groq',
     color: '#F97316',
-    themeKey: 'amber',
+    themeKey: 'lavender',
     consoleUrl: 'https://console.groq.com/keys',
     models: [
       { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B', tag: 'Blazing Fast Inference' },
@@ -191,7 +205,7 @@ const PROVIDER_METADATA: Record<
     name: 'TinyFish Web Agent',
     badge: 'TinyFish',
     color: '#06B6D4',
-    themeKey: 'cyan',
+    themeKey: 'lavender',
     consoleUrl: 'https://agent.tinyfish.ai/api-keys',
     models: [
       { id: 'tinyfish-web-agent', name: 'TinyFish Web Agent', tag: 'Live Autonomous Web Research' },
@@ -1224,7 +1238,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
             borderRadius: '16px',
             background: activeThemeConfig.surfaceBg,
             border: `1px solid ${activeThemeConfig.border}`,
-            boxShadow: `0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px ${activeThemeConfig.glow}`,
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.7), 0 0 16px rgba(183, 148, 246, 0.15)',
             overflow: 'hidden',
             fontFamily: 'Inter, sans-serif',
           }}

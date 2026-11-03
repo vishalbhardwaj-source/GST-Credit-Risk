@@ -108,7 +108,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Cpu size={20} color="#38bdf8" />
-              <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#fff', margin: 0 }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--navy-heading)', margin: 0 }}>
                 Live TinyFish Web Agent — Arbitrary GSTIN Test Console
               </h2>
             </div>
@@ -116,14 +116,14 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
               Query any real or test 15-character GSTIN to inspect live statutory e-invoicing enablement under Rule 48(4).
             </p>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#627D98', cursor: 'pointer' }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--navy-dim)', cursor: 'pointer' }}>
             <X size={20} />
           </button>
         </div>
 
         {/* 1-Click Presets for Judges */}
         <div>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: '#627D98', textTransform: 'uppercase' }}>
+          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--navy-dim)', textTransform: 'uppercase' }}>
             Quick 1-Click Presets:
           </span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '6px' }}>
@@ -166,7 +166,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
                 borderRadius: '8px',
                 background: 'rgba(0,0,0,0.3)',
                 border: '1px solid var(--navy-border)',
-                color: '#fff',
+                color: 'var(--navy-heading)',
                 fontSize: '13px',
                 fontFamily: 'monospace',
                 marginTop: '4px',
@@ -186,7 +186,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
                 borderRadius: '8px',
                 background: 'rgba(0,0,0,0.3)',
                 border: '1px solid var(--navy-border)',
-                color: '#fff',
+                color: 'var(--navy-heading)',
                 fontSize: '13px',
                 marginTop: '4px',
               }}
@@ -215,7 +215,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
         </div>
 
         {error && (
-          <div style={{ color: '#C0392B', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
+          <div style={{ color: 'var(--chase-color)', fontSize: '12px', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 12px', borderRadius: '6px' }}>
             {error}
           </div>
         )}
@@ -235,8 +235,8 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <ShieldCheck size={16} color="#10B981" />
-                <span style={{ fontWeight: 800, color: '#fff', fontSize: '13px' }}>
+                <ShieldCheck size={16} color="var(--safe-color)" />
+                <span style={{ fontWeight: 800, color: 'var(--navy-heading)', fontSize: '13px' }}>
                   {result.legal_name} ({result.gstin})
                 </span>
               </div>
@@ -247,7 +247,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
                   padding: '2px 8px',
                   borderRadius: '4px',
                   background: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? 'rgba(52, 211, 153, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-                  color: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? '#10B981' : '#f43f5e',
+                  color: result.irn_state === 'ABSENT_NOT_APPLICABLE' ? 'var(--safe-color)' : '#f43f5e',
                   border: `1px solid ${result.irn_state === 'ABSENT_NOT_APPLICABLE' ? 'rgba(52, 211, 153, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
                 }}
               >

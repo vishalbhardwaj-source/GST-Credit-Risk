@@ -15,13 +15,16 @@
       --accent-amber: #fbbf24;
       --accent-rose: #f43f5e;
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-muted: #CBD5E1;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    button, .hps-nav, .thumb-pill {
       user-select: none;
     }
 
@@ -334,13 +337,14 @@
       padding: 14px 20px;
       border-radius: 10px;
       background: rgba(30, 41, 59, 0.5);
-      border-left: 4px solid var(--accent-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       margin-bottom: 10px;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .action-row.green { border-color: var(--accent-emerald); }
-    .action-row.yellow { border-color: var(--accent-amber); }
-    .action-row.red { border-color: var(--accent-rose); }
+    .action-row.green { border-color: rgba(52, 211, 153, 0.4); background: rgba(52, 211, 153, 0.05); }
+    .action-row.yellow { border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05); }
+    .action-row.red { border-color: rgba(244, 63, 94, 0.4); background: rgba(244, 63, 94, 0.05); }
 
     .action-badge {
       font-size: 12px;
@@ -501,6 +505,37 @@
       .cards-grid-4 { grid-template-columns: repeat(2, 1fr); }
       .two-cols { grid-template-columns: 1fr; }
     }
+
+    /* Accessible Focus Rings */
+    button:focus-visible,
+    a:focus-visible,
+    .thumb-pill:focus-visible {
+      outline: 2px solid var(--accent-cyan);
+      outline-offset: 2px;
+    }
+
+    /* Coarse Pointer Touch Target Accessibility */
+    @media (pointer: coarse) {
+      .thumb-pill {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 42px;
+      }
+      .hps-nav {
+        width: 56px;
+        height: 56px;
+      }
+    }
+
+    /* Intentional Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .slide,
+      .stage-container,
+      .speaker-notes-drawer {
+        transition: none !important;
+        transform: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -515,15 +550,15 @@
       </div>
     </div>
     <div class="hps-actions">
-      <button class="btn-action" id="toggleNotesBtn" title="Toggle Presenter Notes">
+      <button class="btn-action" id="toggleNotesBtn" title="Toggle Presenter Notes" aria-label="Toggle speaker notes drawer" aria-expanded="false" aria-controls="notesDrawer">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>
         Notes
       </button>
-      <a class="btn-action" href="GST_Credit_at_Risk_Forecaster.pptx" download="GST_Credit_at_Risk_Forecaster.pptx" title="Download PowerPoint .pptx File">
+      <a class="btn-action" href="GST_Credit_at_Risk_Forecaster.pptx" download="GST_Credit_at_Risk_Forecaster.pptx" title="Download PowerPoint .pptx File" aria-label="Download presentation in PowerPoint format">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
         Download PPTX
       </a>
-      <button class="btn-action" id="fullscreenBtn" title="Full Screen (F)">
+      <button class="btn-action" id="fullscreenBtn" title="Full Screen (F)" aria-label="Toggle full screen mode">
         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
       </button>
     </div>
@@ -531,10 +566,10 @@
 
   <!-- STAGE -->
   <main class="hps-stage-wrap" id="stageWrap">
-    <button class="hps-nav prev" id="prevBtn" title="Previous Slide (Left Arrow)">
+    <button class="hps-nav prev" id="prevBtn" title="Previous Slide (Left Arrow)" aria-label="Previous slide">
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
     </button>
-    <button class="hps-nav next" id="nextBtn" title="Next Slide (Right Arrow or Space)">
+    <button class="hps-nav next" id="nextBtn" title="Next Slide (Right Arrow or Space)" aria-label="Next slide">
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg>
     </button>
 
@@ -729,10 +764,10 @@
   </footer>
 
   <!-- SPEAKER NOTES DRAWER -->
-  <aside class="speaker-notes-drawer" id="notesDrawer">
+  <aside class="speaker-notes-drawer" id="notesDrawer" role="region" aria-label="Speaker Notes and Audit Transcript">
     <div class="notes-header">
       <div class="notes-title">Presenter Notes & Audit Transcript</div>
-      <button class="btn-action" id="closeNotesBtn" style="padding: 2px 8px; font-size: 11px;">Close</button>
+      <button class="btn-action" id="closeNotesBtn" aria-label="Close speaker notes drawer" style="padding: 2px 8px; font-size: 11px;">Close</button>
     </div>
     <div class="notes-body" id="notesText"></div>
   </aside>
@@ -767,11 +802,13 @@
         "8. Demo Results"
       ];
 
-      // Build thumbnail buttons
+      // Build thumbnail buttons with accessibility attributes
       slideTitles.forEach((title, idx) => {
         const btn = document.createElement('button');
         btn.className = `thumb-pill ${idx === 0 ? 'active' : ''}`;
         btn.innerText = title;
+        btn.setAttribute('aria-label', `Slide ${idx + 1}: ${title}`);
+        if (idx === 0) btn.setAttribute('aria-current', 'true');
         btn.addEventListener('click', () => goToSlide(idx));
         thumbnailsWrap.appendChild(btn);
       });
@@ -788,7 +825,13 @@
         // Update thumbnails
         const pills = thumbnailsWrap.querySelectorAll('.thumb-pill');
         pills.forEach((p, idx) => {
-          p.classList.toggle('active', idx === currentIndex);
+          const isActive = idx === currentIndex;
+          p.classList.toggle('active', isActive);
+          if (isActive) {
+            p.setAttribute('aria-current', 'true');
+          } else {
+            p.removeAttribute('aria-current');
+          }
         });
 
         // Update counter
@@ -867,13 +910,39 @@
       }
       fullscreenBtn.addEventListener('click', toggleFullscreen);
 
-      // Speaker Notes Drawer
-      toggleNotesBtn.addEventListener('click', () => {
-        notesDrawer.classList.toggle('open');
-      });
+      // Speaker Notes Drawer with aria-expanded
+      function toggleNotes() {
+        const isOpen = notesDrawer.classList.toggle('open');
+        toggleNotesBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+      toggleNotesBtn.addEventListener('click', toggleNotes);
       closeNotesBtn.addEventListener('click', () => {
         notesDrawer.classList.remove('open');
+        toggleNotesBtn.setAttribute('aria-expanded', 'false');
       });
+
+      // Mobile / Tablet Touch Swipe Gestures
+      let touchStartX = 0;
+      let touchEndX = 0;
+      stageWrap.addEventListener('touchstart', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          touchStartX = e.changedTouches[0].screenX;
+        }
+      }, { passive: true });
+
+      stageWrap.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          touchEndX = e.changedTouches[0].screenX;
+          const deltaX = touchEndX - touchStartX;
+          if (Math.abs(deltaX) > 45) {
+            if (deltaX < 0) {
+              nextSlide();
+            } else {
+              prevSlide();
+            }
+          }
+        }
+      }, { passive: true });
 
       // Initialize
       updateSlide(0);

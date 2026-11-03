@@ -77,6 +77,7 @@ export function FilterBar({
         />
         <input
           type="text"
+          aria-label="Filter invoices by invoice number, vendor name, or GSTIN"
           placeholder="Filter invoice #, supplier name, GSTIN..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -106,7 +107,7 @@ export function FilterBar({
               display: 'flex',
               padding: '2px',
             }}
-            title="Clear search"
+            title="Clear search" aria-label="Clear search query"
           >
             <X size={13} />
           </button>
@@ -117,15 +118,16 @@ export function FilterBar({
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
         {/* Bucket Filter */}
         <select
+          aria-label="Filter by triage bucket"
           value={bucketFilter}
           disabled={!isRouted}
           onChange={(e) => setBucketFilter(e.target.value as any)}
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: bucketFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
+            border: bucketFilter !== 'ALL' ? '1px solid var(--accent-blue)' : '1px solid var(--navy-border)',
             background: bucketFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: !isRouted ? 'var(--navy-muted)' : bucketFilter !== 'ALL' ? '#B794F6' : 'inherit',
+            color: !isRouted ? 'var(--navy-muted)' : bucketFilter !== 'ALL' ? 'var(--accent-primary)' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
             opacity: !isRouted ? 0.6 : 1,
@@ -141,14 +143,15 @@ export function FilterBar({
 
         {/* IRN Filter */}
         <select
+          aria-label="Filter by IRN applicability and status"
           value={irnFilter}
           onChange={(e) => setIrnFilter(e.target.value as any)}
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: irnFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
+            border: irnFilter !== 'ALL' ? '1px solid var(--accent-blue)' : '1px solid var(--navy-border)',
             background: irnFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: irnFilter !== 'ALL' ? '#B794F6' : 'inherit',
+            color: irnFilter !== 'ALL' ? 'var(--accent-primary)' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -160,14 +163,15 @@ export function FilterBar({
 
         {/* AP Leverage Filter */}
         <select
+          aria-label="Filter by accounts payable retention leverage"
           value={apFilter}
           onChange={(e) => setApFilter(e.target.value as any)}
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: apFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
+            border: apFilter !== 'ALL' ? '1px solid var(--accent-blue)' : '1px solid var(--navy-border)',
             background: apFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: apFilter !== 'ALL' ? '#B794F6' : 'inherit',
+            color: apFilter !== 'ALL' ? 'var(--accent-primary)' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -180,14 +184,15 @@ export function FilterBar({
 
         {/* Filing Pattern Filter */}
         <select
+          aria-label="Filter by vendor historical filing periodicity"
           value={patternFilter}
           onChange={(e) => setPatternFilter(e.target.value as any)}
           style={{
             padding: '7px 10px',
             borderRadius: '7px',
-            border: patternFilter !== 'ALL' ? '1px solid #2A9D8F' : '1px solid #3B2A4A',
+            border: patternFilter !== 'ALL' ? '1px solid var(--accent-blue)' : '1px solid var(--navy-border)',
             background: patternFilter !== 'ALL' ? 'rgba(183, 148, 246, 0.12)' : 'var(--navy-bg)',
-            color: patternFilter !== 'ALL' ? '#B794F6' : 'inherit',
+            color: patternFilter !== 'ALL' ? 'var(--accent-primary)' : 'inherit',
             fontSize: '11px',
             fontWeight: 600,
           }}
@@ -201,13 +206,14 @@ export function FilterBar({
         {/* Clear Filters Button if filtered */}
         {isFiltered && (
           <button
+            aria-label="Reset all active filters"
             onClick={handleResetFilters}
             style={{
               padding: '6px 10px',
               borderRadius: '6px',
-              background: 'rgba(192, 57, 43, 0.08)',
-              border: '1px solid rgba(192, 57, 43, 0.25)',
-              color: '#C0392B',
+              background: 'var(--chase-bg)',
+              border: '1px solid var(--chase-border)',
+              color: 'var(--chase-light)',
               fontSize: '11px',
               fontWeight: 600,
               cursor: 'pointer',
@@ -233,7 +239,7 @@ export function FilterBar({
             whiteSpace: 'nowrap',
           }}
         >
-          <strong style={{ color: '#FFFFFF' }}>{displayedCount}</strong> of {totalCount}
+          <strong style={{ color: 'var(--navy-heading)' }}>{displayedCount}</strong> of {totalCount}
         </div>
       </div>
     </div>

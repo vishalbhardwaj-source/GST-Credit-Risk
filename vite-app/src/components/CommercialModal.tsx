@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Briefcase, Check, Building2, Users, TrendingUp, X, Sparkles, MessageSquareQuote } from 'lucide-react';
 
 export interface CommercialModalProps {
@@ -10,6 +10,14 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<'ca' | 'sme' | 'enterprise'>('ca');
   const [pilotSubmitted, setPilotSubmitted] = useState(false);
   const [pilotEmail, setPilotEmail] = useState('');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   if (!isOpen) return null;
 
@@ -54,8 +62,8 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <TrendingUp size={22} color="#10B981" />
-              <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#fff' }}>
+              <TrendingUp size={22} color="var(--safe-color)" />
+              <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)' }}>
                 Unit Economics, CA Channel Distribution &amp; Market Opportunity
               </h2>
             </div>
@@ -65,7 +73,8 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
           </div>
           <button
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: '#627D98', cursor: 'pointer', padding: '4px' }}
+            aria-label="Close commercial plans dialog"
+            style={{ background: 'transparent', border: 'none', color: 'var(--navy-dim)', cursor: 'pointer', padding: '4px' }}
           >
             <X size={20} />
           </button>
@@ -83,20 +92,20 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
             alignItems: 'flex-start',
           }}
         >
-          <MessageSquareQuote size={28} color="#10B981" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <MessageSquareQuote size={28} color="var(--safe-color)" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
             <p style={{ fontSize: '12px', color: '#e2e8f0', lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
               &quot;During the monthly 11th&ndash;20th GSTR-3B filing rush, our article assistants waste days doing Excel VLOOKUPs between purchase registers and portal 2B JSON. If a client&apos;s supplier fails to file, the client loses lakhs in working capital or faces audit notices. Having an automated tool that flags exactly which AP vendor payments to freeze right before the payment run gives immense tangible ROI to our corporate clients.&quot;
             </p>
-            <div style={{ fontSize: '11px', color: '#627D98', marginTop: '6px', fontWeight: 600 }}>
-              &mdash; <span style={{ color: '#10B981' }}>CA Rajesh K. Sharma, FCA</span> (Senior Partner, Sharma &amp; Associates &middot; Managing 110+ Corporate Portfolios)
+            <div style={{ fontSize: '11px', color: 'var(--navy-dim)', marginTop: '6px', fontWeight: 600 }}>
+              &mdash; <span style={{ color: 'var(--safe-color)' }}>CA Rajesh K. Sharma, FCA</span> (Senior Partner, Sharma &amp; Associates &middot; Managing 110+ Corporate Portfolios)
             </div>
           </div>
         </div>
 
         {/* Grounded Bottom-Up Market Sizing Grid */}
         <div>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-heading)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Bottom-Up Market Sizing (Rejecting Naive 8M Kirana Estimates)
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginTop: '12px' }}>
@@ -108,7 +117,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ fontSize: '24px', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>
                 ₹1,140 Cr
               </div>
-              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$137M USD Total Market</div>
+              <div style={{ fontSize: '10px', color: 'var(--navy-dim)', marginTop: '2px' }}>~$137M USD Total Market</div>
               <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>50,000 active CA firms</strong> (@ ₹60k/yr) + <strong>280,000 formal B2B enterprises</strong> with turnover &gt;₹5 Cr (@ ₹30k/yr). Excludes 7M+ zero-tax kirana filers.
               </p>
@@ -122,7 +131,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ fontSize: '24px', fontWeight: 800, color: '#a78bfa', marginTop: '4px' }}>
                 ₹210 Cr
               </div>
-              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$25M USD Immediate Reach</div>
+              <div style={{ fontSize: '10px', color: 'var(--navy-dim)', marginTop: '2px' }}>~$25M USD Immediate Reach</div>
               <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>15,000 multi-client CA firms</strong> and <strong>40,000 high-transaction manufacturing/EPC SMEs</strong> facing frequent Section 16(4) supplier defaults.
               </p>
@@ -133,10 +142,10 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                 SOM (Year 1 Target)
               </span>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#10B981', marginTop: '4px' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--safe-color)', marginTop: '4px' }}>
                 ₹4.68 Cr ARR
               </div>
-              <div style={{ fontSize: '10px', color: '#627D98', marginTop: '2px' }}>~$560K USD Defensible Target</div>
+              <div style={{ fontSize: '10px', color: 'var(--navy-dim)', marginTop: '2px' }}>~$560K USD Defensible Target</div>
               <p style={{ fontSize: '11px', color: '#CBD5E1', marginTop: '10px', lineHeight: 1.5 }}>
                 <strong>600 CA firms</strong> (holding ~12,000 downstream SME client entities) + <strong>300 direct enterprise accounts</strong> via CA referral viral loop.
               </p>
@@ -146,7 +155,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
 
         {/* Pricing Tiers & Interactive Selector */}
         <div>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-heading)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Validated Commercial Pricing Tiers
           </span>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginTop: '12px' }}>
@@ -165,7 +174,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', fontSize: '11px', fontWeight: 700 }}>
                 <Building2 size={14} /> SME Direct
               </div>
-              <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '6px' }}>
                 ₹2,499<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
               <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
@@ -189,13 +198,13 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
                 transition: 'all 0.15s ease',
               }}
             >
-              <div style={{ position: 'absolute', top: '-10px', right: '12px', background: '#10B981', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>
+              <div style={{ position: 'absolute', top: '-10px', right: '12px', background: 'var(--safe-color)', color: 'var(--navy-heading)', fontSize: '9px', fontWeight: 800, padding: '2px 8px', borderRadius: '10px' }}>
                 MOST POPULAR
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10B981', fontSize: '11px', fontWeight: 700 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--safe-color)', fontSize: '11px', fontWeight: 700 }}>
                 <Users size={14} /> CA Firm Multi-Client
               </div>
-              <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '6px' }}>
                 ₹4,999<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
               <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
@@ -221,7 +230,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#a78bfa', fontSize: '11px', fontWeight: 700 }}>
                 <Briefcase size={14} /> Enterprise &amp; ERP
               </div>
-              <div style={{ fontSize: '20px', fontWeight: 800, color: '#fff', marginTop: '6px' }}>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '6px' }}>
                 ₹9,999+<span style={{ fontSize: '12px', color: 'var(--navy-muted)', fontWeight: 400 }}>/mo</span>
               </div>
               <ul style={{ margin: '12px 0 0', padding: '0 0 0 16px', fontSize: '11px', color: '#CBD5E1', lineHeight: 1.6 }}>
@@ -249,14 +258,14 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
           }}
         >
           {pilotSubmitted ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#10B981', fontWeight: 700, fontSize: '13px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--safe-color)', fontWeight: 700, fontSize: '13px' }}>
               <Check size={18} />
               Sandbox access credentials and CA onboarding pack sent to {pilotEmail}!
             </div>
           ) : (
             <form onSubmit={handleRequestPilot} style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: '240px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: '#fff' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--navy-heading)' }}>
                   Request Pilot Access &amp; CA Evaluation Sandbox
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--navy-muted)', marginTop: '2px' }}>
@@ -274,7 +283,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
                   border: '1px solid var(--navy-border-hover)',
                   borderRadius: '8px',
                   padding: '8px 12px',
-                  color: '#fff',
+                  color: 'var(--navy-heading)',
                   fontSize: '12px',
                   width: '280px',
                   outline: 'none',
@@ -283,8 +292,8 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <button
                 type="submit"
                 style={{
-                  background: '#10B981',
-                  color: '#fff',
+                  background: 'var(--safe-color)',
+                  color: 'var(--navy-heading)',
                   border: 'none',
                   borderRadius: '8px',
                   padding: '8px 16px',
