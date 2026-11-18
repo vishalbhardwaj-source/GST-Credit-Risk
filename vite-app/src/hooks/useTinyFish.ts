@@ -20,18 +20,39 @@ export function useTinyFish() {
   const [simFailureMode, setSimFailureMode] = useState(false);
 
   useEffect(() => {
-    fetch(`${getApiBaseUrl()}/api/tinyfish/workflow-1/deadline-extension`)
-      .then((res) => {
-        if (!res.ok) throw new Error('API offline');
-        return res.json();
-      })
-      .then((data) => {
-        setApiConnected(true);
-        setWf1Status(data);
-      })
-      .catch(() => {
-        setApiConnected(false);
-      });
+    let isMounted = true;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let attempts = 0;
+    const maxAttempts = 6;
+
+    const checkHealthAndWf1 = () => {
+      fetch(`${getApiBaseUrl()}/api/tinyfish/workflow-1/deadline-extension`)
+        .then((res) => {
+          if (!res.ok) throw new Error('API offline');
+          return res.json();
+        })
+        .then((data) => {
+          if (!isMounted) return;
+          setApiConnected(true);
+          setWf1Status(data);
+        })
+        .catch(() => {
+          if (!isMounted) return;
+          setApiConnected(false);
+          attempts++;
+          if (attempts < maxAttempts) {
+            // Render spin-up takes ~30-45s; retry at increasing intervals
+            retryTimer = setTimeout(checkHealthAndWf1, Math.min(attempts * 6000, 15000));
+          }
+        });
+    };
+
+    checkHealthAndWf1();
+
+    return () => {
+      isMounted = false;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, []);
 
   // Live TinyFish verification handler (Workflow 2)

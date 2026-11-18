@@ -1,5 +1,9 @@
 import re
 import os
+import time
+import asyncio
+import httpx
+from contextlib import asynccontextmanager
 # Automatically load local .env if present
 _env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 if os.path.exists(_env_path):
@@ -47,10 +51,96 @@ from .model_integration import (
     run_pipeline as run_model_pipeline,
 )
 
+# Keep-alive tracking state for Render Free Tier Sleep Prevention
+SERVER_START_TIME = time.time()
+KEEP_ALIVE_STATS: Dict[str, Any] = {
+    "enabled": False,
+    "target_url": None,
+    "interval_seconds": 600,
+    "total_pings_sent": 0,
+    "last_ping_timestamp": None,
+    "last_ping_status": None,
+    "last_error": None,
+}
+
+async def _keep_alive_loop():
+    """
+    Background worker that periodically pings the public URL to keep Render free-tier instance active.
+    Render free tier sleeps after 15 minutes of inbound HTTP inactivity.
+    Pinging every 10 minutes (600s) resets the timer and keeps the instance warm 24/7.
+    """
+    # Wait 60 seconds after server start before beginning keep-alive pings
+    await asyncio.sleep(60)
+    
+    interval = int(os.environ.get("KEEP_ALIVE_INTERVAL_MINUTES", "10")) * 60
+    KEEP_ALIVE_STATS["interval_seconds"] = interval
+    
+    # Target URL discovery
+    target = (
+        os.environ.get("KEEP_ALIVE_URL")
+        or os.environ.get("RENDER_EXTERNAL_URL")
+        or ("https://gst-credit-risk-api.onrender.com" if os.environ.get("RENDER") == "true" else None)
+    )
+    
+    if not target:
+        print("[KeepAlive] Worker standby: No external URL configured and not running on Render.")
+        KEEP_ALIVE_STATS["enabled"] = False
+        return
+
+    target = target.rstrip("/")
+    if not target.endswith("/api/health") and not target.endswith("/health"):
+        target = f"{target}/api/health"
+
+    KEEP_ALIVE_STATS["enabled"] = True
+    KEEP_ALIVE_STATS["target_url"] = target
+    print(f"[KeepAlive] Self-ping keep-alive loop started. Target: {target}, Interval: {interval}s")
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        while True:
+            try:
+                ping_url = f"{target}?t={int(time.time())}&source=self_keepalive"
+                res = await client.get(ping_url)
+                KEEP_ALIVE_STATS["total_pings_sent"] += 1
+                KEEP_ALIVE_STATS["last_ping_timestamp"] = time.time()
+                KEEP_ALIVE_STATS["last_ping_status"] = res.status_code
+                KEEP_ALIVE_STATS["last_error"] = None
+                print(f"[KeepAlive] Self-ping successful to {target} (Status {res.status_code}, Count: {KEEP_ALIVE_STATS['total_pings_sent']})")
+            except Exception as exc:
+                KEEP_ALIVE_STATS["last_error"] = str(exc)
+                print(f"[KeepAlive] Self-ping attempt failed to {target}: {exc}")
+            
+            await asyncio.sleep(interval)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Determine if keep-alive should run
+    is_render = os.environ.get("RENDER") == "true"
+    keep_alive_flag = os.environ.get("KEEP_ALIVE", "").lower() in ("true", "1", "yes")
+    has_target = bool(os.environ.get("KEEP_ALIVE_URL") or os.environ.get("RENDER_EXTERNAL_URL"))
+    
+    keep_alive_task = None
+    if is_render or keep_alive_flag or has_target:
+        keep_alive_task = asyncio.create_task(_keep_alive_loop())
+        print("[KeepAlive] Background task scheduled.")
+    else:
+        print("[KeepAlive] Inactive (local development mode).")
+        
+    try:
+        yield
+    finally:
+        if keep_alive_task and not keep_alive_task.done():
+            keep_alive_task.cancel()
+            try:
+                await keep_alive_task
+            except asyncio.CancelledError:
+                pass
+            print("[KeepAlive] Background task stopped.")
+
 app = FastAPI(
     title="GST Credit-at-Risk Forecaster API (Hackathon Architecture)",
     description="Implements Module A (Ingestion & RapidFuzz), Module B (Hybrid Classifier), Module C (Resolution Forecaster), Expected Loss Engine, and Module E (TinyFish Web Agent).",
-    version="2.0.0"
+    version="2.0.0",
+    lifespan=lifespan
 )
 
 app.add_middleware(
@@ -144,9 +234,12 @@ def classify_mismatch_reason(
 @app.get("/")
 @app.get("/api/health")
 def health_check():
+    uptime_sec = int(time.time() - SERVER_START_TIME)
     return {
         "status": "online",
         "service": "GST Credit-at-Risk Forecaster Backend (Architecture Compliant)",
+        "uptime_seconds": uptime_sec,
+        "keep_alive": KEEP_ALIVE_STATS,
         "modules": [
             "Module A: Ingestion & Normalizer (RapidFuzz)",
             "Tolerance-Based Match Engine",
@@ -157,6 +250,14 @@ def health_check():
         ],
         "model_trained": trained_forecaster.model is not None,
         "model_metrics": trained_forecaster.model_metrics
+    }
+
+@app.get("/api/keepalive")
+def get_keep_alive_status():
+    return {
+        "status": "active" if KEEP_ALIVE_STATS.get("enabled") else "standby",
+        "uptime_seconds": int(time.time() - SERVER_START_TIME),
+        "stats": KEEP_ALIVE_STATS
     }
 
 @app.get("/api/ai/config")

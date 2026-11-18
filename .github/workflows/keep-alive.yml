@@ -1,0 +1,49 @@
+name: Render Backend Keep-Alive (24/7 Warmup)
+
+on:
+  schedule:
+    # Runs every 12 minutes (Render free tier puts instances to sleep after 15 min of inactivity)
+    - cron: '*/12 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+concurrency:
+  group: render-backend-keepalive
+  cancel-in-progress: true
+
+jobs:
+  keep-alive:
+    name: Ping Render API Health
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Ping Render Backend
+        run: |
+          TARGET_URL="${{ vars.RENDER_HEALTH_URL }}"
+          if [ -z "$TARGET_URL" ]; then
+            TARGET_URL="https://gst-credit-risk-api.onrender.com/api/health"
+          fi
+
+          echo "Pinging Render backend at: $TARGET_URL"
+          
+          # Render cold-starts may take 30-50s on free tier; set curl timeout to 65s
+          HTTP_STATUS=$(curl -s -o /tmp/resp.json -w "%{http_code}" --max-time 65 "$TARGET_URL" || echo "000")
+          echo "Initial response HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Render backend is awake and responding!"
+            cat /tmp/resp.json
+            echo ""
+          else
+            echo "⚠️ Backend was cold or returned status $HTTP_STATUS. Retrying in 12 seconds..."
+            sleep 12
+            HTTP_STATUS=$(curl -s -o /tmp/resp.json -w "%{http_code}" --max-time 65 "$TARGET_URL" || echo "000")
+            echo "Second attempt HTTP Status: $HTTP_STATUS"
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "✅ Render backend has woken up and is healthy!"
+              cat /tmp/resp.json
+              echo ""
+            else
+              echo "::warning ::Backend ping returned HTTP $HTTP_STATUS"
+            fi
+          fi

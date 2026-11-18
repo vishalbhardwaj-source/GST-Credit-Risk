@@ -59,8 +59,8 @@ export function App() {
   // TinyFish Hook
   const tinyFish = useTinyFish();
 
-  // Fetch server-side reconciled invoices from FastAPI backend with seamless fallback
-  const fetchServerReconciled = async () => {
+  // Fetch server-side reconciled invoices from FastAPI backend with seamless fallback and auto-retry for Render spin-up
+  const fetchServerReconciled = async (isRetry = false) => {
     try {
       const res = await fetch(`${getApiBaseUrl()}/api/reconciled-invoices`);
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -69,16 +69,25 @@ export function App() {
       setInitialReconciled(data);
       setServerError(null);
     } catch (err: any) {
-      console.warn('Backend server unreachable; using high-fidelity local dataset fallback.', err);
-      // Graceful fallback guarantees live interactive UI
-      const baseData = generateSyntheticDataset(42);
-      const fallbackData = reconcileDataset(baseData);
-      setInitialReconciled(fallbackData);
-      setServerError('Running in Standalone Demo Mode (Backend serverless initializing or offline).');
+      if (!isRetry) {
+        console.warn('Backend server unreachable; using high-fidelity local dataset fallback while server warms up.', err);
+        // Graceful fallback guarantees live interactive UI immediately
+        const baseData = generateSyntheticDataset(42);
+        const fallbackData = reconcileDataset(baseData);
+        setInitialReconciled(fallbackData);
+        setServerError('Connecting to backend (waking up cloud server if idle)...');
+
+        // Retry polling in case Render free instance was asleep (takes ~30-45s to wake)
+        setTimeout(() => fetchServerReconciled(true), 6000);
+        setTimeout(() => fetchServerReconciled(true), 18000);
+        setTimeout(() => fetchServerReconciled(true), 35000);
+      }
     }
   };
 
   useEffect(() => {
+    // Immediate lightweight health ping to wake up sleeping Render instance as soon as page opens
+    fetch(`${getApiBaseUrl()}/api/health`).catch(() => {});
     fetchServerReconciled();
   }, []);
 
