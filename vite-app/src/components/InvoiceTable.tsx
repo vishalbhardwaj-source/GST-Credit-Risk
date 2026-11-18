@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronRight, FileSearch } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, Check, ChevronRight, FileSearch, XCircle } from 'lucide-react';
 import type { ReconciledInvoice } from '../types';
 import { formatINR } from '../utils';
 
@@ -64,14 +64,14 @@ export function InvoiceTable({
                 letterSpacing: '0.04em',
               }}
             >
-              <th style={{ padding: '12px 16px', fontWeight: 700 }}>Invoice Details</th>
+              <th style={{ padding: '16px 18px', fontWeight: 700 }}>Invoice Details</th>
               <th
                 onClick={() => handleSort('vendorName')}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('vendorName'); } }}
                 tabIndex={0}
                 role="columnheader"
                 aria-sort={sortField === 'vendorName' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
-                style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                style={{ padding: '16px 18px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
                   Vendor &amp; GSTIN {renderSortIcon('vendorName')}
@@ -83,7 +83,7 @@ export function InvoiceTable({
                 tabIndex={0}
                 role="columnheader"
                 aria-sort={sortField === 'invoiceDate' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
-                style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                style={{ padding: '16px 18px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
                   Date {renderSortIcon('invoiceDate')}
@@ -95,30 +95,30 @@ export function InvoiceTable({
                 tabIndex={0}
                 role="columnheader"
                 aria-sort={sortField === 'taxAmount' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
-                style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                style={{ padding: '16px 18px', fontWeight: 700, textAlign: 'right', cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%' }}>
                   {isRouted ? 'GST Amount at Risk' : 'GST Tax Amount'} {renderSortIcon('taxAmount')}
                 </div>
               </th>
-              <th style={{ padding: '12px 16px', fontWeight: 700, textAlign: 'center' }}>2B Match</th>
-              <th style={{ padding: '12px 16px', fontWeight: 700 }}>IRN Status</th>
-              <th style={{ padding: '12px 16px', fontWeight: 700 }}>AP Leverage</th>
-              <th style={{ padding: '12px 16px', fontWeight: 700 }}>Filing Track</th>
+              <th style={{ padding: '16px 18px', fontWeight: 700, textAlign: 'center' }} title="Section 16(2)(aa) auto-generated statement match status">2B Match</th>
+              <th style={{ padding: '16px 18px', fontWeight: 700 }} title="Rule 48(4) e-Invoicing QR code status in central IRP registry">IRN Status</th>
+              <th style={{ padding: '16px 18px', fontWeight: 700 }} title="Accounts Payable retention leverage: Unpaid commercial balance vs tax at risk">AP Leverage</th>
+              <th style={{ padding: '16px 18px', fontWeight: 700 }} title="6-Month historical vendor return regularity (Laggard vs Punctual)">Filing Track</th>
               <th
                 onClick={() => handleSort('score')}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort('score'); } }}
                 tabIndex={0}
                 role="columnheader"
                 aria-sort={sortField === 'score' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
-                style={{ padding: '12px 16px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
+                style={{ padding: '16px 18px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}
               >
                 <div style={{ display: 'inline-flex', alignItems: 'center' }}>
                   Score {renderSortIcon('score')}
                 </div>
               </th>
-              <th style={{ padding: '12px 16px', fontWeight: 700 }}>Routing Bucket</th>
-              <th style={{ padding: '12px 12px', width: '36px' }}></th>
+              <th style={{ padding: '16px 18px', fontWeight: 700 }}>Routing Bucket</th>
+              <th style={{ padding: '16px 14px', width: '36px' }}></th>
             </tr>
           </thead>
           <tbody>
@@ -173,12 +173,12 @@ export function InvoiceTable({
                     }}
                   >
                     {/* Invoice Details */}
-                    <td style={{ padding: '12px 16px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700, color: 'var(--accent-blue)' }}>
+                    <td style={{ padding: '16px 18px', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700, color: 'var(--accent-blue)' }}>
                       {inv.invoiceNumber}
                     </td>
 
                     {/* Vendor */}
-                    <td style={{ padding: '12px 16px', maxWidth: '220px' }}>
+                    <td style={{ padding: '16px 18px', maxWidth: '220px' }}>
                       <div
                         style={{
                           fontWeight: 600,
@@ -197,12 +197,12 @@ export function InvoiceTable({
                     </td>
 
                     {/* Date */}
-                    <td style={{ padding: '12px 16px', color: 'var(--navy-muted)', fontSize: '12px', fontWeight: 500 }}>
+                    <td style={{ padding: '16px 18px', color: 'var(--navy-muted)', fontSize: '12px', fontWeight: 500 }}>
                       {inv.invoiceDate}
                     </td>
 
                     {/* GST Tax Amount */}
-                    <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 700, color: 'var(--navy-heading)' }}>
+                    <td style={{ padding: '16px 18px', textAlign: 'right', fontWeight: 700, color: 'var(--navy-heading)' }}>
                       {formatINR(inv.taxAmount)}
                       <div style={{ fontSize: '10px', color: 'var(--navy-muted)', fontWeight: 600 }}>
                         18% on {formatINR(inv.taxableAmount)}
@@ -210,20 +210,24 @@ export function InvoiceTable({
                     </td>
 
                     {/* 2B Match */}
-                    <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                    <td style={{ padding: '16px 18px', textAlign: 'center' }}>
                       {!isRouted ? (
                         <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
                           —
                         </span>
                       ) : isMatched ? (
-                        <span className="badge badge-safe">✓ Matched</span>
+                        <span className="badge badge-safe">
+                          <Check size={11} /> Matched
+                        </span>
                       ) : (
-                        <span className="badge badge-chase">✗ Missing</span>
+                        <span className="badge badge-chase">
+                          <XCircle size={11} /> Missing
+                        </span>
                       )}
                     </td>
 
                     {/* IRN Status */}
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ padding: '16px 18px' }}>
                       {inv.vendorIrnLookup ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                           <span
@@ -246,7 +250,7 @@ export function InvoiceTable({
                               fontSize: '9px',
                               color: 'var(--accent-cyan)',
                               fontWeight: 700,
-                              background: 'rgba(183, 148, 246, 0.15)',
+                              background: 'rgba(255, 255, 255, 0.08)',
                               padding: '1px 5px',
                               borderRadius: '4px',
                               width: 'fit-content',
@@ -263,7 +267,7 @@ export function InvoiceTable({
                     </td>
 
                     {/* AP Leverage */}
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ padding: '16px 18px' }}>
                       <span
                         style={{
                           fontSize: '11px',
@@ -279,7 +283,7 @@ export function InvoiceTable({
                     {/* Filing Track */}
                     <td
                       style={{
-                        padding: '12px 16px',
+                        padding: '16px 18px',
                         fontSize: '11px',
                         color: 'var(--navy-muted)',
                       }}
@@ -288,7 +292,7 @@ export function InvoiceTable({
                     </td>
 
                     {/* Score */}
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ padding: '16px 18px' }}>
                       {isRouted && score !== undefined ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div
@@ -322,7 +326,7 @@ export function InvoiceTable({
                     </td>
 
                     {/* Routing Bucket & LightGBM Inference */}
-                    <td style={{ padding: '12px 16px' }}>
+                    <td style={{ padding: '16px 18px' }}>
                       {!isRouted ? (
                         <span className="badge badge-neutral" style={{ opacity: 0.6, fontSize: '11px' }}>
                           Awaiting Pipeline
@@ -356,7 +360,7 @@ export function InvoiceTable({
                     </td>
 
                     {/* Chevron Indicator */}
-                    <td style={{ padding: '12px 8px', textAlign: 'center', color: 'var(--navy-muted)' }}>
+                    <td style={{ padding: '16px 10px', textAlign: 'center', color: 'var(--navy-muted)' }}>
                       <ChevronRight size={14} style={{ opacity: 0.5 }} />
                     </td>
                   </tr>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Play } from 'lucide-react';
 import type { Bucket, ReconciledInvoice } from './types';
 import { computeKpis, exportInvoicesToCsv, getDaysToStatutoryCutoff, reconcileDataset } from './utils';
 import { generateSyntheticDataset } from './data';
@@ -23,7 +24,7 @@ export function App() {
   // const [showWelcome, setShowWelcome] = useState(false);
 
   // View state: 'overview' (Judge pitch landing) or 'dashboard' (Interactive triage console)
-  const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('overview');
+  const [activeView, setActiveView] = useState<'overview' | 'dashboard'>('dashboard');
 
   // Custom data upload state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -298,6 +299,8 @@ export function App() {
         kpis={kpis}
         matchFilter={matchFilter}
         setMatchFilter={setMatchFilter}
+        bucketFilter={bucketFilter}
+        setBucketFilter={setBucketFilter}
       />
 
       {activeView === 'overview' ? (
@@ -312,6 +315,73 @@ export function App() {
         />
       ) : (
         <>
+          {!isRouted && (
+            <div
+              style={{
+                background: 'var(--navy-card)',
+                border: '1px solid var(--navy-border)',
+                borderRadius: '12px',
+                padding: '20px',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '14px',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: '1 1 320px' }}>
+                <div
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '10px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.14)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--accent-blue)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Play size={18} fill="currentColor" />
+                </div>
+                <div>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
+                    Step 1: Execute 3-Signal Pipeline Routing
+                  </div>
+                  <p style={{ fontSize: '12px', color: 'var(--navy-muted)', marginTop: '3px', lineHeight: 1.5 }}>
+                    200 Purchase records loaded (170 Matched, 30 Discrepancies). Click below to triage unmatched invoices by <strong>IRN Footprint</strong>, <strong>AP Retention Leverage</strong>, and <strong>Filing Periodicity</strong>.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={handleRunRouting}
+                disabled={isRouting}
+                className="sovereign-btn-primary"
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  height: '40px',
+                  padding: '0 22px',
+                  borderRadius: '8px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
+                  cursor: isRouting ? 'not-allowed' : 'pointer',
+                  opacity: isRouting ? 0.7 : 1,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Play size={14} fill="#090A0C" />
+                {isRouting ? 'Executing Pipeline...' : 'Run Pipeline Routing (1-Click)'}
+              </button>
+            </div>
+          )}
+
           <FilterBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}

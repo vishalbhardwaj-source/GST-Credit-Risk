@@ -42,7 +42,7 @@ Unlike traditional accounting tools that stop at fuzzy line-item matching and ge
 
 ## Brand Commitments
 
-- **Visual Identity:** "Electric Lavender" dark interface—deep dark violet/navy canvases (`#170D24`, `#23172F`), vibrant lavender accents (`#B794F6`), and unmistakable semantic status indicators: Emerald (`#10B981`) for Safe to Hold, Amber (`#F59E0B`) for Watch, and Crimson (`#EF4444`) for Chase Now.
+- **Visual Identity:** "Neutral Carbon & Titanium" interface—deep architectural graphite and dark zinc canvases (`#090A0C`, `#111215`, `#181A1F`), crisp neutral silver hairlines (`#26282F`, `#383A43`), high-contrast titanium white typography (`#FFFFFF`, `#E4E5E8`), and restrained, surgical semantic status indicators: Muted Emerald (`#10B981`) for Safe to Hold, Muted Amber (`#F59E0B`) for Watch, and Crimson (`#EF4444`) for Chase Now.
 - **Typography & Precision:** High-legibility sans-serif (`Inter`) paired with monospace (`JetBrains Mono`) for all financial and statutory identifiers (GSTIN, IRN, HSN, invoice numbers).
 - **Tone & Voice:** Authoritative, disciplined, compliance-sound, and operational. No speculative financial claims.
 

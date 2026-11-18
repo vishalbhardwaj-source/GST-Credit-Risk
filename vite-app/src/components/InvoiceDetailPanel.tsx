@@ -445,7 +445,7 @@ export function InvoiceDetailPanel({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 paddingTop: '8px',
-                borderTop: '1px solid #3B2A4A',
+                borderTop: '1px solid var(--navy-border)',
                 fontSize: '11px',
                 color: 'var(--navy-muted)',
               }}
@@ -583,7 +583,7 @@ export function InvoiceDetailPanel({
                         background: 'rgba(42, 157, 143, 0.1)',
                         color: 'var(--accent-primary)',
                         fontWeight: 700,
-                        border: '1px solid #3B2A4A',
+                        border: '1px solid var(--navy-border)',
                       }}
                     >
                       TinyFish Sourced
@@ -677,7 +677,7 @@ export function InvoiceDetailPanel({
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Sparkles size={13} color="#B794F6" />
+                      <Sparkles size={13} color="var(--accent-blue)" />
                       <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary)' }}>
                         TinyFish IRN Rule Applicability Checker
                       </span>
@@ -859,7 +859,7 @@ export function InvoiceDetailPanel({
                   style={{
                     marginTop: '6px',
                     background: 'var(--navy-bg)',
-                    border: '1px solid #3B2A4A',
+                    border: '1px solid var(--navy-border)',
                     borderRadius: '8px',
                     padding: '12px',
                     display: 'flex',
@@ -870,7 +870,7 @@ export function InvoiceDetailPanel({
                   {/* Header row */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Cpu size={13} color="#B794F6" />
+                      <Cpu size={13} color="var(--accent-blue)" />
                       <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent-primary)' }}>
                         TinyFish Vendor Portal Lookup (WF4)
                       </span>
@@ -880,7 +880,7 @@ export function InvoiceDetailPanel({
                           fontWeight: 700,
                           background: 'rgba(42, 157, 143, 0.1)',
                           color: 'var(--accent-primary)',
-                          border: '1px solid #3B2A4A',
+                          border: '1px solid var(--navy-border)',
                           padding: '1px 5px',
                           borderRadius: '4px',
                           textTransform: 'uppercase',
@@ -947,7 +947,7 @@ export function InvoiceDetailPanel({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '5px',
-                        boxShadow: '0 2px 8px #3B2A4A',
+                        boxShadow: '0 2px 8px var(--navy-border)',
                         opacity: vendorLookupCheckingId === selectedInvoice.id ? 0.7 : 1,
                       }}
                     >
@@ -1207,7 +1207,7 @@ export function InvoiceDetailPanel({
             <div
               style={{
                 background: 'var(--navy-bg)',
-                border: '1px solid #3B2A4A',
+                border: '1px solid var(--navy-border)',
                 borderRadius: '12px',
                 padding: '16px',
               }}
@@ -1364,7 +1364,7 @@ export function InvoiceDetailPanel({
           <div
             style={{
               background: 'var(--navy-bg)',
-              border: '1px solid #3B2A4A',
+              border: '1px solid var(--navy-border)',
               borderRadius: '12px',
               padding: '16px',
               display: 'flex',
@@ -1382,7 +1382,7 @@ export function InvoiceDetailPanel({
                 disabled={tinyFishLoading}
                 style={{
                   background: 'rgba(42, 157, 143, 0.1)',
-                  border: '1px solid #B794F6',
+                  border: '1px solid var(--accent-blue)',
                   borderRadius: '6px',
                   color: 'var(--accent-primary)',
                   fontSize: '11px',

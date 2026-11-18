@@ -141,9 +141,9 @@ export function ProjectOverview({
           left: 0,
           width: `${scrollProgress}%`,
           height: '3px',
-          background: 'linear-gradient(90deg, #B794F6 0%, #10B981 100%)',
+          background: 'linear-gradient(90deg, #E4E5E8 0%, #A0A4AE 100%)',
           zIndex: 9999,
-          boxShadow: '0 0 10px rgba(254, 145, 75, 0.7)',
+          boxShadow: '0 0 10px rgba(255, 255, 255, 0.3)',
           transition: 'width 0.1s linear',
         }}
       />
@@ -168,8 +168,8 @@ export function ProjectOverview({
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span
               style={{
-                background: 'rgba(183, 148, 246, 0.15)',
-                border: '1px solid rgba(183, 148, 246, 0.3)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: 'var(--accent-primary)',
                 fontSize: '10px',
                 fontWeight: 800,
@@ -236,55 +236,53 @@ export function ProjectOverview({
           >
             {/* Left Column: Welcome Greeting & Action Pillars */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-              {/* Prominent Welcome Tag */}
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' }}>
-                <span className="gnani-pill-badge">
-                  <span className="gnani-dot-pulse" />
-                  WELCOME TO YOUR GST TRIAGE PLATFORM
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    color: 'var(--accent-primary)',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--accent-primary)', boxShadow: '0 0 8px var(--accent-primary)', display: 'inline-block' }} />
+                  Autonomous Compliance System
                 </span>
                 <span
                   style={{
                     color: 'var(--watch-color)',
                     fontSize: '11px',
                     fontWeight: 700,
-                    letterSpacing: '0.04em',
+                    letterSpacing: '0.02em',
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '4px',
                   }}
                 >
                   <Sparkles size={13} />
-                  Smarter Insights · Safer ITC
+                  Rule 37A &amp; Section 16(2)(aa)
                 </span>
               </div>
 
-              {/* Distinct Welcoming Headline */}
               <div>
-                <span
-                  style={{
-                    display: 'block',
-                    fontSize: '15px',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.12em',
-                    color: 'var(--navy-dim)',
-                    marginBottom: '8px',
-                  }}
-                >
-                  WELCOME TO
-                </span>
                 <h1
                   style={{
                     fontSize: 'clamp(34px, 4.2vw, 50px)',
                     fontWeight: 900,
                     lineHeight: 1.12,
                     letterSpacing: '-0.035em',
-                    color: 'var(--navy-heading)',
+                    color: '#FFFFFF',
                     margin: 0,
                   }}
                 >
-                  GST Credit-at-Risk{' '}
-                  <span className="gnani-gradient-text">Forecaster</span>
+                  GST Credit-at-Risk Forecaster
                 </h1>
               </div>
 
@@ -312,8 +310,8 @@ export function ProjectOverview({
               >
                 <div
                   style={{
-                    background: 'rgba(99, 102, 241, 0.08)',
-                    border: '1px solid rgba(183, 148, 246, 0.25)',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '14px',
                     padding: '16px 14px',
                     transition: 'all 0.25s ease',
@@ -496,7 +494,7 @@ export function ProjectOverview({
                     marginTop: '16px',
                     height: '8px',
                     borderRadius: '9999px',
-                    background: '#3B2A4A',
+                    background: 'var(--navy-border)',
                     overflow: 'hidden',
                   }}
                 >
@@ -504,7 +502,7 @@ export function ProjectOverview({
                     style={{
                       width: `${matchPercentage}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, #10B981, #B794F6)',
+                      background: 'linear-gradient(90deg, #10B981, #E4E5E8)',
                       borderRadius: '9999px',
                       transition: 'width 1s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
@@ -588,7 +586,7 @@ export function ProjectOverview({
             style={{
               marginTop: '44px',
               paddingTop: '32px',
-              borderTop: '1px solid #3B2A4A',
+              borderTop: '1px solid var(--navy-border)',
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
               gap: '20px',
@@ -913,8 +911,8 @@ export function ProjectOverview({
             <div
               onClick={() => onSelectQuickDemo?.('tinyfish')}
               style={{
-                background: 'rgba(183, 148, 246, 0.08)',
-                border: '1px solid rgba(183, 148, 246, 0.25)',
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '16px',
                 padding: '20px',
                 cursor: 'pointer',
@@ -989,7 +987,7 @@ export function ProjectOverview({
       {/* Enterprise Footer */}
       <footer
         style={{
-          borderTop: '1px solid #3B2A4A',
+          borderTop: '1px solid var(--navy-border)',
           paddingTop: '26px',
           display: 'flex',
           flexWrap: 'wrap',

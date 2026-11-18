@@ -105,7 +105,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
             lineHeight: 1.6,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, fontSize: '12px', color: '#38bdf8', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, fontSize: '12px', color: 'var(--navy-heading)', marginBottom: '6px' }}>
             <ShieldCheck size={15} />
             Why Legal Tax Decisions Must Be Deterministic (Not Black-Box ML)
           </div>
@@ -151,7 +151,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
           </div>
           <div style={{ background: 'var(--navy-bg)', border: '1px solid var(--navy-border)', borderRadius: '10px', padding: '14px' }}>
             <span style={{ fontSize: '10px', color: 'var(--navy-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Primary Compliance</span>
-            <div style={{ fontSize: '22px', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>100% Rules</div>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '4px' }}>100% Rules</div>
             <span style={{ fontSize: '10px', color: 'var(--navy-dim)' }}>Deterministic Statutory Audit</span>
           </div>
         </div>
@@ -210,7 +210,7 @@ export function MlBacktestModal({ isOpen, onClose }: MlBacktestModalProps) {
                   <span style={{ fontFamily: 'monospace', color: '#818cf8', fontWeight: 600 }}>{f.gain} gain</span>
                 </div>
                 <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ width: `${f.pct}%`, height: '100%', background: 'linear-gradient(90deg, #B794F6, #B794F6)', borderRadius: '3px' }} />
+                  <div style={{ width: `${f.pct}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-blue), var(--accent-blue))', borderRadius: '3px' }} />
                 </div>
               </div>
             ))}

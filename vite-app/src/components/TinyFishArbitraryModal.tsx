@@ -107,7 +107,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Cpu size={20} color="#38bdf8" />
+              <Cpu size={20} color="var(--navy-heading)" />
               <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--navy-heading)', margin: 0 }}>
                 Live TinyFish Web Agent — Arbitrary GSTIN Test Console
               </h2>
@@ -198,7 +198,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
             style={{
               padding: '9px 18px',
               borderRadius: '8px',
-              background: '#38bdf8',
+              background: 'var(--accent-primary)',
               border: 'none',
               color: '#0f172a',
               fontWeight: 700,
@@ -265,7 +265,7 @@ export function TinyFishArbitraryModal({ isOpen, onClose }: TinyFishArbitraryMod
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '10px', color: '#64748b' }}>
               <span>Verified at: {result.checked_at_human}</span>
-              <a href={result.source_url} target="_blank" rel="noopener noreferrer" style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <a href={result.source_url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 Public Source Link <ExternalLink size={10} />
               </a>
             </div>

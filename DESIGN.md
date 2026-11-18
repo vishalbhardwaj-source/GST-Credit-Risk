@@ -1,19 +1,20 @@
 ---
 name: GST Credit-at-Risk Forecaster
-description: Autonomous 3-Signal Action Triage Engine with Multi-Provider AI Tax Copilot
+description: Neutral Carbon & Titanium Architecture for Autonomous 3-Signal Indirect Tax Reconciliation
 colors:
-  primary: "#b794f6"
-  primary-hover: "#9f6ff0"
-  neutral-bg: "#170d24"
-  neutral-surface: "#1e1230"
-  neutral-card: "#23172f"
-  neutral-card-hover: "#2c1d3a"
-  border: "#3b2a4a"
-  border-hover: "#5a4070"
-  text-primary: "#f8fafc"
+  primary: "#f4f4f6"
+  primary-hover: "#ffffff"
+  primary-text: "#090a0c"
+  neutral-bg: "#090a0c"
+  neutral-surface: "#111215"
+  neutral-card: "#181a1f"
+  neutral-card-hover: "#202228"
+  border: "#26282f"
+  border-hover: "#383a43"
+  text-primary: "#ffffff"
   text-heading: "#ffffff"
-  text-muted: "#a89bc2"
-  text-dim: "#7a6b90"
+  text-muted: "#9497a1"
+  text-dim: "#636773"
   safe: "#10b981"
   safe-light: "#34d399"
   watch: "#f59e0b"
@@ -24,9 +25,9 @@ typography:
   display:
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
     fontSize: "2rem"
-    fontWeight: 700
+    fontWeight: 800
     lineHeight: 1.2
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.025em"
   headline:
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
     fontSize: "1.25rem"
@@ -61,9 +62,9 @@ spacing:
 components:
   button-primary:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.neutral-bg}"
+    textColor: "{colors.primary-text}"
     rounded: "{rounded.md}"
-    padding: "11px 22px"
+    padding: "10px 20px"
   button-primary-hover:
     backgroundColor: "{colors.primary-hover}"
   button-secondary:
@@ -77,34 +78,36 @@ components:
 
 ## Overview
 
-**Creative North Star: "The High-Frequency Compliance Cockpit"**
+**Creative North Star: "Neutral Carbon & Titanium Precision Terminal"**
 
-The GST Credit-at-Risk Forecaster is a mission-critical, instrument-dense operational terminal for Indian enterprise finance teams. The interface delivers tactical clarity over millions of rupees in statutory tax exposure through an electric dark-canvas palette. It replaces the anxiety of month-end AP reconciliation with calm, surgical precision, presenting dense financial telemetry through a layered hierarchy of deep violets, obsidian card containers, and glowing lavender telemetry signals.
+The GST Credit-at-Risk Forecaster embraces an austere, sophisticated neutral monochrome and titanium slate aesthetic. By stripping away saturated colored tints (purples, bright blues, and golds), the interface achieves timeless Swiss operational discipline: Pure Obsidian Carbon foundations (`#090A0C`), Dark Zinc surfaces (`#111215`, `#181A1F`), crisp neutral silver hairline dividers (`#26282F`), and surgical high-contrast typography (`#FFFFFF`, `#E4E5E8`).
 
-Every visual element exists to serve rapid, error-free operational decisions. Data density is balanced with purposeful luminance: background surfaces recede into deep nocturnal violets (`#170D24`), while actionable risk indicators (Safe, Watch, Chase) cut through the darkness with crisp semantic luminescence. Anti-reference: Bland, light-mode generic enterprise accounting tables with unstyled borders, and noisy, toy-like pastel dashboards lacking compliance gravitas.
+Color is reserved strictly for operational telemetry: functional status luminescences (Safe to Hold, Watch, Chase Now) stand out with absolute clarity against the silent, distraction-free neutral slate canvas. Anti-reference: Saturated neon themes, arbitrary pastel accents, and noisy multi-colored decorations that distract from high-stakes statutory compliance decisions.
 
 **Key Characteristics:**
-- **Deep Nocturnal Violet Foundation:** Multi-layered dark theme anchored by Midnight Violet and Obsidian Plum, reducing fatigue during intensive reconciliation marathons.
-- **Electric Lavender Command Accent:** Radiant lavender-purple gradient accents signifying AI-driven autonomy, predictive triage, and executive controls.
-- **Tri-Signal Semantic Luminescence:** Uncompromised status illumination using Emerald, Amber, and Crimson glows that map directly to the 3-signal operational buckets.
-- **Surgical Identifier Precision:** High-contrast tabular layout with monospace rendering for statutory keys (GSTIN, IRN, HSN).
+- **Monochrome Carbon & Zinc Foundation:** Restrained dark canvas (`#090A0C`, `#111215`, `#181A1F`), eliminating visual fatigue during intensive month-end reconciliation cycles.
+- **Titanium White Command Accent:** High-contrast neutral white interactive controls (`#F4F4F6` with `#090A0C` typography) ensuring prominent, unmistakable action affordances.
+- **Subtle Silver Architectural Hairlines:** Clean 1px structural framing (`#26282F`, hover: `#383A43`) providing disciplined spatial hierarchy without visual clutter.
+- **Surgical Semantic Luminescence:** Status illumination (Emerald, Amber, Crimson) used only where risk triage is conveyed.
+- **Tabular Monospace Precision:** Pristine tabular monospace (`JetBrains Mono`) for financial figures, 15-character GSTINs, and 64-character IRN hashes.
 
 ## Colors
 
-The palette establishes an authoritative, high-contrast dark environment where functional status colors dominate visual attention over purely decorative hues.
+The palette establishes an authoritative, high-contrast neutral environment where chromatic hue is deployed exclusively for semantic meaning.
 
-### Primary Accent
-- **Electric Lavender** (`#B794F6` / hover: `#9F6FF0`): Primary call-to-action triggers, AI copilot indicators, active tab markers, focus rings, and glowing interactive elements.
+### Primary Accents & Neutral Foreground
+- **Titanium White (Primary Action)** (`#F4F4F6` / hover: `#FFFFFF` / text: `#090A0C`): Primary triggers, buttons, and prominent active controls.
+- **Neutral Silver (Secondary Accent)** (`#CBD0D8` / hover: `#FFFFFF`): Subtle active badges, focus indicators, and interactive links.
 
-### Neutral & Surface
-- **Midnight Violet** (`#170D24`): Main application canvas background, infused with soft radial gradient highlights.
-- **Obsidian Plum Surface** (`#1E1230`): Modal drawers, slide-in inspectors, and elevated header bars.
-- **Obsidian Card Container** (`#23172F` / hover: `#2C1D3A`): Base background for metric KPI cards, table surfaces, and filter panels.
-- **Subtle Plum Border** (`#3B2A4A` / hover: `#5A4070`): Crisp 1px structural framing separating adjacent data regions.
-- **Text Primary** (`#F8FAFC`): Primary data readouts, numerical values, and body text.
-- **Text Heading** (`#FFFFFF`): Primary headers, titles, and active modal labels.
-- **Text Muted** (`#A89BC2`): Secondary metadata, table column headers, and helper descriptors.
-- **Text Dim** (`#7A6B90`): Placeholder copy, inactive toggles, and tertiary hints.
+### Neutral Surfaces
+- **Obsidian Carbon Canvas** (`#090A0C`): Main application canvas background without distracting colored gradients.
+- **Dark Zinc Panel** (`#111215`): Elevated header bars, modal backdrops, and navigation panels.
+- **Graphite Slate Card** (`#181A1F` / hover: `#202228`): Container backgrounds for KPI metric panels, table rows, and filters.
+- **Silver-Slate Border** (`#26282F` / hover: `#383A43`): Structural framing.
+- **Text Heading** (`#FFFFFF`): Primary headers, titles, and modal captions.
+- **Text Primary** (`#E4E5E8`): Primary data readouts, numerical figures, and body copy.
+- **Text Muted** (`#9497A1`): Table column headers, helper notes, and secondary metadata.
+- **Text Dim** (`#636773`): Placeholder copy, inactive states, and tertiary hints.
 
 ### Status & Triage Semantics
 - **Sovereign Emerald (Safe to Hold)** (`#10B981` / light: `#34D399` / bg: `rgba(16, 185, 129, 0.12)` / border: `rgba(16, 185, 129, 0.3)`): Invoices protected by strong commercial AP retention leverage and verified e-invoice footprints.

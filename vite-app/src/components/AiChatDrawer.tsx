@@ -69,18 +69,18 @@ interface ThemeConfig {
 
 const THEME_PRESETS: Record<string, ThemeConfig> = {
   lavender: {
-    name: 'Electric Lavender',
-    primary: '#B794F6',
-    primaryHover: '#9F6FF0',
-    primaryText: '#170D24',
-    glow: 'rgba(183, 148, 246, 0.2)',
-    border: 'rgba(183, 148, 246, 0.3)',
-    cardBg: '#23172F',
-    surfaceBg: '#170D24',
-    userBubble: 'linear-gradient(135deg, #9F6FF0 0%, #B794F6 100%)',
-    accentBg: 'rgba(183, 148, 246, 0.12)',
-    badgeBg: 'rgba(183, 148, 246, 0.18)',
-    badgeText: '#D8B4FE',
+    name: 'Titanium Slate',
+    primary: '#E4E5E8',
+    primaryHover: '#FFFFFF',
+    primaryText: '#090A0C',
+    glow: 'rgba(255, 255, 255, 0.08)',
+    border: 'rgba(255, 255, 255, 0.14)',
+    cardBg: '#181A1F',
+    surfaceBg: '#111215',
+    userBubble: 'linear-gradient(135deg, #26282F 0%, #1E2026 100%)',
+    accentBg: 'rgba(255, 255, 255, 0.05)',
+    badgeBg: 'rgba(255, 255, 255, 0.08)',
+    badgeText: '#E4E5E8',
   },
   cyan: {
     name: 'Electric Cyan',
@@ -583,8 +583,8 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
   // Resolve current active visual theme
   const activeThemeConfig: ThemeConfig =
     themeMode === 'dynamic'
-      ? THEME_PRESETS[PROVIDER_METADATA[provider].themeKey] || THEME_PRESETS.cyan
-      : THEME_PRESETS[themeMode] || THEME_PRESETS.cyan;
+      ? THEME_PRESETS[PROVIDER_METADATA[provider].themeKey] || THEME_PRESETS.lavender
+      : THEME_PRESETS[themeMode] || THEME_PRESETS.lavender;
 
   // Check server configuration for default keys on load
   useEffect(() => {
@@ -1238,7 +1238,7 @@ export function AiChatDrawer({ invoices, kpis, selectedInvoice }: AiChatDrawerPr
             borderRadius: '16px',
             background: activeThemeConfig.surfaceBg,
             border: `1px solid ${activeThemeConfig.border}`,
-            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.7), 0 0 16px rgba(183, 148, 246, 0.15)',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.7), 0 0 16px rgba(255, 255, 255, 0.05)',
             overflow: 'hidden',
             fontFamily: 'Inter, sans-serif',
           }}

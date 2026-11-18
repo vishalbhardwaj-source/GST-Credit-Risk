@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { Bucket } from '../types';
 import {
   Activity,
   AlertTriangle,
@@ -51,6 +52,8 @@ export interface DashboardHeaderProps {
   };
   matchFilter: 'ALL' | 'MATCHED' | 'UNMATCHED';
   setMatchFilter: (val: 'ALL' | 'MATCHED' | 'UNMATCHED') => void;
+  bucketFilter?: 'ALL' | Bucket;
+  setBucketFilter?: (val: 'ALL' | Bucket) => void;
 }
 
 export function DashboardHeader({
@@ -74,6 +77,8 @@ export function DashboardHeader({
   kpis,
   matchFilter,
   setMatchFilter,
+  bucketFilter = 'ALL',
+  setBucketFilter,
 }: DashboardHeaderProps) {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showPipelineFlow, setShowPipelineFlow] = useState(false);
@@ -168,15 +173,16 @@ export function DashboardHeader({
               style={{
                 width: '36px',
                 height: '36px',
-                background: 'linear-gradient(135deg, #B794F6 0%, #9F6FF0 100%)',
-                border: 'none',
+                background: 'linear-gradient(135deg, #202228 0%, #181A1F 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 borderRadius: '10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: '18px',
-                color: 'var(--navy-heading)',
+                color: '#FFFFFF',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)',
               }}
             >
               ₹
@@ -208,8 +214,11 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 12px',
-              borderRadius: '7px',
+              padding: '0 14px',
+              height: '34px',
+              borderRadius: '8px',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
               border: 'none',
               background: activeView === 'overview' ? 'var(--surface-card)' : 'transparent',
               color: activeView === 'overview' ? '#FFFFFF' : 'var(--navy-muted)',
@@ -228,8 +237,11 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '6px 12px',
-              borderRadius: '7px',
+              padding: '0 14px',
+              height: '34px',
+              borderRadius: '8px',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
               border: 'none',
               background: activeView === 'dashboard' ? 'var(--surface-card)' : 'transparent',
               color: activeView === 'dashboard' ? '#FFFFFF' : 'var(--navy-muted)',
@@ -256,8 +268,11 @@ export function DashboardHeader({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '6px 12px',
+                padding: '0 12px',
+                height: '38px',
                 borderRadius: '8px',
+                justifyContent: 'center',
+                boxSizing: 'border-box',
                 background: 'rgba(16, 185, 129, 0.15)',
                 border: '1px solid rgba(16, 185, 129, 0.4)',
                 color: 'var(--safe-light)',
@@ -300,8 +315,11 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '8px 14px',
+              padding: '0 14px',
+              height: '38px',
               borderRadius: '8px',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
               background: 'rgba(56, 189, 248, 0.15)',
               border: '1px solid rgba(56, 189, 248, 0.4)',
               color: 'var(--accent-cyan)',
@@ -321,8 +339,11 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '8px 14px',
+              padding: '0 14px',
+              height: '38px',
               borderRadius: '8px',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               color: 'var(--navy-text)',
@@ -342,11 +363,14 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '8px 14px',
+              padding: '0 14px',
+              height: '38px',
               borderRadius: '8px',
-              background: 'rgba(159, 115, 244, 0.12)',
-              border: '1px solid rgba(159, 115, 244, 0.3)',
-              color: 'var(--accent-primary)',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: 'var(--accent-blue)',
               fontWeight: 600,
               fontSize: '12px',
               cursor: 'pointer',
@@ -362,8 +386,11 @@ export function DashboardHeader({
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '8px 14px',
+              padding: '0 14px',
+              height: '38px',
               borderRadius: '8px',
+              justifyContent: 'center',
+              boxSizing: 'border-box',
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid var(--navy-border)',
               fontWeight: 600,
@@ -408,8 +435,8 @@ export function DashboardHeader({
         style={{
           background: 'var(--navy-surface)',
           border: '1px solid var(--navy-border)',
-          borderRadius: '14px',
-          padding: '16px 20px',
+          borderRadius: '12px',
+          padding: '20px',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
         }}
       >
@@ -421,8 +448,8 @@ export function DashboardHeader({
                 width: '28px',
                 height: '28px',
                 borderRadius: '8px',
-                background: 'rgba(159, 115, 244, 0.12)',
-                border: '1px solid rgba(159, 115, 244, 0.3)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -503,103 +530,7 @@ export function DashboardHeader({
                   {isRouted ? (
                     <>
                       Out of <strong>{kpis.total} total purchase invoices</strong>, {kpis.matched} matched seamlessly in auto-generated GSTR-2B ({Math.round((kpis.matched / (kpis.total || 1)) * 100)}%). The remaining {kpis.unmatched} invoices are absent, creating nominal tax risk under Section 16(2)(aa).
-                      {/* Confirmation Modal for Resetting Custom Data */}
-      {showResetConfirm && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="reset-confirm-title"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(5, 10, 24, 0.82)',
-            backdropFilter: 'blur(6px)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-          }}
-          onClick={() => setShowResetConfirm(false)}
-        >
-          <div
-            style={{
-              background: 'var(--navy-card)',
-              border: '1px solid var(--navy-border)',
-              borderRadius: '14px',
-              maxWidth: '460px',
-              width: '100%',
-              padding: '24px',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '8px',
-                  background: 'rgba(239, 68, 68, 0.15)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--chase-color)',
-                }}
-              >
-                <RotateCcw size={18} />
-              </div>
-              <h3 id="reset-confirm-title" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--navy-heading)', margin: 0 }}>
-                Discard Custom Dataset?
-              </h3>
-            </div>
-            <p style={{ fontSize: '13px', color: 'var(--navy-muted)', lineHeight: 1.5, margin: 0 }}>
-              You currently have custom enterprise data loaded ({customDataName || 'Custom Active'}). Reverting to synthetic demo records will discard your active session analysis.
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' }}>
-              <button
-                onClick={() => setShowResetConfirm(false)}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: '7px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--navy-border)',
-                  color: 'var(--navy-text)',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Keep Custom Data
-              </button>
-              <button
-                onClick={() => {
-                  setShowResetConfirm(false);
-                  onResetToDemo?.();
-                }}
-                style={{
-                  padding: '8px 14px',
-                  borderRadius: '7px',
-                  background: 'var(--chase-color)',
-                  border: 'none',
-                  color: 'var(--navy-heading)',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 10px rgba(239, 68, 68, 0.3)',
-                }}
-              >
-                Confirm Revert
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
+                    </>
                   ) : (
                     <>
                       Total of <strong>{kpis.total} purchase invoices</strong> loaded from the internal Purchase Register for Tax Period Sep 2026. Automated GSTR-2B matching and multi-signal triage have not been executed yet.
@@ -705,12 +636,17 @@ export function DashboardHeader({
         {/* Total Purchase Invoices */}
         <div
           className="kpi-card"
-          onClick={() => isRouted && setMatchFilter('ALL')}
+          onClick={() => {
+            if (isRouted) {
+              setMatchFilter('ALL');
+              setBucketFilter?.('ALL');
+            }
+          }}
           style={{
             background: 'var(--navy-card)',
             border: '1px solid var(--navy-border)',
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -731,12 +667,17 @@ export function DashboardHeader({
         {/* Matched in GSTR-2B */}
         <div
           className="kpi-card"
-          onClick={() => isRouted && setMatchFilter('MATCHED')}
+          onClick={() => {
+            if (isRouted) {
+              setMatchFilter('MATCHED');
+              setBucketFilter?.('ALL');
+            }
+          }}
           style={{
             background: 'var(--navy-card)',
             border: '1px solid var(--navy-border)',
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -757,12 +698,17 @@ export function DashboardHeader({
         {/* Unmatched Invoices / Total Tax at Risk */}
         <div
           className="kpi-card"
-          onClick={() => isRouted && setMatchFilter('UNMATCHED')}
+          onClick={() => {
+            if (isRouted) {
+              setMatchFilter('UNMATCHED');
+              setBucketFilter?.('ALL');
+            }
+          }}
           style={{
             background: 'var(--navy-card)',
             border: isRouted ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid var(--navy-border)',
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -790,13 +736,22 @@ export function DashboardHeader({
         {/* Safe to Hold */}
         <div
           className="kpi-card"
+          onClick={() => {
+            if (isRouted && setBucketFilter) {
+              setMatchFilter('UNMATCHED');
+              setBucketFilter(bucketFilter === 'SAFE TO HOLD' ? 'ALL' : 'SAFE TO HOLD');
+            }
+          }}
+          title={isRouted ? "Click to filter table: Safe to Hold (AP Leveraged)" : undefined}
           style={{
             background: 'var(--navy-card)',
-            border: '1px solid var(--safe-border)',
+            border: bucketFilter === 'SAFE TO HOLD' ? '1px solid var(--safe-color)' : '1px solid var(--safe-border)',
+            boxShadow: bucketFilter === 'SAFE TO HOLD' ? '0 0 0 2px var(--safe-color), 0 8px 24px rgba(0, 0, 0, 0.45)' : undefined,
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             position: 'relative',
             overflow: 'hidden',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--safe-color)' }} />
@@ -833,13 +788,22 @@ export function DashboardHeader({
         {/* Watch */}
         <div
           className="kpi-card"
+          onClick={() => {
+            if (isRouted && setBucketFilter) {
+              setMatchFilter('UNMATCHED');
+              setBucketFilter(bucketFilter === 'WATCH' ? 'ALL' : 'WATCH');
+            }
+          }}
+          title={isRouted ? "Click to filter table: Watch List (Filing Laggards)" : undefined}
           style={{
             background: 'var(--navy-card)',
-            border: '1px solid var(--watch-border)',
+            border: bucketFilter === 'WATCH' ? '1px solid var(--watch-color)' : '1px solid var(--watch-border)',
+            boxShadow: bucketFilter === 'WATCH' ? '0 0 0 2px var(--watch-color), 0 8px 24px rgba(0, 0, 0, 0.45)' : undefined,
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             position: 'relative',
             overflow: 'hidden',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--watch-color)' }} />
@@ -876,13 +840,22 @@ export function DashboardHeader({
         {/* Chase Now */}
         <div
           className="kpi-card"
+          onClick={() => {
+            if (isRouted && setBucketFilter) {
+              setMatchFilter('UNMATCHED');
+              setBucketFilter(bucketFilter === 'CHASE NOW' ? 'ALL' : 'CHASE NOW');
+            }
+          }}
+          title={isRouted ? "Click to filter table: Chase Now (Rule 37A Action)" : undefined}
           style={{
             background: 'var(--navy-card)',
-            border: '1px solid var(--chase-border)',
+            border: bucketFilter === 'CHASE NOW' ? '1px solid var(--chase-color)' : '1px solid var(--chase-border)',
+            boxShadow: bucketFilter === 'CHASE NOW' ? '0 0 0 2px var(--chase-color), 0 8px 24px rgba(0, 0, 0, 0.45)' : undefined,
             borderRadius: '12px',
-            padding: '16px',
+            padding: '20px',
             position: 'relative',
             overflow: 'hidden',
+            cursor: isRouted ? 'pointer' : 'default',
           }}
         >
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--chase-color)' }} />
@@ -1053,13 +1026,13 @@ export function DashboardHeader({
             </div>
           </div>
 
-          <div style={{ color: '#2A9D8F', fontSize: '18px', fontWeight: 700 }}>→</div>
+          <div style={{ color: 'var(--accent-cyan)', fontSize: '18px', fontWeight: 700 }}>→</div>
 
           {/* Pipeline box */}
           <div
             style={{
-              background: 'rgba(159, 111, 240, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '10px',
               padding: '10px 16px',
               textAlign: 'center',
@@ -1073,7 +1046,7 @@ export function DashboardHeader({
             <div style={{ fontSize: '11px', color: 'var(--navy-text)', fontWeight: 600 }}>Filing Periodicity</div>
           </div>
 
-          <div style={{ color: '#2A9D8F', fontSize: '18px', fontWeight: 700 }}>→</div>
+          <div style={{ color: 'var(--accent-cyan)', fontSize: '18px', fontWeight: 700 }}>→</div>
 
           {/* AFTER buckets */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -1166,6 +1139,102 @@ export function DashboardHeader({
       </div>
       )}
         </>
+      )}
+                      {/* Confirmation Modal for Resetting Custom Data */}
+      {showResetConfirm && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="reset-confirm-title"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(5, 10, 24, 0.82)',
+            backdropFilter: 'blur(6px)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+          onClick={() => setShowResetConfirm(false)}
+        >
+          <div
+            style={{
+              background: 'var(--navy-card)',
+              border: '1px solid var(--navy-border)',
+              borderRadius: '14px',
+              maxWidth: '460px',
+              width: '100%',
+              padding: '24px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '8px',
+                  background: 'rgba(239, 68, 68, 0.15)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--chase-color)',
+                }}
+              >
+                <RotateCcw size={18} />
+              </div>
+              <h3 id="reset-confirm-title" style={{ fontSize: '16px', fontWeight: 700, color: 'var(--navy-heading)', margin: 0 }}>
+                Discard Custom Dataset?
+              </h3>
+            </div>
+            <p style={{ fontSize: '13px', color: 'var(--navy-muted)', lineHeight: 1.5, margin: 0 }}>
+              You currently have custom enterprise data loaded ({customDataName || 'Custom Active'}). Reverting to synthetic demo records will discard your active session analysis.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' }}>
+              <button
+                onClick={() => setShowResetConfirm(false)}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '7px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid var(--navy-border)',
+                  color: 'var(--navy-text)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Keep Custom Data
+              </button>
+              <button
+                onClick={() => {
+                  setShowResetConfirm(false);
+                  onResetToDemo?.();
+                }}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '7px',
+                  background: 'var(--chase-color)',
+                  border: 'none',
+                  color: 'var(--navy-heading)',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 10px rgba(239, 68, 68, 0.3)',
+                }}
+              >
+                Confirm Revert
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -114,7 +114,7 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               <span style={{ fontSize: '11px', color: 'var(--navy-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                 TAM (Bottom-Up)
               </span>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '4px' }}>
                 ₹1,140 Cr
               </div>
               <div style={{ fontSize: '10px', color: 'var(--navy-dim)', marginTop: '2px' }}>~$137M USD Total Market</div>
@@ -164,14 +164,14 @@ export function CommercialModal({ isOpen, onClose }: CommercialModalProps) {
               onClick={() => setSelectedPlan('sme')}
               style={{
                 background: selectedPlan === 'sme' ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.02)',
-                border: selectedPlan === 'sme' ? '2px solid #38bdf8' : '1px solid var(--navy-border)',
+                border: selectedPlan === 'sme' ? '2px solid var(--accent-primary)' : '1px solid var(--navy-border)',
                 borderRadius: '12px',
                 padding: '16px',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', fontSize: '11px', fontWeight: 700 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--navy-heading)', fontSize: '11px', fontWeight: 700 }}>
                 <Building2 size={14} /> SME Direct
               </div>
               <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--navy-heading)', marginTop: '6px' }}>
